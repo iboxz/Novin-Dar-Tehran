@@ -39,6 +39,7 @@
 }
 </script>
 <link rel="stylesheet" href="./src/styles.css">
+<link rel="stylesheet" href="/index.css">
 </head>
 <body>
 <a class="skip" href="#main">رفتن به محتوای اصلی</a>
@@ -102,6 +103,7 @@
 <div id="smooth-wrapper"><div id="smooth-content"><main id="main">
   <section id="home" class="hero" aria-labelledby="hero-title">
     <div class="hero-stage">
+      <canvas id="hero-liquid" class="hero-liquid" aria-hidden="true"></canvas>
       <div class="hero-layer hero-intro">
         <h1 id="hero-title" class="hero-title">نوین درب تهران،</h1>
         <div class="hero-arc" id="hero-arc" aria-hidden="true"><div class="hero-arc__ring"></div></div>
@@ -110,21 +112,26 @@
         <div class="hero-statement">
           <h2 class="hero-headline" data-split><span>همراه شما در</span> <em>امنیت و آسایش</em></h2>
           <p class="hero-sub" data-split>خدمات تخصصی درب‌های اتوماتیک و حفاظتی</p>
-          <p class="lead" data-split>از انتخاب درب مناسب تا نصب، تعمیر و نگهداری؛ برای ورودی خانه، ساختمان و محل کارتان کنار شما هستیم.</p>
           <div class="hero-actions"><a class="btn btn--primary" href="#contact" data-phone-link>تماس بگیرید</a><a class="btn btn--secondary" href="#services">کشف راهکارها <svg class="arw" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 19 5M5 5h14v14"/></svg></a></div>
         </div>
         <div class="hero-reel">
-          <p class="hero-reel__label">خدمات ما:</p>
-          <ul class="hero-reel__list"><li>جک‌های پارکینگی</li><li>درب‌های شیشه‌ای اتوماتیک</li><li>درب‌های کرکره‌ای</li><li>راهبندهای اتوماتیک</li><li>شیشهٔ بالکنی</li><li>درب‌های فولدینگ</li><li>درب‌های سکشنال</li></ul>
+          <div class="hero-reel__head">
+            <p class="hero-reel__label">خدمات ما</p>
+          </div>
+          <div class="hero-reel__frame">
+            <ul class="hero-reel__list"><li>امکان‌سنجی و مشاورهٔ فنی</li><li>نصب و اجرای استاندارد پروژه</li><li>یکپارچه‌سازی کنترل تردد</li><li>عیب‌یابی و تعمیر تخصصی</li><li>تأمین قطعات و بهینه‌سازی</li><li>قرارداد سرویس دوره‌ای سازمانی</li></ul>
+          </div>
         </div>
       </div>
     </div>
   </section>
   <section id="services" class="section services" aria-labelledby="services-title">
     <div class="wrap">
-      <div class="section-head"><h2 id="services-title">محصولات و <em>راهکارها</em></h2></div>
       <div class="catalog-layout">
-        <nav class="catalog-nav" aria-label="انتخاب محصول"><a href="#service-jack" aria-current="true"><span>۰۱</span>جک‌های پارکینگی</a><a href="#service-glass" aria-current="false"><span>۰۲</span>درب‌های شیشه‌ای اتوماتیک</a><a href="#service-shutter" aria-current="false"><span>۰۳</span>درب‌های کرکره‌ای</a><a href="#service-barrier" aria-current="false"><span>۰۴</span>راهبندهای اتوماتیک</a><a href="#service-balcony" aria-current="false"><span>۰۵</span>شیشهٔ بالکنی</a><a href="#service-folding" aria-current="false"><span>۰۶</span>درب‌های فولدینگ</a><a href="#service-sectional" aria-current="false"><span>۰۷</span>درب‌های سکشنال</a></nav>
+        <div class="catalog-aside">
+          <div class="section-head"><h2 id="services-title">محصولات و <em>راهکارها</em></h2></div>
+          <nav class="catalog-nav" aria-label="انتخاب محصول"><a href="#service-jack" aria-current="true"><span>۰۱</span>جک‌های پارکینگی</a><a href="#service-glass" aria-current="false"><span>۰۲</span>درب‌های شیشه‌ای اتوماتیک</a><a href="#service-shutter" aria-current="false"><span>۰۳</span>درب‌های کرکره‌ای</a><a href="#service-barrier" aria-current="false"><span>۰۴</span>راهبندهای اتوماتیک</a><a href="#service-balcony" aria-current="false"><span>۰۵</span>شیشهٔ بالکنی</a><a href="#service-folding" aria-current="false"><span>۰۶</span>درب‌های فولدینگ</a><a href="#service-sectional" aria-current="false"><span>۰۷</span>درب‌های سکشنال</a></nav>
+        </div>
         <div class="catalog-pages">
           <article class="svc-item" id="service-jack" data-service="jack">
             <div class="product-stage"><div id="render-jack" class="render-host" role="group" aria-label="مدل جک‌های پارکینگی؛ برای چرخش بکشید یا از کلیدهای جهت استفاده کنید"><svg class="model-fallback" viewBox="0 0 400 260" aria-hidden="true"><use href="#fallback-jack"/></svg><button class="model-toggle model-toggle--overlay" type="button" aria-pressed="false" aria-label="باز و بسته کردن جک‌های پارکینگی" hidden><svg class="model-icon model-icon--open" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 6 4 12l6 6M14 6l6 6-6 6"/></svg><svg class="model-icon model-icon--close" viewBox="0 0 24 24" aria-hidden="true"><path d="m4 6 6 6-6 6M20 6l-6 6 6 6"/></svg></button></div></div>
@@ -167,7 +174,6 @@
           </article>
         </div>
       </div>
-      <p class="service-note">تصاویر سه‌بعدی، مدل مفهومی محصولات هستند؛ نه نمونه‌کار اجرایی.</p>
     </div>
   </section>
   <section id="about" class="section about" aria-labelledby="about-title">
@@ -295,8 +301,7 @@
 <dialog id="service-dialog" class="service-dialog" aria-labelledby="dialog-title" aria-describedby="dialog-description">
   <div class="dialog-inner"><div class="dialog-top"><span class="label"><span>خدمات</span> معرفی خدمت</span><form method="dialog"><button type="submit" class="dialog-close" aria-label="بستن جزئیات خدمت" autofocus>×</button></form></div><h2 id="dialog-title"></h2><p id="dialog-description" class="lead"></p><p class="form-note">این معرفی کوتاه در همین صفحه نمایش داده می‌شود؛ صفحهٔ اختصاصی خدمت هنوز تعریف نشده است.</p><a id="dialog-contact" class="btn btn--primary" href="#contact">مشاوره و درخواست قیمت</a></div>
 </dialog>
-<script defer src="./src/hero-arc.js?v=2"></script>
-<script defer src="./src/app.js?v=20261119b"></script>
-
+<script type="module" src="./src/app.js"></script>
+<script type="module" src="/index.tsx"></script>
 </body>
 </html>

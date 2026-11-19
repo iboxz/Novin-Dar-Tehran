@@ -1,0 +1,34 @@
+/* Register Ayandeh fonts with different weights */
+@font-face {
+  font-family: 'Ayandeh';
+  src: url('./fonts/Ayandeh-Regular.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Ayandeh';
+  src: url('./fonts/Ayandeh-Light.woff2') format('woff2');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Ayandeh';
+  src: url('./fonts/Ayandeh-Bold.woff2') format('woff2');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Ayandeh';
+  src: url('./fonts/Ayandeh-Black.woff2') format('woff2');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* You can add more weights if needed */
