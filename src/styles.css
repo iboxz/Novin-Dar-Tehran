@@ -105,7 +105,7 @@
   .logo{display:inline-flex;align-items:center;gap:.75rem;min-block-size:44px;flex:none}
   .logo-mark{inline-size:3.1rem;block-size:2.4rem;display:grid;place-items:center;flex:none}
   .logo-mark svg{inline-size:100%;block-size:100%;fill:currentColor}
-  .logo-mark .brand-green{fill:var(--accent-deep)}
+  .logo-mark img{inline-size:100%;block-size:100%;object-fit:contain}
   .logo-type{display:block;font-size:1.1rem;line-height:1.35;font-weight:850}
   .logo-sub{display:block;font-size:.64rem;font-weight:450;color:var(--muted);line-height:1.6;margin-block-start:.05rem}
   @media(max-width:29.99em){.logo{gap:.55rem}.logo-mark{inline-size:2.6rem;block-size:2rem}.logo-type{font-size:.92rem}.logo-sub{font-size:.56rem}}
@@ -167,8 +167,8 @@
   /* ---- فوتر: لنگر تیرهٔ پایان صفحه ---- */
   .site-footer{position:relative;background:var(--ink);color:var(--on-ink);border-block-start:2px solid var(--accent);padding-block:clamp(3.25rem,6vw,5.5rem) 1.5rem}
   .site-footer .label{color:var(--accent)}
-  .site-footer .brand-green{fill:var(--accent)}
   .site-footer .logo{margin-block-end:1.1rem}
+  .site-footer .logo-mark img{filter:invert(1) hue-rotate(180deg)}
   .site-footer .logo-type{font-size:1.2rem}
   .site-footer h2 em{color:var(--accent)}
   .site-footer .btn--primary{background:var(--accent);color:var(--ink)}
