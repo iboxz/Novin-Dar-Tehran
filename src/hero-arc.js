@@ -97,6 +97,7 @@ export function initHeroScroll(gsap, ST, reduced, opts = {}) {
   const q = (s) => hero.querySelector(s);
   const qa = (s) => [...hero.querySelectorAll(s)];
   const intro = q(".hero-intro");
+  const stage = q(".hero-stage");
   const story = q(".hero-story");
   const stmt = q(".hero-statement");
   const reel = q(".hero-reel");
@@ -158,7 +159,18 @@ export function initHeroScroll(gsap, ST, reduced, opts = {}) {
   // first the reel text disappears completely (stage background still covers the services section)…
   tl.to(story, { opacity: 0, filter: "blur(14px)", duration: FADE * 0.5, ease: "power1.in" }, tLast + 0.1);
   // …and only then the empty stage lifts away, revealing the services section with no text overlapping
-  tl.to(q(".hero-stage"), { autoAlpha: 0, duration: FADE * 0.5, ease: "power1.out" }, tLast + 0.1 + FADE * 0.5);
+  tl.to(stage, {
+    autoAlpha: 0,
+    duration: FADE * 0.5,
+    ease: "power1.out",
+    onUpdate() {
+      const pointerEvents =
+        Number(gsap.getProperty(stage, "opacity")) < 0.99 ? "none" : "";
+      stage.style.pointerEvents = pointerEvents;
+      const pinSpacer = stage.closest(".pin-spacer");
+      if (pinSpacer) pinSpacer.style.pointerEvents = pointerEvents;
+    },
+  }, tLast + 0.1 + FADE * 0.5);
 
   let onRefreshInit = null;
   if (services) {
@@ -201,6 +213,9 @@ export function initHeroScroll(gsap, ST, reduced, opts = {}) {
 
   return () => {
     if (onRefreshInit) ST.removeEventListener("refreshInit", onRefreshInit);
+    stage.style.pointerEvents = "";
+    const pinSpacer = stage.closest(".pin-spacer");
+    if (pinSpacer) pinSpacer.style.pointerEvents = "";
     resetServices();
   };
 }
