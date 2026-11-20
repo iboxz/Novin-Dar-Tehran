@@ -113,7 +113,6 @@ function initGallery(stage) {
 
   const isThreeD = (index) => index === 0;
   const threeDHost = threeDSlide?.querySelector(".render-host") || null;
-  const mobileGallery = window.matchMedia("(max-width: 44em)");
 
   let current = 0;
   let pointer = null;
@@ -249,22 +248,6 @@ function initGallery(stage) {
     return true;
   };
 
-  viewport.addEventListener(
-    "pointerdown",
-    (event) => {
-      if (
-        !mobileGallery.matches ||
-        !isThreeD(current) ||
-        !event.target.closest(".render-host")
-      ) {
-        return;
-      }
-
-      if (beginPointer(event)) event.stopImmediatePropagation();
-    },
-    true
-  );
-
   const resetPointer = () => {
     const captured = pointer;
     pointer = null;
@@ -276,7 +259,8 @@ function initGallery(stage) {
   };
 
   viewport.addEventListener("pointerdown", (event) => {
-    // On desktop the 3D host owns horizontal drags (rotate the model).
+    // Desktop: the 3D host owns horizontal drags (rotate the model).
+    // Mobile: the host ignores pointers (CSS), so swipes reach the slider.
     if (isThreeD(current) && event.target.closest(".render-host")) return;
     beginPointer(event);
   });
@@ -361,6 +345,10 @@ function initGallery(stage) {
   viewport.addEventListener("pointerup", finishDrag);
   viewport.addEventListener("pointercancel", resetPointer);
   viewport.addEventListener("lostpointercapture", (event) => {
+    // On touch the browser implicitly captures the pointer to the element under
+    // the finger; moving capture to the viewport fires this event (it bubbles)
+    // from that element. Only a release on the viewport itself ends the drag.
+    if (event.target !== viewport) return;
     if (pointer && event.pointerId === pointer.id) {
       track.classList.remove("is-dragging");
       pointer = null;

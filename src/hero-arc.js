@@ -33,6 +33,138 @@ const splitWords = (node) => {
   });
 };
 
+
+const ENTRY_UNITS = 3.6;  // مدت (در تایم‌لاین) ورود کارت‌ها؛ باید با tween مربوطه یکی باشد
+const DRIVE_FACTOR = 0.6; // سرعت حرکت وابسته به اسکرول بعد از ورود، نسبت به سرعت ورود (۰ = خاموش)
+
+const clampN = (v, a, b) => Math.min(b, Math.max(a, v));
+
+/**
+ * قوس تصاویر سکشن «خدمات ما».
+ * - به‌صورت پیش‌فرض هیچ کارتی دیده نمی‌شود.
+ * - با شروع اسکرول در این سکشن (setProgress 0→1) کارت‌ها یکی‌یکی از لبهٔ چپ صفحه وارد می‌شوند
+ *   و روی قوس به سمت راست ادامه می‌دهند؛ بعد از ورود هم به آرامی (و با اسکرول سریع‌تر) می‌چرخند.
+ */
+function createReelArc(el) {
+  const ring = el.querySelector(".hero-arc__ring");
+  if (!ring) return { stop() {}, setProgress() {} };
+
+  const BASE_PX_PER_SEC = 30;   // سرعت پایه وقتی اسکرول نمی‌شود (px/s روی قوس)
+  const SCROLL_RATIO = 0.015;   // هر px اسکرول چند px حرکت اضافه به قوس بدهد
+  const MAX_BOOST_PX = 50;      // سقف سرعت اضافهٔ ناشی از اسکرول (px/s)
+  const SMOOTH = 6;             // نرمی اعمال حرکت اسکرول (بیشتر = سریع‌تر دنبال اسکرول)
+  const RAD = 180 / Math.PI;
+
+  let cards = [];
+  let step = 20, R = 1500, spawn = -70, rightLim = 12, entryDeg = 90;
+  let drive = 0;     // مدت اسکرول‌شده بعد از پایان ورود (واحد تایم‌لاین)
+  let prog = 0;      // پیشرفت ورود (0..1) که از اسکرول می‌آید
+  let tTime = 0;     // حرکت زمانی بعد از ورود (درجه)
+  let queue = 0;     // مسافت اسکرول‌شده‌ای که هنوز به حرکت قوس تبدیل نشده
+  let raf = 0;
+  let last = performance.now();
+  let lastY = window.scrollY;
+
+  const layout = () => {
+    const W = el.clientWidth || innerWidth;
+    const mobile = W < 768;
+    const cw = mobile ? clampN(W * 0.38, 118, 180) : clampN(W * 0.21, 176, 400);
+    R = mobile ? W * 1.0 : W * 0.98;
+    const cx = mobile ? W * 0.5 : W * 0.85;
+    el.style.setProperty("--cw", cw.toFixed(1) + "px");
+    el.style.setProperty("--R", R.toFixed(1) + "px");
+    el.style.setProperty("--cx", cx.toFixed(1) + "px");
+    el.style.setProperty("--crest", mobile ? ".62" : ".3");
+
+    const half = (cw / 2 / R) * RAD * 1.7; // نیم‌عرض کارت به درجه (با حاشیه)
+    spawn = -(Math.asin(Math.min(0.98, cx / R)) * RAD + half);
+    rightLim = Math.asin(Math.min(0.98, (W - cx) / R)) * RAD + half;
+
+    const count = Math.max(12, Math.ceil((2 * Math.PI * R) / (cw * 1.3)));
+    step = 360 / count;
+    entryDeg = rightLim - spawn + step * 0.6;
+
+    if (count === cards.length) return;
+    const frag = document.createDocumentFragment();
+    cards = [];
+    for (let i = 0; i < count; i++) {
+      const card = document.createElement("div");
+      card.className = "hero-arc__card";
+      card.style.visibility = "hidden";
+      const img = new Image();
+      img.alt = "";
+      img.decoding = "async";
+      img.draggable = false;
+      img.onerror = () => { img.remove(); card.classList.add("is-ph"); };
+      img.src = IMAGES[(i + 3) % IMAGES.length];
+      card.append(img);
+      cards.push(card);
+      frag.append(card);
+    }
+    ring.replaceChildren(frag);
+  };
+
+  const place = () => {
+    const T = prog * entryDeg + tTime + drive * (entryDeg / ENTRY_UNITS) * DRIVE_FACTOR;
+    const started = prog > 0.002;
+    for (let i = 0; i < cards.length; i++) {
+      const c = cards[i];
+      const raw = T - i * step;
+      if (!started || raw <= 0) {
+        if (c.style.visibility !== "hidden") c.style.visibility = "hidden";
+        continue;
+      }
+      const th = (raw % 360) + spawn;
+      if (th > rightLim) {
+        if (c.style.visibility !== "hidden") c.style.visibility = "hidden";
+        continue;
+      }
+      c.style.visibility = "visible";
+      c.style.transform = `rotate(${th.toFixed(3)}deg) translateY(${(-R).toFixed(1)}px)`;
+    }
+  };
+
+  const tick = (now) => {
+    const dt = Math.min(0.05, Math.max(0.001, (now - last) / 1000));
+    last = now;
+    const y = window.scrollY;
+    const dy = Math.abs(y - lastY);
+    lastY = y;
+
+    // حرکت بر اساس «مسافت اسکرول» است نه سرعت لحظه‌ای؛ پس تا آخرین لحظه‌ای که
+    // اسکرول می‌شود اثر دارد و با ایستادن اسکرول هم به‌آرامی تمام می‌شود.
+    queue = Math.min(queue + dy * SCROLL_RATIO, MAX_BOOST_PX);
+    const move = Math.min(queue * Math.min(1, dt * SMOOTH), MAX_BOOST_PX * dt);
+    queue -= move;
+
+    if (prog <= 0.001) {
+      tTime = 0;
+    } else {
+      tTime += ((BASE_PX_PER_SEC * dt + move) / R) * RAD * Math.min(1, prog * 2);
+    }
+    place();
+    raf = requestAnimationFrame(tick);
+  };
+
+  layout();
+  let rt;
+  const ro = new ResizeObserver(() => { clearTimeout(rt); rt = setTimeout(layout, 120); });
+  ro.observe(el);
+  raf = requestAnimationFrame(tick);
+
+  return {
+    setProgress(p) { prog = clampN(p, 0, 1); },
+    setDrive(u) { drive = Math.max(0, u); },
+    stop() {
+      cancelAnimationFrame(raf);
+      clearTimeout(rt);
+      ro.disconnect();
+      ring.replaceChildren();
+      cards = [];
+    },
+  };
+}
+
 export function initHeroArc() {
   const el = document.getElementById("hero-arc");
   if (!el) return;
@@ -82,6 +214,8 @@ export function initHeroScroll(gsap, ST, reduced, opts = {}) {
     services.style.marginBlockStart = "";
     window.__servicesRevealY = null;
   };
+  // مقدار اسکرول اضافه‌ای که سکشن خدمات پین می‌ماند تا انیمیشن اولین محصول (جک) پخش شود
+  const extraPx = () => (opts.firstItemPinVh ?? 0.5) * innerHeight;
 
   if (!hero) {
     resetServices();
@@ -104,6 +238,9 @@ export function initHeroScroll(gsap, ST, reduced, opts = {}) {
   const list = q(".hero-reel__list");
   const actions = q(".hero-actions");
   const words = qa(".hero-statement .w");
+  const reelArc = q(".hero-arc--reel");
+  const reelArcCtl = reelArc ? createReelArc(reelArc) : null;
+  const arcState = { p: 0, u: 0 };
   const items = qa(".hero-reel__list li");
 
   gsap.set(words, { opacity: 0.12, filter: "blur(12px)" });
@@ -131,7 +268,7 @@ export function initHeroScroll(gsap, ST, reduced, opts = {}) {
     scrollTrigger: {
       trigger: hero,
       start: "top top",
-      end: () => "+=" + innerHeight * 3.3,
+      end: () => "+=" + innerHeight * 5.2,
       pin: q(".hero-stage"),
       scrub: 0.25,
       anticipatePin: 1,
@@ -148,14 +285,24 @@ export function initHeroScroll(gsap, ST, reduced, opts = {}) {
   tl.to(stmt, { opacity: 0, filter: "blur(16px)", y: -30, duration: 0.5, ease: "power1.in" }, 2.6);
   // 3) reel: "خدمات ما:"
   tl.fromTo(reel, { autoAlpha: 0, filter: "blur(12px)" }, { autoAlpha: 1, filter: "blur(0px)", duration: 0.45 }, 3.0);
+  // کارت‌های قوس با شروع اسکرول این سکشن از چپ صفحه وارد می‌شوند
+  if (reelArcCtl) {
+    tl.fromTo(
+      arcState,
+      { p: 0 },
+      { p: 1, duration: ENTRY_UNITS, ease: "none", onUpdate: () => reelArcCtl.setProgress(arcState.p) },
+      3.0
+    );
+  }
   const t0 = 3.6;
-  const gap = 0.42;
+  const gap = 1.0;      // فاصلهٔ زمانی بین هر متن (بیشتر = اسکرول بیشتر برای هر متن)
+  const swap = 0.55;    // مدت جابه‌جایی هر متن (بیشتر = نرم‌تر و آهسته‌تر)
   for (let i = 1; i < items.length; i++) {
-    tl.to(st, { p: i, duration: 0.3, ease: "power2.inOut", onUpdate: render }, t0 + (i - 1) * gap);
+    tl.to(st, { p: i, duration: swap, ease: "power2.inOut", onUpdate: render }, t0 + (i - 1) * gap);
   }
   // 4) the reel fades out while the services section is already pinned at the top underneath it
   const FADE = 1.0;
-  const tLast = t0 + (items.length - 2) * gap + 0.3;
+  const tLast = t0 + (items.length - 2) * gap + swap + 0.4; // کمی مکث روی آخرین متن
   // first the reel text disappears completely (stage background still covers the services section)…
   tl.to(story, { opacity: 0, filter: "blur(14px)", duration: FADE * 0.5, ease: "power1.in" }, tLast + 0.1);
   // …and only then the empty stage lifts away, revealing the services section with no text overlapping
@@ -172,10 +319,23 @@ export function initHeroScroll(gsap, ST, reduced, opts = {}) {
     },
   }, tLast + 0.1 + FADE * 0.5);
 
+  // تا آخرین لحظهٔ دیده شدن قوس، حرکت کارت‌ها مستقیماً به اسکرول وصل می‌ماند
+  // (قبلاً با پایان tween ورود، یعنی نزدیک متن «تأمین قطعات»، اثر اسکرول قطع می‌شد)
+  if (reelArcCtl) {
+    const driveStart = 3.0 + ENTRY_UNITS;
+    const driveEnd = tLast + 0.1 + FADE * 0.5;
+    tl.fromTo(
+      arcState,
+      { u: 0 },
+      { u: driveEnd - driveStart, duration: driveEnd - driveStart, ease: "none", onUpdate: () => reelArcCtl.setDrive(arcState.u) },
+      driveStart
+    );
+  }
+
   let onRefreshInit = null;
   if (services) {
     services.classList.add("is-under-hero");
-    const tailPx = () => innerHeight * 3.3 * (FADE / tl.duration());
+    const tailPx = () => innerHeight * 5.2 * (FADE / tl.duration());
     onRefreshInit = () => {
       const stageH = q(".hero-stage").offsetHeight || innerHeight;
       services.style.marginBlockStart = -(stageH + tailPx()) + "px";
@@ -186,12 +346,19 @@ export function initHeroScroll(gsap, ST, reduced, opts = {}) {
     const servicesPin = ST.create({
       trigger: services,
       start: "top top",
-      end: () => "+=" + tailPx(),
+      end: () => "+=" + (tailPx() + extraPx()),
       pin: true,
       pinSpacing: true,
       invalidateOnRefresh: true,
+      onUpdate(self) {
+        // پیشرفت ۰..۱ فقط در بازهٔ پین اضافه (بعد از محو شدن استیج هیرو)
+        const startExtra = self.end - extraPx();
+        const p = clampN((self.scroll() - startExtra) / extraPx(), 0, 1);
+        opts.onFirstItemProgress?.(p);
+      },
     });
-    window.__servicesRevealY = () => servicesPin.end;
+    // نقطهٔ «نمایان شدن خدمات»: همان‌جا که انیمیشن جک از صفر شروع می‌شود
+    window.__servicesRevealY = () => servicesPin.end - extraPx();
 
     // Pin "محصولات و راهکارها" together with all product names (.catalog-aside)
     // seamlessly starting the exact instant servicesPin unpins.
@@ -212,6 +379,7 @@ export function initHeroScroll(gsap, ST, reduced, opts = {}) {
   }
 
   return () => {
+    reelArcCtl?.stop();
     if (onRefreshInit) ST.removeEventListener("refreshInit", onRefreshInit);
     stage.style.pointerEvents = "";
     const pinSpacer = stage.closest(".pin-spacer");

@@ -189,6 +189,16 @@ export function initScroll() {
 
         const heroCleanup = initHeroScroll(gsap, ScrollTrigger, isReduced, {
           desktop: context.conditions.desktop,
+          firstItemPinVh: 0.5, // طول پین سکشن برای پخش انیمیشن جک (۰.۵ = نیم صفحه)
+          onFirstItemProgress: (p) => {
+            gsap.to(states[0], {
+              progress: p,
+              duration: 0.35,
+              ease: "power1.out",
+              overwrite: "auto",
+              onUpdate: () => updateModelState(0),
+            });
+          },
         });
 
         let activeIndex = 0;
@@ -213,7 +223,8 @@ export function initScroll() {
             activeIndex = idx;
           }
 
-          if (!isReduced) {
+          // آیتم اول (جک) در بازهٔ پین سکشن خدمات انیمیت می‌شود، نه با اسکرول عادی
+          if (!isReduced && idx !== 0) {
             gsap.fromTo(
               states[idx],
               { progress: 0 },

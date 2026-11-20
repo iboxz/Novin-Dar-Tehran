@@ -1,4 +1,4 @@
- @font-face{font-family:'Ayandeh';src:url('./fonts/Ayandeh-Regular.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap}@font-face{font-family:'Ayandeh';src:url('./fonts/Ayandeh-Light.woff2') format('woff2');font-weight:300;font-style:normal;font-display:swap}@font-face{font-family:'Ayandeh';src:url('./fonts/Ayandeh-Bold.woff2') format('woff2');font-weight:850;font-style:normal;font-display:swap}@font-face{font-family:'Ayandeh';src:url('./fonts/Ayandeh-Black.woff2') format('woff2');font-weight:900;font-style:normal;font-display:swap}
+@font-face{font-family:'Ayandeh';src:url('./fonts/Ayandeh-Regular.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap}@font-face{font-family:'Ayandeh';src:url('./fonts/Ayandeh-Light.woff2') format('woff2');font-weight:300;font-style:normal;font-display:swap}@font-face{font-family:'Ayandeh';src:url('./fonts/Ayandeh-Bold.woff2') format('woff2');font-weight:850;font-style:normal;font-display:swap}@font-face{font-family:'Ayandeh';src:url('./fonts/Ayandeh-Black.woff2') format('woff2');font-weight:900;font-style:normal;font-display:swap}
 
 @layer reset, tokens, base, layout, components, sections, motion, chrome;
 @layer reset {
@@ -329,16 +329,47 @@
 .product-stage .model-toggle--overlay{inset-block-start:clamp(.75rem,2vw,1.1rem);inset-block-end:auto;inset-inline-start:clamp(.75rem,2vw,1.1rem);z-index:4}
 
 @media(max-width:44em){
-  .gallery-deck{inset-inline:.55rem;inset-block-end:.55rem;gap:.4rem}
-  .gallery-dots{gap:0;min-block-size:38px;padding-inline:.2rem}
-  .gallery-dot{inline-size:15px;block-size:38px}
-  .gallery-dot[aria-current=true]::before{inline-size:17px}
-  .gallery-nav{min-block-size:38px}
-  .gallery-arrow{inline-size:38px;min-block-size:38px}
-  .gallery-open{min-block-size:38px;font-size:.68rem;padding-inline:.7rem;gap:.4rem}
-  .product-stage .model-toggle--overlay{inline-size:38px;block-size:38px}
+  /* موبایل: صحنهٔ سه‌بعدی گرب نمی‌شود؛ کشیدن = عوض کردن اسلاید */
+  .gallery-slide--3d .render-host{pointer-events:none;inset:0 0 .25rem}
+  .gallery-slide--3d .render-host .model-toggle{pointer-events:auto}
+
+  /* حداقلی: عناصر اضافه حذف */
+  .gallery-open,.gallery-progress{display:none}
+
+  .gallery-deck{inset-inline:.5rem;inset-block-end:.4rem;gap:.3rem}
+  .gallery-dots,.gallery-nav{min-block-size:0;box-shadow:none;border-color:transparent;background:color-mix(in oklch,var(--surface) 70%,transparent);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+  .gallery-dots{gap:0;padding-inline:.15rem}
+  .gallery-dot{inline-size:14px;block-size:24px}
+  .gallery-dot::before{inline-size:4px;block-size:4px}
+  .gallery-dot[aria-current=true]::before{inline-size:11px}
+  .gallery-arrow{inline-size:26px;min-block-size:26px}
+  .gallery-arrow svg{inline-size:12px;block-size:12px}
+  .gallery-arrow+.gallery-arrow{border-inline-start-color:transparent}
+  .product-stage .model-toggle--overlay{inline-size:30px;block-size:30px;inset-block-start:.5rem;inset-inline-start:.5rem}
+  .product-stage .model-toggle--overlay svg{inline-size:14px;block-size:14px}
 }
 @media(prefers-reduced-motion:reduce){
   .gallery-track{transition:none}
   .gallery-slide--photo img{transform:none;transition:none}
 }
+/* ===== قوس تصاویر در سکشن «خدمات ما» (ریل) ===== */
+.hero-arc--reel{display:none}
+.hero.is-pinned .hero-arc--reel{
+  display:block;position:absolute;inset:0;inline-size:auto;block-size:auto;
+  --cw:12rem;--ch:calc(var(--cw)*.74);--R:60rem;
+  /* ▼ تنظیمات دستی جایگاه قوس (توسط JS بازنویسی نمی‌شوند) */
+  --arc-top:0px;        /* فاصله از بالا: مثبت = پایین‌تر، منفی = بالاتر */
+  --arc-rotate:0deg;    /* چرخش کل قوس حول مرکز دایره: مثبت = ساعت‌گرد */
+  overflow:hidden;z-index:0;pointer-events:none
+}
+.hero.is-pinned .hero-arc--reel .hero-arc__ring{
+  animation:none;inset-inline-start:var(--cx,85%);inset-block-start:calc(var(--R) + var(--ch)*var(--crest,.3) + var(--arc-top));
+  transform:rotate(var(--arc-rotate));will-change:transform
+}
+.hero.is-pinned .hero-arc--reel .hero-arc__card{will-change:transform;
+  border-radius:clamp(.8rem,1.8vw,1.6rem);
+  box-shadow:0 18px 36px -16px #17251d40,0 2px 6px #17251d14
+}
+.hero.is-pinned .hero-reel{position:relative;z-index:1}
+@media(prefers-reduced-motion:reduce){.hero-arc--reel .hero-arc__ring{transform:none!important}}
+@media(max-width:47.99em){.hero.is-pinned .hero-arc--reel{inset-block-start:calc(var(--header-h,4.5rem) + 1.25rem)}}
