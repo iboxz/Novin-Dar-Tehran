@@ -93,6 +93,54 @@ export function initScroll() {
     });
   });
 
+  const NAV_OFFSET = 104;
+
+  // اسکرول نرم برنامه‌ای.
+  // ScrollSmoother موقع smoother.scrollTo اسکرول‌بار را فوراً می‌پراند و محتوا را با تأخیر دنبال می‌کند.
+  // برای همین اینجا خودمان اسکرول واقعی را با tween جی‌سپ جلو می‌بریم و در این مدت smoothing
+  // اسموثر را تقریباً صفر می‌کنیم تا اسکرول‌بار و محتوا کاملاً هم‌زمان حرکت کنند.
+  const SMOOTH_VALUE = 1.05;
+  const clampY = (v) => Math.min(ScrollTrigger.maxScroll(window), Math.max(0, v));
+  const restoreSmooth = () => smoother?.smooth(SMOOTH_VALUE);
+
+  const scrollToY = (getY, onDone, isRetry = false) => {
+    const y = clampY(getY());
+    const dist = Math.abs(y - window.scrollY);
+    if (!isRetry) smoother?.smooth(0.05);
+
+    gsap.to(window, {
+      scrollTo: { y, autoKill: true },
+      duration: isReduced ? 0 : isRetry ? 0.3 : Math.min(1.8, Math.max(0.7, dist / 2400)),
+      ease: "power2.inOut",
+      overwrite: true,
+      onComplete() {
+        // اگر در مسیر چیدمان عوض شده بود (لود تصویر، ساخت مدل سه‌بعدی) یک‌بار تصحیح کن
+        if (!isRetry && Math.abs(clampY(getY()) - window.scrollY) > 6) {
+          scrollToY(getY, onDone, true);
+          return;
+        }
+        restoreSmooth();
+        onDone?.();
+      },
+      onInterrupt: restoreSmooth,
+    });
+  };
+
+  // موقعیت واقعی اسکرول برای رسیدن به یک عنصر.
+  // سکشن #services پین شده است؛ پس مختصات داخل آن بسته به فاز پین (قبل/حین/بعد) فرق می‌کند.
+  // محصولات را نسبت به نقطهٔ «آزاد شدن پین» حساب می‌کنیم که همیشه ثابت است.
+  const getTargetY = (el) => {
+    const services = qs("#services");
+    const unpinY = window.__servicesUnpinY?.();
+    if (services && unpinY != null && services.contains(el)) {
+      const delta =
+        el.getBoundingClientRect().top - services.getBoundingClientRect().top;
+      return unpinY + delta - NAV_OFFSET;
+    }
+    if (smoother) return smoother.offset(el, `top ${NAV_OFFSET}px`);
+    return el.getBoundingClientRect().top + window.scrollY - NAV_OFFSET;
+  };
+
   qsa('a[href^="#"]').forEach((link) => {
     link.addEventListener("click", (event) => {
       if (
@@ -107,16 +155,7 @@ export function initScroll() {
 
       if (link.hash === "#services" && typeof window.__servicesRevealY === "function") {
         event.preventDefault();
-        const y = window.__servicesRevealY() + 1;
-        if (smoother) {
-          smoother.scrollTo(y, true);
-        } else {
-          gsap.to(window, {
-            duration: isReduced ? 0 : 0.75,
-            ease: "power2.inOut",
-            scrollTo: { y, autoKill: true },
-          });
-        }
+        scrollToY(() => window.__servicesRevealY() + 1);
         return;
       }
 
@@ -124,20 +163,15 @@ export function initScroll() {
       if (!target) return;
 
       event.preventDefault();
-      if (smoother) {
-        smoother.scrollTo(target, true, "top 104px");
-      } else {
-        gsap.to(window, {
-          duration: isReduced ? 0 : 0.75,
-          ease: "power2.inOut",
-          scrollTo: { y: target, offsetY: 100, autoKill: true },
-        });
-      }
-
-      if (link.closest(".catalog-nav")) {
-        target.tabIndex = -1;
-        target.focus({ preventScroll: true });
-      }
+      // فوکوس را عمداً بعد از پایان اسکرول می‌دهیم: ScrollSmoother روی رویداد focusin
+      // فوراً به عنصر فوکوس‌شده می‌پرد (حتی با preventScroll) و همین باعث پرش ناگهانی می‌شد.
+      const onDone = link.closest(".catalog-nav")
+        ? () => {
+            target.tabIndex = -1;
+            target.focus({ preventScroll: true });
+          }
+        : undefined;
+      scrollToY(() => getTargetY(target), onDone);
     });
   });
 

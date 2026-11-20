@@ -7,8 +7,12 @@ const IMAGES = [
   "assets/projects-images/glass-balustrade.jpg",
   "assets/projects-images/parking-gate-openers.png",
   "assets/projects-images/roller-shutters-2.jpg",
+  "assets/projects-images/roller-shutters-3.jpg",
   "assets/projects-images/roller-shutters.jpg",
+  "assets/projects-images/glass-facade.jpg",
   "assets/projects-images/sectional-doors.jpg",
+  "assets/projects-images/glass-balust-3.jpg",
+  "assets/projects-images/sectional-doors-2.jpg",
   "assets/projects-images/transparent-roller-shutters.jpg",
 ];
 
@@ -56,6 +60,7 @@ function createReelArc(el) {
   const RAD = 180 / Math.PI;
 
   let cards = [];
+  let period = 360;
   let step = 20, R = 1500, spawn = -70, rightLim = 12, entryDeg = 90;
   let drive = 0;     // مدت اسکرول‌شده بعد از پایان ورود (واحد تایم‌لاین)
   let prog = 0;      // پیشرفت ورود (0..1) که از اسکرول می‌آید
@@ -80,9 +85,15 @@ function createReelArc(el) {
     spawn = -(Math.asin(Math.min(0.98, cx / R)) * RAD + half);
     rightLim = Math.asin(Math.min(0.98, (W - cx) / R)) * RAD + half;
 
-    const count = Math.max(12, Math.ceil((2 * Math.PI * R) / (cw * 1.3)));
-    step = 360 / count;
+    // فاصلهٔ زاویه‌ای کارت‌ها فقط از هندسه (عرض کارت و شعاع) می‌آید، نه از تعداد تصاویر
+    const base = Math.max(12, Math.ceil((2 * Math.PI * R) / (cw * 1.3)));
+    step = 360 / base;
     entryDeg = rightLim - spawn + step * 0.6;
+    // تعداد کارت‌ها: حداقل به‌اندازهٔ طول قوس قابل‌دیدن، و مضرب تعداد تصاویر تا ترتیب بدون درز تکرار شود
+    const n = Math.max(1, IMAGES.length);
+    const needed = Math.ceil((rightLim - spawn) / step) + 2;
+    const count = Math.ceil(needed / n) * n;
+    period = count * step;
 
     if (count === cards.length) return;
     const frag = document.createDocumentFragment();
@@ -114,7 +125,7 @@ function createReelArc(el) {
         if (c.style.visibility !== "hidden") c.style.visibility = "hidden";
         continue;
       }
-      const th = (raw % 360) + spawn;
+      const th = (raw % period) + spawn;
       if (th > rightLim) {
         if (c.style.visibility !== "hidden") c.style.visibility = "hidden";
         continue;
@@ -174,6 +185,8 @@ export function initHeroArc() {
   // کارت‌ها طوری تکرار می‌شوند که دایره کامل پر شود و چرخش بی‌نهایت و بدون پرش باشد
   const count = list.length * Math.max(1, Math.ceil(30 / list.length));
   const step = 360 / count;
+  // با زیاد شدن تعداد کارت‌ها، شعاع و سرعت چرخش قوس متناسب بزرگ می‌شود تا کارت‌ها روی هم نیفتند
+  el.style.setProperty("--arc-k", Math.max(1, count / 30).toFixed(3));
   const frag = document.createDocumentFragment();
 
   for (let i = 0; i < count; i++) {
@@ -213,6 +226,7 @@ export function initHeroScroll(gsap, ST, reduced, opts = {}) {
     services.classList.remove("is-under-hero");
     services.style.marginBlockStart = "";
     window.__servicesRevealY = null;
+    window.__servicesUnpinY = null;
   };
   // مقدار اسکرول اضافه‌ای که سکشن خدمات پین می‌ماند تا انیمیشن اولین محصول (جک) پخش شود
   const extraPx = () => (opts.firstItemPinVh ?? 0.5) * innerHeight;
@@ -359,6 +373,8 @@ export function initHeroScroll(gsap, ST, reduced, opts = {}) {
     });
     // نقطهٔ «نمایان شدن خدمات»: همان‌جا که انیمیشن جک از صفر شروع می‌شود
     window.__servicesRevealY = () => servicesPin.end - extraPx();
+    // نقطهٔ آزاد شدن پین؛ مرجع ثابت برای محاسبهٔ موقعیت محصولات
+    window.__servicesUnpinY = () => servicesPin.end;
 
     // Pin "محصولات و راهکارها" together with all product names (.catalog-aside)
     // seamlessly starting the exact instant servicesPin unpins.

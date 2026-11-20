@@ -249,7 +249,7 @@
 .hero-reel__list{list-style:none;margin:0;padding:0;position:relative;inline-size:100%;font-size:var(--fs);line-height:var(--lh);block-size:calc(var(--fs)*var(--lh)*3);overflow:hidden;font-weight:650}
 .hero-reel__list li{position:absolute;inset-inline:0;inset-block-start:50%;block-size:calc(var(--lh)*1em);margin-block-start:calc(var(--lh)*-.5em);white-space:nowrap}
 /* arc */
-.hero-arc{--cw:clamp(9rem,15.5vw,16.5rem);--ch:calc(var(--cw)*.72);--R:calc(var(--cw)*5.42);--speed:140s;position:relative;direction:ltr;inline-size:100%;block-size:clamp(15rem,28vw,29rem);overflow:hidden;pointer-events:none;user-select:none}
+.hero-arc{--cw:clamp(9rem,15.5vw,16.5rem);--ch:calc(var(--cw)*.72);--arc-k:1;--R:calc(var(--cw)*5.42*var(--arc-k));--speed:calc(140s*var(--arc-k));position:relative;direction:ltr;inline-size:100%;block-size:clamp(15rem,28vw,29rem);overflow:hidden;pointer-events:none;user-select:none}
 .hero-arc__ring{position:absolute;inset-inline-start:50%;inset-block-start:calc(var(--R) + var(--ch)*.65);inline-size:0;block-size:0;animation:hero-arc-spin var(--speed) linear infinite;will-change:transform}
 .hero-arc__card{position:absolute;inline-size:var(--cw);block-size:var(--ch);inset-inline-start:calc(var(--cw)/-2);inset-block-start:calc(var(--ch)/-2);border-radius:clamp(.6rem,1.1vw,1.1rem);overflow:hidden;background:var(--tint);box-shadow:0 14px 30px -12px #17251d38,0 2px 6px #17251d14;transform:rotate(var(--a)) translateY(calc(var(--R)*-1));backface-visibility:hidden}
 .hero-arc__card img{inline-size:100%;block-size:100%;object-fit:cover;display:block}
@@ -257,7 +257,7 @@
 @keyframes hero-arc-spin{to{transform:rotate(360deg)}}
 @media(prefers-reduced-motion:reduce){.hero-arc__ring{animation:none}}
 .motion-paused .hero-arc__ring{animation-play-state:paused!important}
-@media(max-width:47.99em){.hero-arc{--cw:clamp(7rem,30vw,10.5rem);--ch:calc(var(--cw)*.72);--R:calc(var(--cw)*5.15);--speed:110s;block-size:clamp(11.5rem,44vw,16.5rem)}.hero-reel{--fs:clamp(1.18rem,5.9vw,1.8rem);gap:1.25rem}}
+@media(max-width:47.99em){.hero-arc{--cw:clamp(7rem,30vw,10.5rem);--ch:calc(var(--cw)*.72);--R:calc(var(--cw)*5.15*var(--arc-k));--speed:calc(110s*var(--arc-k));block-size:clamp(11.5rem,44vw,16.5rem)}.hero-reel{--fs:clamp(1.18rem,5.9vw,1.8rem);gap:1.25rem}}
 /* pinned mode (set by JS) */
 .hero.is-pinned{padding:0;overflow:visible}
 .hero.is-pinned .hero-stage{position:relative;block-size:100vh;block-size:100svh;overflow:hidden;background:#f7f7f3}
@@ -373,3 +373,17 @@
 .hero.is-pinned .hero-reel{position:relative;z-index:1}
 @media(prefers-reduced-motion:reduce){.hero-arc--reel .hero-arc__ring{transform:none!important}}
 @media(max-width:47.99em){.hero.is-pinned .hero-arc--reel{inset-block-start:calc(var(--header-h,4.5rem) + 1.25rem)}}
+.hero .hero-title::before{
+  content:"";
+  position:absolute;
+  inset-inline-start:50%;
+  inset-block-start:50%;
+  inline-size:50%;
+  aspect-ratio:545/278;
+  background:url("../assets/logo/NDT-logo-stroke.svg") center/contain no-repeat;
+  transform:translate(-50%,-55%);
+  z-index:-1;            
+  pointer-events:none;
+}
+html[dir=rtl] .hero .hero-title::before{transform:translate(50%,-55%)}
+@media(max-width:47.99em){.hero .hero-title::before{inline-size:72%}}

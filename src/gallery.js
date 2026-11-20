@@ -11,7 +11,6 @@ const GALLERY_IMAGES = {
     { src: "parking-gate-openers-2.jpg", title: "درب پارکینگی چوبی", alt: "درب پارکینگی چوبی با جک بازویی در محوطه‌ای کوهستانی" },
     { src: "parking-gate-openers-3.jpg", title: "درب حیاط مشکی", alt: "درب حیاط مشکی با بازشوی بازویی در حال باز شدن" },
     { src: "gate-system-1.jpg", title: "درب حیاط در شب", alt: "درب حیاط دو لنگه با جک بازویی و نورپردازی شبانه" },
-    { src: "parking-gate-openers-4.jpg", title: "درب پارکینگی زیرسقفی", alt: "درب پارکینگی اتوماتیک زیرسقفی در نمای بیرونی ویلا" },
   ],
   glass: [
     { src: "automatic-glass-doors.png", title: "ورودی ساختمان اداری", alt: "درب شیشه‌ای اتوماتیک دو لنگه در ورودی ساختمان اداری" },
@@ -19,7 +18,6 @@ const GALLERY_IMAGES = {
     { src: "Gemini_Generated_Image_qs8r8oqs8r8oqs8r.jpg", title: "ورودی فروشگاه", alt: "درب شیشه‌ای اتوماتیک در ورودی یک فروشگاه" },
   ],
   shutter: [
-    { src: "roller-shutters.jpg", title: "کرکره با تیغه‌های عریض", alt: "درب پارکینگی اتوماتیک با تیغه‌های عریض کرکره‌ای در نمای سنگی" },
     { src: "transparent-roller-shutters.jpg", title: "کرکره شفاف فروشگاهی", alt: "کرکره برقی شفاف در ورودی یک فروشگاه" },
     { src: "roller-shutters-2.jpg", title: "کرکره طرح چوب", alt: "کرکره برقی با تیغه‌های طرح چوب" },
     { src: "roller-shutters-3.jpg", title: "کرکره طرح چوب در نمای آجری", alt: "کرکره برقی طرح چوب در نمای آجری" },
@@ -31,16 +29,18 @@ const GALLERY_IMAGES = {
   ],
   balcony: [
     { src: "glass-balustrade.jpg", title: "تراس چوبی", alt: "شیشهٔ بالکنی در تراس چوبی یک آپارتمان" },
-    { src: "glass-balust_3.jpg", title: "نمای شهر", alt: "شیشهٔ بالکنی با نمای شهر و برج میلاد" },
-    { src: "glass-balustrade-2.jpg", title: "شیشهٔ تاشو", alt: "شیشهٔ بالکنی تاشو در تراس یک کافه" },
+    { src: "glass-balust-3.jpg", title: "نمای شهر", alt: "شیشهٔ بالکنی با نمای شهر و برج میلاد" },
     { src: "glass-facade.jpg", title: "نمای شیشه‌ای ساختمان", alt: "نمای شیشه‌ای بالکن‌های یک ساختمان مسکونی" },
-  ],
-  folding: [
     { src: "folding-doors.jpg", title: "درب فولدینگ شیشه‌ای", alt: "درب فولدینگ شیشه‌ای در نمای چوبی یک ساختمان" },
   ],
+  folding: [
+    { src: "sectional-doors.jpg", title: "درب سکشنال سبز", alt: "درب فولدینگ سبز با پنجره‌های باریک در نمای ویلا" },
+    { src: "glass-balustrade-2.jpg", title: "شیشهٔ تاشو", alt: "فولدینگ بالکنی تاشو در تراس یک کافه" },
+  ],
   sectional: [
-    { src: "sectional-doors.jpg", title: "درب سکشنال سبز", alt: "درب سکشنال سبز با پنجره‌های باریک در نمای ویلا" },
     { src: "sectional-doors-2.jpg", title: "درب سکشنال شیشه‌ای مات", alt: "درب سکشنال با پنل‌های شیشه‌ای مات در نمای سنگی" },
+    { src: "parking-gate-openers-4.jpg", title: "درب پارکینگی زیرسقفی", alt: "درب پارکینگی سکشنال زیرسقفی در نمای بیرونی ویلا" },
+    { src: "roller-shutters.jpg", title: "کرکره با تیغه‌های عریض", alt: "درب سکشنال با تیغه‌های عریض کرکره‌ای در نمای سنگی" },
   ],
 };
 
