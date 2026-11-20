@@ -41,8 +41,14 @@ export function initScroll() {
     const item = serviceItems[index];
     const key = item.dataset.service;
     const models = { [key]: MODEL_FACTORIES[key]() };
-    state.stage = createProductStage(item.querySelector(".render-host"), models);
+    const host = item.querySelector(".render-host");
+    state.stage = createProductStage(host, models);
     state.stage?.select(key);
+
+    host?.addEventListener("gallery:activate", () => {
+      state.stage?.refresh();
+      updateModelState(index);
+    });
 
     [".product-controls", ".model-toggle"].forEach((selector) => {
       const el = item.querySelector(selector);

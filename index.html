@@ -52,6 +52,10 @@
 <symbol id="fallback-balcony" viewBox="0 0 400 260"><path d="M35 225V45h330v180M28 45h344v15H28zm15 22h314v151H43zm50 0v151m53-151v151m53-151v151m53-151v151m53-151v151M20 225h360"/><path stroke="var(--accent-deep)" d="M170 120H70l8-8m-8 8 8 8"/></symbol>
 <symbol id="fallback-folding" viewBox="0 0 400 260"><path d="M35 225V45h330v180M45 58h310v74H45zm0 74h310v80H45zM140 58v154m120-154v154M20 225h360"/><path stroke="var(--accent-deep)" d="M187 122V80l-8 8m8-8 8 8m-18 56v34l8-8m-8 8 8 8"/></symbol>
 <symbol id="fallback-sectional" viewBox="0 0 400 260"><path d="M35 225V45h330v180M45 58h310v76H45zm0 76h310v78H45zm102-76v154m105-154v154M20 225h360"/><path stroke="var(--accent-deep)" d="M187 120V84l-8 8m8-8 8 8m18 50v36l-8-8m8 8 8-8"/></symbol>
+<symbol id="gallery-cube" viewBox="0 0 24 24"><path d="m12 2.8 8.4 4.7v9L12 21.2 3.6 16.5v-9zM3.6 7.5 12 12.2l8.4-4.7M12 12.2v9"/></symbol>
+<symbol id="gallery-photo" viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="15"/><circle cx="8.6" cy="9.6" r="1.5"/><path d="m4.6 17 4.5-4.3 3.3 3.1 3.2-2.9 3.8 4.1"/></symbol>
+<symbol id="gallery-prev" viewBox="0 0 24 24"><path d="M5 12h14m-6-7 7 7-7 7"/></symbol>
+<symbol id="gallery-next" viewBox="0 0 24 24"><path d="M19 12H5m6 7-7-7 7-7"/></symbol>
 </defs></svg>
 <header class="site-header">
   <div class="header-utility">
@@ -103,7 +107,6 @@
 <div id="smooth-wrapper"><div id="smooth-content"><main id="main">
   <section id="home" class="hero" aria-labelledby="hero-title">
     <div class="hero-stage">
-      <canvas id="hero-liquid" class="hero-liquid" aria-hidden="true"></canvas>
       <div class="hero-layer hero-intro">
         <h1 id="hero-title" class="hero-title">نوین درب تهران،</h1>
         <div class="hero-arc" id="hero-arc" aria-hidden="true"><div class="hero-arc__ring"></div></div>
@@ -134,41 +137,209 @@
         </div>
         <div class="catalog-pages">
           <article class="svc-item" id="service-jack" data-service="jack">
-            <div class="product-stage"><div id="render-jack" class="render-host" role="group" aria-label="مدل جک‌های پارکینگی؛ برای چرخش بکشید یا از کلیدهای جهت استفاده کنید"><svg class="model-fallback" viewBox="0 0 400 260" aria-hidden="true"><use href="#fallback-jack"/></svg><button class="model-toggle model-toggle--overlay" type="button" aria-pressed="false" aria-label="باز و بسته کردن جک‌های پارکینگی" hidden><svg class="model-icon model-icon--open" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 6 4 12l6 6M14 6l6 6-6 6"/></svg><svg class="model-icon model-icon--close" viewBox="0 0 24 24" aria-hidden="true"><path d="m4 6 6 6-6 6M20 6l-6 6 6 6"/></svg></button></div></div>
+            <div class="product-stage" data-gallery data-slide-kind="3d" aria-roledescription="گالری" aria-label="گالری تصاویر جک‌های پارکینگی">
+              <div class="gallery-viewport" id="gallery-jack" data-gallery-viewport role="group" aria-roledescription="اسلایدر" tabindex="0" aria-label="گالری جک‌های پارکینگی؛ برای ورق زدن بکشید یا از کلیدهای جهت استفاده کنید">
+                <div class="gallery-track" data-gallery-track>
+                  <div class="gallery-slide gallery-slide--3d is-active" role="group" aria-roledescription="اسلاید" aria-label="۱ از ۷: نمای سه‌بعدی">
+                    <div id="render-jack" class="render-host" role="group" aria-label="مدل جک‌های پارکینگی؛ برای چرخش بکشید یا از کلیدهای جهت استفاده کنید"><svg class="model-fallback" viewBox="0 0 400 260" aria-hidden="true"><use href="#fallback-jack"/></svg><button class="model-toggle model-toggle--overlay" type="button" aria-pressed="false" aria-label="باز و بسته کردن جک‌های پارکینگی" hidden><svg class="model-icon model-icon--open" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 6 4 12l6 6M14 6l6 6-6 6"/></svg><svg class="model-icon model-icon--close" viewBox="0 0 24 24" aria-hidden="true"><path d="m4 6 6 6-6 6M20 6l-6 6 6 6"/></svg></button></div>
+                    <button class="gallery-open" type="button" data-gallery-open>گالری تصاویر <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#gallery-next"/></svg></button>
+                  </div>
+                  <figure class="gallery-slide gallery-slide--photo" role="group" aria-roledescription="اسلاید" aria-label="۲ از ۷: درب پارکینگی با جک بازویی" aria-hidden="true" inert><img src="./assets/projects-images/parking-gate-openers.png" alt="درب پارکینگی دو لنگه با دو جک بازویی نصب‌شده روی پایه‌های سنگی" width="1672" height="941" loading="lazy" decoding="async" draggable="false"></figure>
+                  <figure class="gallery-slide gallery-slide--photo" role="group" aria-roledescription="اسلاید" aria-label="۳ از ۷: درب حیاط با بازشوی بازویی" aria-hidden="true" inert><img src="./assets/projects-images/gate-system-2.jpg" alt="درب حیاط دو لنگه با روکش چوب و بازشوی بازویی" width="1200" height="896" loading="lazy" decoding="async" draggable="false"></figure>
+                  <figure class="gallery-slide gallery-slide--photo" role="group" aria-roledescription="اسلاید" aria-label="۴ از ۷: درب پارکینگی چوبی" aria-hidden="true" inert><img src="./assets/projects-images/parking-gate-openers-2.jpg" alt="درب پارکینگی چوبی با جک بازویی در محوطه‌ای کوهستانی" width="1200" height="896" loading="lazy" decoding="async" draggable="false"></figure>
+                  <figure class="gallery-slide gallery-slide--photo" role="group" aria-roledescription="اسلاید" aria-label="۵ از ۷: درب حیاط مشکی" aria-hidden="true" inert><img src="./assets/projects-images/parking-gate-openers-3.jpg" alt="درب حیاط مشکی با بازشوی بازویی در حال باز شدن" width="1200" height="896" loading="lazy" decoding="async" draggable="false"></figure>
+                  <figure class="gallery-slide gallery-slide--photo" role="group" aria-roledescription="اسلاید" aria-label="۶ از ۷: درب حیاط در شب" aria-hidden="true" inert><img src="./assets/projects-images/gate-system-1.jpg" alt="درب حیاط دو لنگه با جک بازویی و نورپردازی شبانه" width="1200" height="896" loading="lazy" decoding="async" draggable="false"></figure>
+                  <figure class="gallery-slide gallery-slide--photo" role="group" aria-roledescription="اسلاید" aria-label="۷ از ۷: درب پارکینگی زیرسقفی" aria-hidden="true" inert><img src="./assets/projects-images/parking-gate-openers-4.jpg" alt="درب پارکینگی اتوماتیک زیرسقفی در نمای بیرونی ویلا" width="1200" height="896" loading="lazy" decoding="async" draggable="false"></figure>
+                </div>
+              </div>
+              <div class="gallery-progress" aria-hidden="true"><span></span></div>
+              <div class="gallery-deck">
+                <p class="gallery-status"><span class="gallery-status-icon" aria-hidden="true"><svg class="icon-3d" viewBox="0 0 24 24"><use href="#gallery-cube"/></svg><svg class="icon-photo" viewBox="0 0 24 24"><use href="#gallery-photo"/></svg></span><span class="gallery-status-label" data-gallery-label>نمای سه‌بعدی</span><span class="gallery-status-sep" aria-hidden="true"></span><span class="gallery-count"><b data-gallery-current>۰۱</b><span aria-hidden="true">/</span><span>۰۷</span></span></p>
+                <div class="gallery-dots" role="group" aria-label="انتخاب اسلاید">
+                  <button class="gallery-dot" type="button" aria-label="نمای سه‌بعدی" aria-current="true"></button>
+                  <button class="gallery-dot" type="button" aria-label="تصویر ۱" aria-current="false" tabindex="-1"></button>
+                  <button class="gallery-dot" type="button" aria-label="تصویر ۲" aria-current="false" tabindex="-1"></button>
+                  <button class="gallery-dot" type="button" aria-label="تصویر ۳" aria-current="false" tabindex="-1"></button>
+                  <button class="gallery-dot" type="button" aria-label="تصویر ۴" aria-current="false" tabindex="-1"></button>
+                  <button class="gallery-dot" type="button" aria-label="تصویر ۵" aria-current="false" tabindex="-1"></button>
+                  <button class="gallery-dot" type="button" aria-label="تصویر ۶" aria-current="false" tabindex="-1"></button>
+                </div>
+                <div class="gallery-nav"><button class="gallery-arrow" type="button" data-gallery-prev aria-label="اسلاید قبلی" aria-controls="gallery-jack" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#gallery-prev"/></svg></button><button class="gallery-arrow" type="button" data-gallery-next aria-label="اسلاید بعدی" aria-controls="gallery-jack"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#gallery-next"/></svg></button></div>
+              </div>
+              <p class="vh" role="status" aria-live="polite" data-gallery-live></p>
+            </div>
             <div class="svc-body"><h3 class="service-select">جک‌های پارکینگی</h3><p>نصب، تعمیر و عیب‌یابی انواع جک بازویی ایرانی و خارجی، سرویس دوره‌ای، تنظیم برد و سنسور.</p></div>
             <a class="product-consult" href="#contact" data-consult="jack">مشاورهٔ این محصول <svg class="arw" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 19 5M5 5h14v14"/></svg></a>
           </article>
           <article class="svc-item" id="service-glass" data-service="glass">
-            <div class="product-stage"><div id="render-glass" class="render-host" role="group" aria-label="مدل درب‌های شیشه‌ای اتوماتیک؛ برای چرخش بکشید یا از کلیدهای جهت استفاده کنید"><svg class="model-fallback" viewBox="0 0 400 260" aria-hidden="true"><use href="#fallback-glass"/></svg><button class="model-toggle model-toggle--overlay" type="button" aria-pressed="false" aria-label="باز و بسته کردن درب‌های شیشه‌ای اتوماتیک" hidden><svg class="model-icon model-icon--open" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 6 4 12l6 6M14 6l6 6-6 6"/></svg><svg class="model-icon model-icon--close" viewBox="0 0 24 24" aria-hidden="true"><path d="m4 6 6 6-6 6M20 6l-6 6 6 6"/></svg></button></div></div>
-            
+            <div class="product-stage" data-gallery data-slide-kind="3d" aria-roledescription="گالری" aria-label="گالری تصاویر درب‌های شیشه‌ای اتوماتیک">
+              <div class="gallery-viewport" id="gallery-glass" data-gallery-viewport role="group" aria-roledescription="اسلایدر" tabindex="0" aria-label="گالری درب‌های شیشه‌ای اتوماتیک؛ برای ورق زدن بکشید یا از کلیدهای جهت استفاده کنید">
+                <div class="gallery-track" data-gallery-track>
+                  <div class="gallery-slide gallery-slide--3d is-active" role="group" aria-roledescription="اسلاید" aria-label="۱ از ۴: نمای سه‌بعدی">
+                    <div id="render-glass" class="render-host" role="group" aria-label="مدل درب‌های شیشه‌ای اتوماتیک؛ برای چرخش بکشید یا از کلیدهای جهت استفاده کنید"><svg class="model-fallback" viewBox="0 0 400 260" aria-hidden="true"><use href="#fallback-glass"/></svg><button class="model-toggle model-toggle--overlay" type="button" aria-pressed="false" aria-label="باز و بسته کردن درب‌های شیشه‌ای اتوماتیک" hidden><svg class="model-icon model-icon--open" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 6 4 12l6 6M14 6l6 6-6 6"/></svg><svg class="model-icon model-icon--close" viewBox="0 0 24 24" aria-hidden="true"><path d="m4 6 6 6-6 6M20 6l-6 6 6 6"/></svg></button></div>
+                    <button class="gallery-open" type="button" data-gallery-open>گالری تصاویر <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#gallery-next"/></svg></button>
+                  </div>
+                  <figure class="gallery-slide gallery-slide--photo" role="group" aria-roledescription="اسلاید" aria-label="۲ از ۴: ورودی ساختمان اداری" aria-hidden="true" inert><img src="./assets/projects-images/automatic-glass-doors.png" alt="درب شیشه‌ای اتوماتیک دو لنگه در ورودی ساختمان اداری" width="1536" height="1024" loading="lazy" decoding="async" draggable="false"></figure>
+                  <figure class="gallery-slide gallery-slide--photo" role="group" aria-roledescription="اسلاید" aria-label="۳ از ۴: درب شیشه‌ای کشویی" aria-hidden="true" inert><img src="./assets/projects-images/automatic-glass-doors-2.jpg" alt="درب شیشه‌ای اتوماتیک کشویی در ورودی ساختمان" width="1200" height="896" loading="lazy" decoding="async" draggable="false"></figure>
+                  <figure class="gallery-slide gallery-slide--photo" role="group" aria-roledescription="اسلاید" aria-label="۴ از ۴: ورودی فروشگاه" aria-hidden="true" inert><img src="./assets/projects-images/Gemini_Generated_Image_qs8r8oqs8r8oqs8r.jpg" alt="درب شیشه‌ای اتوماتیک در ورودی یک فروشگاه" width="1200" height="896" loading="lazy" decoding="async" draggable="false"></figure>
+                </div>
+              </div>
+              <div class="gallery-progress" aria-hidden="true"><span></span></div>
+              <div class="gallery-deck">
+                <p class="gallery-status"><span class="gallery-status-icon" aria-hidden="true"><svg class="icon-3d" viewBox="0 0 24 24"><use href="#gallery-cube"/></svg><svg class="icon-photo" viewBox="0 0 24 24"><use href="#gallery-photo"/></svg></span><span class="gallery-status-label" data-gallery-label>نمای سه‌بعدی</span><span class="gallery-status-sep" aria-hidden="true"></span><span class="gallery-count"><b data-gallery-current>۰۱</b><span aria-hidden="true">/</span><span>۰۴</span></span></p>
+                <div class="gallery-dots" role="group" aria-label="انتخاب اسلاید">
+                  <button class="gallery-dot" type="button" aria-label="نمای سه‌بعدی" aria-current="true"></button>
+                  <button class="gallery-dot" type="button" aria-label="تصویر ۱" aria-current="false" tabindex="-1"></button>
+                  <button class="gallery-dot" type="button" aria-label="تصویر ۲" aria-current="false" tabindex="-1"></button>
+                  <button class="gallery-dot" type="button" aria-label="تصویر ۳" aria-current="false" tabindex="-1"></button>
+                </div>
+                <div class="gallery-nav"><button class="gallery-arrow" type="button" data-gallery-prev aria-label="اسلاید قبلی" aria-controls="gallery-glass" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#gallery-prev"/></svg></button><button class="gallery-arrow" type="button" data-gallery-next aria-label="اسلاید بعدی" aria-controls="gallery-glass"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#gallery-next"/></svg></button></div>
+              </div>
+              <p class="vh" role="status" aria-live="polite" data-gallery-live></p>
+            </div>
             <div class="svc-body"><h3 class="service-select">درب‌های شیشه‌ای اتوماتیک</h3><p>اسلایدینگ، تلسکوپی و گردان؛ راهکارهای شیشه‌ای برای ورودی ساختمان.</p></div>
             <a class="product-consult" href="#contact" data-consult="glass">مشاورهٔ این محصول <svg class="arw" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 19 5M5 5h14v14"/></svg></a>
           </article>
           <article class="svc-item" id="service-shutter" data-service="shutter">
-            <div class="product-stage"><div id="render-shutter" class="render-host" role="group" aria-label="مدل درب‌های کرکره‌ای؛ برای چرخش بکشید یا از کلیدهای جهت استفاده کنید"><svg class="model-fallback" viewBox="0 0 400 260" aria-hidden="true"><use href="#fallback-shutter"/></svg><button class="model-toggle model-toggle--overlay" type="button" aria-pressed="false" aria-label="باز و بسته کردن درب‌های کرکره‌ای" hidden><svg class="model-icon model-icon--open" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 6 4 12l6 6M14 6l6 6-6 6"/></svg><svg class="model-icon model-icon--close" viewBox="0 0 24 24" aria-hidden="true"><path d="m4 6 6 6-6 6M20 6l-6 6 6 6"/></svg></button></div></div>
-            
+            <div class="product-stage" data-gallery data-slide-kind="3d" aria-roledescription="گالری" aria-label="گالری تصاویر درب‌های کرکره‌ای">
+              <div class="gallery-viewport" id="gallery-shutter" data-gallery-viewport role="group" aria-roledescription="اسلایدر" tabindex="0" aria-label="گالری درب‌های کرکره‌ای؛ برای ورق زدن بکشید یا از کلیدهای جهت استفاده کنید">
+                <div class="gallery-track" data-gallery-track>
+                  <div class="gallery-slide gallery-slide--3d is-active" role="group" aria-roledescription="اسلاید" aria-label="۱ از ۵: نمای سه‌بعدی">
+                    <div id="render-shutter" class="render-host" role="group" aria-label="مدل درب‌های کرکره‌ای؛ برای چرخش بکشید یا از کلیدهای جهت استفاده کنید"><svg class="model-fallback" viewBox="0 0 400 260" aria-hidden="true"><use href="#fallback-shutter"/></svg><button class="model-toggle model-toggle--overlay" type="button" aria-pressed="false" aria-label="باز و بسته کردن درب‌های کرکره‌ای" hidden><svg class="model-icon model-icon--open" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 6 4 12l6 6M14 6l6 6-6 6"/></svg><svg class="model-icon model-icon--close" viewBox="0 0 24 24" aria-hidden="true"><path d="m4 6 6 6-6 6M20 6l-6 6 6 6"/></svg></button></div>
+                    <button class="gallery-open" type="button" data-gallery-open>گالری تصاویر <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#gallery-next"/></svg></button>
+                  </div>
+                  <figure class="gallery-slide gallery-slide--photo" role="group" aria-roledescription="اسلاید" aria-label="۲ از ۵: کرکره با تیغه‌های عریض" aria-hidden="true" inert><img src="./assets/projects-images/roller-shutters.jpg" alt="درب پارکینگی اتوماتیک با تیغه‌های عریض کرکره‌ای در نمای سنگی" width="1200" height="896" loading="lazy" decoding="async" draggable="false"></figure>
+                  <figure class="gallery-slide gallery-slide--photo" role="group" aria-roledescription="اسلاید" aria-label="۳ از ۵: کرکره شفاف فروشگاهی" aria-hidden="true" inert><img src="./assets/projects-images/transparent-roller-shutters.jpg" alt="کرکره برقی شفاف در ورودی یک فروشگاه" width="1376" height="768" loading="lazy" decoding="async" draggable="false"></figure>
+                  <figure class="gallery-slide gallery-slide--photo" role="group" aria-roledescription="اسلاید" aria-label="۴ از ۵: کرکره طرح چوب" aria-hidden="true" inert><img src="./assets/projects-images/roller-shutters-2.jpg" alt="کرکره برقی با تیغه‌های طرح چوب" width="1200" height="896" loading="lazy" decoding="async" draggable="false"></figure>
+                  <figure class="gallery-slide gallery-slide--photo" role="group" aria-roledescription="اسلاید" aria-label="۵ از ۵: کرکره طرح چوب در نمای آجری" aria-hidden="true" inert><img src="./assets/projects-images/roller-shutters-3.jpg" alt="کرکره برقی طرح چوب در نمای آجری" width="1200" height="896" loading="lazy" decoding="async" draggable="false"></figure>
+                </div>
+              </div>
+              <div class="gallery-progress" aria-hidden="true"><span></span></div>
+              <div class="gallery-deck">
+                <p class="gallery-status"><span class="gallery-status-icon" aria-hidden="true"><svg class="icon-3d" viewBox="0 0 24 24"><use href="#gallery-cube"/></svg><svg class="icon-photo" viewBox="0 0 24 24"><use href="#gallery-photo"/></svg></span><span class="gallery-status-label" data-gallery-label>نمای سه‌بعدی</span><span class="gallery-status-sep" aria-hidden="true"></span><span class="gallery-count"><b data-gallery-current>۰۱</b><span aria-hidden="true">/</span><span>۰۵</span></span></p>
+                <div class="gallery-dots" role="group" aria-label="انتخاب اسلاید">
+                  <button class="gallery-dot" type="button" aria-label="نمای سه‌بعدی" aria-current="true"></button>
+                  <button class="gallery-dot" type="button" aria-label="تصویر ۱" aria-current="false" tabindex="-1"></button>
+                  <button class="gallery-dot" type="button" aria-label="تصویر ۲" aria-current="false" tabindex="-1"></button>
+                  <button class="gallery-dot" type="button" aria-label="تصویر ۳" aria-current="false" tabindex="-1"></button>
+                  <button class="gallery-dot" type="button" aria-label="تصویر ۴" aria-current="false" tabindex="-1"></button>
+                </div>
+                <div class="gallery-nav"><button class="gallery-arrow" type="button" data-gallery-prev aria-label="اسلاید قبلی" aria-controls="gallery-shutter" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#gallery-prev"/></svg></button><button class="gallery-arrow" type="button" data-gallery-next aria-label="اسلاید بعدی" aria-controls="gallery-shutter"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#gallery-next"/></svg></button></div>
+              </div>
+              <p class="vh" role="status" aria-live="polite" data-gallery-live></p>
+            </div>
             <div class="svc-body"><h3 class="service-select">درب‌های کرکره‌ای</h3><p>نصب کرکره برقی، تعویض تیغه، تعمیر موتور ساید و توبولار.</p></div>
             <a class="product-consult" href="#contact" data-consult="shutter">مشاورهٔ این محصول <svg class="arw" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 19 5M5 5h14v14"/></svg></a>
           </article>
           <article class="svc-item" id="service-barrier" data-service="barrier">
-            <div class="product-stage"><div id="render-barrier" class="render-host" role="group" aria-label="مدل راهبندهای اتوماتیک؛ برای چرخش بکشید یا از کلیدهای جهت استفاده کنید"><svg class="model-fallback" viewBox="0 0 400 260" aria-hidden="true"><use href="#fallback-barrier"/></svg><button class="model-toggle model-toggle--overlay" type="button" aria-pressed="false" aria-label="باز و بسته کردن راهبندهای اتوماتیک" hidden><svg class="model-icon model-icon--open" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 6 4 12l6 6M14 6l6 6-6 6"/></svg><svg class="model-icon model-icon--close" viewBox="0 0 24 24" aria-hidden="true"><path d="m4 6 6 6-6 6M20 6l-6 6 6 6"/></svg></button></div></div>
-            
+            <div class="product-stage" data-gallery data-slide-kind="3d" aria-roledescription="گالری" aria-label="گالری تصاویر راهبندهای اتوماتیک">
+              <div class="gallery-viewport" id="gallery-barrier" data-gallery-viewport role="group" aria-roledescription="اسلایدر" tabindex="0" aria-label="گالری راهبندهای اتوماتیک؛ برای ورق زدن بکشید یا از کلیدهای جهت استفاده کنید">
+                <div class="gallery-track" data-gallery-track>
+                  <div class="gallery-slide gallery-slide--3d is-active" role="group" aria-roledescription="اسلاید" aria-label="۱ از ۴: نمای سه‌بعدی">
+                    <div id="render-barrier" class="render-host" role="group" aria-label="مدل راهبندهای اتوماتیک؛ برای چرخش بکشید یا از کلیدهای جهت استفاده کنید"><svg class="model-fallback" viewBox="0 0 400 260" aria-hidden="true"><use href="#fallback-barrier"/></svg><button class="model-toggle model-toggle--overlay" type="button" aria-pressed="false" aria-label="باز و بسته کردن راهبندهای اتوماتیک" hidden><svg class="model-icon model-icon--open" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 6 4 12l6 6M14 6l6 6-6 6"/></svg><svg class="model-icon model-icon--close" viewBox="0 0 24 24" aria-hidden="true"><path d="m4 6 6 6-6 6M20 6l-6 6 6 6"/></svg></button></div>
+                    <button class="gallery-open" type="button" data-gallery-open>گالری تصاویر <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#gallery-next"/></svg></button>
+                  </div>
+                  <figure class="gallery-slide gallery-slide--photo" role="group" aria-roledescription="اسلاید" aria-label="۲ از ۴: راهبند ورودی مجتمع" aria-hidden="true" inert><img src="./assets/projects-images/automatic-barriers.jpg" alt="راهبند اتوماتیک در ورودی مجتمع مسکونی" width="1200" height="896" loading="lazy" decoding="async" draggable="false"></figure>
+                  <figure class="gallery-slide gallery-slide--photo" role="group" aria-roledescription="اسلاید" aria-label="۳ از ۴: راهبند در حال باز شدن" aria-hidden="true" inert><img src="./assets/projects-images/automatic-barriers-2.jpg" alt="راهبند اتوماتیک در حال باز شدن در ورودی شهرک" width="1200" height="896" loading="lazy" decoding="async" draggable="false"></figure>
+                  <figure class="gallery-slide gallery-slide--photo" role="group" aria-roledescription="اسلاید" aria-label="۴ از ۴: راهبند شبانه" aria-hidden="true" inert><img src="./assets/projects-images/automatic-barriers-3.jpg" alt="راهبند اتوماتیک با بازوی روشن در ورودی پارکینگ طبقاتی" width="1200" height="896" loading="lazy" decoding="async" draggable="false"></figure>
+                </div>
+              </div>
+              <div class="gallery-progress" aria-hidden="true"><span></span></div>
+              <div class="gallery-deck">
+                <p class="gallery-status"><span class="gallery-status-icon" aria-hidden="true"><svg class="icon-3d" viewBox="0 0 24 24"><use href="#gallery-cube"/></svg><svg class="icon-photo" viewBox="0 0 24 24"><use href="#gallery-photo"/></svg></span><span class="gallery-status-label" data-gallery-label>نمای سه‌بعدی</span><span class="gallery-status-sep" aria-hidden="true"></span><span class="gallery-count"><b data-gallery-current>۰۱</b><span aria-hidden="true">/</span><span>۰۴</span></span></p>
+                <div class="gallery-dots" role="group" aria-label="انتخاب اسلاید">
+                  <button class="gallery-dot" type="button" aria-label="نمای سه‌بعدی" aria-current="true"></button>
+                  <button class="gallery-dot" type="button" aria-label="تصویر ۱" aria-current="false" tabindex="-1"></button>
+                  <button class="gallery-dot" type="button" aria-label="تصویر ۲" aria-current="false" tabindex="-1"></button>
+                  <button class="gallery-dot" type="button" aria-label="تصویر ۳" aria-current="false" tabindex="-1"></button>
+                </div>
+                <div class="gallery-nav"><button class="gallery-arrow" type="button" data-gallery-prev aria-label="اسلاید قبلی" aria-controls="gallery-barrier" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#gallery-prev"/></svg></button><button class="gallery-arrow" type="button" data-gallery-next aria-label="اسلاید بعدی" aria-controls="gallery-barrier"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#gallery-next"/></svg></button></div>
+              </div>
+              <p class="vh" role="status" aria-live="polite" data-gallery-live></p>
+            </div>
             <div class="svc-body"><h3 class="service-select">راهبندهای اتوماتیک</h3><p>راهبند بازویی و ستونی برای مجتمع‌های مسکونی، اداری و تجاری.</p></div>
             <a class="product-consult" href="#contact" data-consult="barrier">مشاورهٔ این محصول <svg class="arw" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 19 5M5 5h14v14"/></svg></a>
           </article>
           <article class="svc-item" id="service-balcony" data-service="balcony">
-            <div class="product-stage"><div id="render-balcony" class="render-host" role="group" aria-label="مدل شیشهٔ بالکنی؛ برای چرخش بکشید یا از کلیدهای جهت استفاده کنید"><svg class="model-fallback" viewBox="0 0 400 260" aria-hidden="true"><use href="#fallback-balcony"/></svg><button class="model-toggle model-toggle--overlay" type="button" aria-pressed="false" aria-label="باز و بسته کردن شیشهٔ بالکنی" hidden><svg class="model-icon model-icon--open" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 6 4 12l6 6M14 6l6 6-6 6"/></svg><svg class="model-icon model-icon--close" viewBox="0 0 24 24" aria-hidden="true"><path d="m4 6 6 6-6 6M20 6l-6 6 6 6"/></svg></button></div></div>
-            
+            <div class="product-stage" data-gallery data-slide-kind="3d" aria-roledescription="گالری" aria-label="گالری تصاویر شیشهٔ بالکنی">
+              <div class="gallery-viewport" id="gallery-balcony" data-gallery-viewport role="group" aria-roledescription="اسلایدر" tabindex="0" aria-label="گالری شیشهٔ بالکنی؛ برای ورق زدن بکشید یا از کلیدهای جهت استفاده کنید">
+                <div class="gallery-track" data-gallery-track>
+                  <div class="gallery-slide gallery-slide--3d is-active" role="group" aria-roledescription="اسلاید" aria-label="۱ از ۵: نمای سه‌بعدی">
+                    <div id="render-balcony" class="render-host" role="group" aria-label="مدل شیشهٔ بالکنی؛ برای چرخش بکشید یا از کلیدهای جهت استفاده کنید"><svg class="model-fallback" viewBox="0 0 400 260" aria-hidden="true"><use href="#fallback-balcony"/></svg><button class="model-toggle model-toggle--overlay" type="button" aria-pressed="false" aria-label="باز و بسته کردن شیشهٔ بالکنی" hidden><svg class="model-icon model-icon--open" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 6 4 12l6 6M14 6l6 6-6 6"/></svg><svg class="model-icon model-icon--close" viewBox="0 0 24 24" aria-hidden="true"><path d="m4 6 6 6-6 6M20 6l-6 6 6 6"/></svg></button></div>
+                    <button class="gallery-open" type="button" data-gallery-open>گالری تصاویر <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#gallery-next"/></svg></button>
+                  </div>
+                  <figure class="gallery-slide gallery-slide--photo" role="group" aria-roledescription="اسلاید" aria-label="۲ از ۵: تراس چوبی" aria-hidden="true" inert><img src="./assets/projects-images/glass-balustrade.jpg" alt="شیشهٔ بالکنی در تراس چوبی یک آپارتمان" width="1200" height="896" loading="lazy" decoding="async" draggable="false"></figure>
+                  <figure class="gallery-slide gallery-slide--photo" role="group" aria-roledescription="اسلاید" aria-label="۳ از ۵: نمای شهر" aria-hidden="true" inert><img src="./assets/projects-images/glass-balust_3.jpg" alt="شیشهٔ بالکنی با نمای شهر و برج میلاد" width="1200" height="896" loading="lazy" decoding="async" draggable="false"></figure>
+                  <figure class="gallery-slide gallery-slide--photo" role="group" aria-roledescription="اسلاید" aria-label="۴ از ۵: شیشهٔ تاشو" aria-hidden="true" inert><img src="./assets/projects-images/glass-balustrade-2.jpg" alt="شیشهٔ بالکنی تاشو در تراس یک کافه" width="1200" height="896" loading="lazy" decoding="async" draggable="false"></figure>
+                  <figure class="gallery-slide gallery-slide--photo" role="group" aria-roledescription="اسلاید" aria-label="۵ از ۵: نمای شیشه‌ای ساختمان" aria-hidden="true" inert><img src="./assets/projects-images/glass-facade.jpg" alt="نمای شیشه‌ای بالکن‌های یک ساختمان مسکونی" width="1200" height="896" loading="lazy" decoding="async" draggable="false"></figure>
+                </div>
+              </div>
+              <div class="gallery-progress" aria-hidden="true"><span></span></div>
+              <div class="gallery-deck">
+                <p class="gallery-status"><span class="gallery-status-icon" aria-hidden="true"><svg class="icon-3d" viewBox="0 0 24 24"><use href="#gallery-cube"/></svg><svg class="icon-photo" viewBox="0 0 24 24"><use href="#gallery-photo"/></svg></span><span class="gallery-status-label" data-gallery-label>نمای سه‌بعدی</span><span class="gallery-status-sep" aria-hidden="true"></span><span class="gallery-count"><b data-gallery-current>۰۱</b><span aria-hidden="true">/</span><span>۰۵</span></span></p>
+                <div class="gallery-dots" role="group" aria-label="انتخاب اسلاید">
+                  <button class="gallery-dot" type="button" aria-label="نمای سه‌بعدی" aria-current="true"></button>
+                  <button class="gallery-dot" type="button" aria-label="تصویر ۱" aria-current="false" tabindex="-1"></button>
+                  <button class="gallery-dot" type="button" aria-label="تصویر ۲" aria-current="false" tabindex="-1"></button>
+                  <button class="gallery-dot" type="button" aria-label="تصویر ۳" aria-current="false" tabindex="-1"></button>
+                  <button class="gallery-dot" type="button" aria-label="تصویر ۴" aria-current="false" tabindex="-1"></button>
+                </div>
+                <div class="gallery-nav"><button class="gallery-arrow" type="button" data-gallery-prev aria-label="اسلاید قبلی" aria-controls="gallery-balcony" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#gallery-prev"/></svg></button><button class="gallery-arrow" type="button" data-gallery-next aria-label="اسلاید بعدی" aria-controls="gallery-balcony"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#gallery-next"/></svg></button></div>
+              </div>
+              <p class="vh" role="status" aria-live="polite" data-gallery-live></p>
+            </div>
             <div class="svc-body"><h3 class="service-select">شیشهٔ بالکنی</h3><p>نصب انواع شیشهٔ بالکنی برای منازل و تراس‌ها.</p></div>
             <a class="product-consult" href="#contact" data-consult="balcony">مشاورهٔ این محصول <svg class="arw" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 19 5M5 5h14v14"/></svg></a>
           </article>
           <article class="svc-item" id="service-folding" data-service="folding">
-            <div class="product-stage"><div id="render-folding" class="render-host" role="group" aria-label="مدل درب‌های فولدینگ؛ برای چرخش بکشید یا از کلیدهای جهت استفاده کنید"><svg class="model-fallback" viewBox="0 0 400 260" aria-hidden="true"><use href="#fallback-folding"/></svg><button class="model-toggle model-toggle--overlay" type="button" aria-pressed="false" aria-label="باز و بسته کردن درب‌های فولدینگ" hidden><svg class="model-icon model-icon--open" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 6 4 12l6 6M14 6l6 6-6 6"/></svg><svg class="model-icon model-icon--close" viewBox="0 0 24 24" aria-hidden="true"><path d="m4 6 6 6-6 6M20 6l-6 6 6 6"/></svg></button></div></div>
+            <div class="product-stage" data-gallery data-slide-kind="3d" aria-roledescription="گالری" aria-label="گالری تصاویر درب‌های فولدینگ">
+              <div class="gallery-viewport" id="gallery-folding" data-gallery-viewport role="group" aria-roledescription="اسلایدر" tabindex="0" aria-label="گالری درب‌های فولدینگ؛ برای ورق زدن بکشید یا از کلیدهای جهت استفاده کنید">
+                <div class="gallery-track" data-gallery-track>
+                  <div class="gallery-slide gallery-slide--3d is-active" role="group" aria-roledescription="اسلاید" aria-label="۱ از ۲: نمای سه‌بعدی">
+                    <div id="render-folding" class="render-host" role="group" aria-label="مدل درب‌های فولدینگ؛ برای چرخش بکشید یا از کلیدهای جهت استفاده کنید"><svg class="model-fallback" viewBox="0 0 400 260" aria-hidden="true"><use href="#fallback-folding"/></svg><button class="model-toggle model-toggle--overlay" type="button" aria-pressed="false" aria-label="باز و بسته کردن درب‌های فولدینگ" hidden><svg class="model-icon model-icon--open" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 6 4 12l6 6M14 6l6 6-6 6"/></svg><svg class="model-icon model-icon--close" viewBox="0 0 24 24" aria-hidden="true"><path d="m4 6 6 6-6 6M20 6l-6 6 6 6"/></svg></button></div>
+                    <button class="gallery-open" type="button" data-gallery-open>گالری تصاویر <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#gallery-next"/></svg></button>
+                  </div>
+                  <figure class="gallery-slide gallery-slide--photo" role="group" aria-roledescription="اسلاید" aria-label="۲ از ۲: درب فولدینگ شیشه‌ای" aria-hidden="true" inert><img src="./assets/projects-images/folding-doors.jpg" alt="درب فولدینگ شیشه‌ای در نمای چوبی یک ساختمان" width="1200" height="896" loading="lazy" decoding="async" draggable="false"></figure>
+                </div>
+              </div>
+              <div class="gallery-progress" aria-hidden="true"><span></span></div>
+              <div class="gallery-deck">
+                <p class="gallery-status"><span class="gallery-status-icon" aria-hidden="true"><svg class="icon-3d" viewBox="0 0 24 24"><use href="#gallery-cube"/></svg><svg class="icon-photo" viewBox="0 0 24 24"><use href="#gallery-photo"/></svg></span><span class="gallery-status-label" data-gallery-label>نمای سه‌بعدی</span><span class="gallery-status-sep" aria-hidden="true"></span><span class="gallery-count"><b data-gallery-current>۰۱</b><span aria-hidden="true">/</span><span>۰۲</span></span></p>
+                <div class="gallery-dots" role="group" aria-label="انتخاب اسلاید">
+                  <button class="gallery-dot" type="button" aria-label="نمای سه‌بعدی" aria-current="true"></button>
+                  <button class="gallery-dot" type="button" aria-label="تصویر ۱" aria-current="false" tabindex="-1"></button>
+                </div>
+                <div class="gallery-nav"><button class="gallery-arrow" type="button" data-gallery-prev aria-label="اسلاید قبلی" aria-controls="gallery-folding" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#gallery-prev"/></svg></button><button class="gallery-arrow" type="button" data-gallery-next aria-label="اسلاید بعدی" aria-controls="gallery-folding"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#gallery-next"/></svg></button></div>
+              </div>
+              <p class="vh" role="status" aria-live="polite" data-gallery-live></p>
+            </div>
             <div class="svc-body"><h3 class="service-select">درب‌های فولدینگ</h3><p>درب‌های فولدینگ تاشو با بازشوی زیرسقفی؛ مناسب پارکینگ‌های کم‌عمق.</p></div>
             <a class="product-consult" href="#contact" data-consult="folding">مشاورهٔ این محصول <svg class="arw" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 19 5M5 5h14v14"/></svg></a>
           </article>
           <article class="svc-item" id="service-sectional" data-service="sectional">
-            <div class="product-stage"><div id="render-sectional" class="render-host" role="group" aria-label="مدل درب‌های سکشنال؛ برای چرخش بکشید یا از کلیدهای جهت استفاده کنید"><svg class="model-fallback" viewBox="0 0 400 260" aria-hidden="true"><use href="#fallback-sectional"/></svg><button class="model-toggle model-toggle--overlay" type="button" aria-pressed="false" aria-label="باز و بسته کردن درب‌های سکشنال" hidden><svg class="model-icon model-icon--open" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 6 4 12l6 6M14 6l6 6-6 6"/></svg><svg class="model-icon model-icon--close" viewBox="0 0 24 24" aria-hidden="true"><path d="m4 6 6 6-6 6M20 6l-6 6 6 6"/></svg></button></div></div>
+            <div class="product-stage" data-gallery data-slide-kind="3d" aria-roledescription="گالری" aria-label="گالری تصاویر درب‌های سکشنال">
+              <div class="gallery-viewport" id="gallery-sectional" data-gallery-viewport role="group" aria-roledescription="اسلایدر" tabindex="0" aria-label="گالری درب‌های سکشنال؛ برای ورق زدن بکشید یا از کلیدهای جهت استفاده کنید">
+                <div class="gallery-track" data-gallery-track>
+                  <div class="gallery-slide gallery-slide--3d is-active" role="group" aria-roledescription="اسلاید" aria-label="۱ از ۳: نمای سه‌بعدی">
+                    <div id="render-sectional" class="render-host" role="group" aria-label="مدل درب‌های سکشنال؛ برای چرخش بکشید یا از کلیدهای جهت استفاده کنید"><svg class="model-fallback" viewBox="0 0 400 260" aria-hidden="true"><use href="#fallback-sectional"/></svg><button class="model-toggle model-toggle--overlay" type="button" aria-pressed="false" aria-label="باز و بسته کردن درب‌های سکشنال" hidden><svg class="model-icon model-icon--open" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 6 4 12l6 6M14 6l6 6-6 6"/></svg><svg class="model-icon model-icon--close" viewBox="0 0 24 24" aria-hidden="true"><path d="m4 6 6 6-6 6M20 6l-6 6 6 6"/></svg></button></div>
+                    <button class="gallery-open" type="button" data-gallery-open>گالری تصاویر <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#gallery-next"/></svg></button>
+                  </div>
+                  <figure class="gallery-slide gallery-slide--photo" role="group" aria-roledescription="اسلاید" aria-label="۲ از ۳: درب سکشنال سبز" aria-hidden="true" inert><img src="./assets/projects-images/sectional-doors.jpg" alt="درب سکشنال سبز با پنجره‌های باریک در نمای ویلا" width="1408" height="768" loading="lazy" decoding="async" draggable="false"></figure>
+                  <figure class="gallery-slide gallery-slide--photo" role="group" aria-roledescription="اسلاید" aria-label="۳ از ۳: درب سکشنال شیشه‌ای مات" aria-hidden="true" inert><img src="./assets/projects-images/sectional-doors-2.jpg" alt="درب سکشنال با پنل‌های شیشه‌ای مات در نمای سنگی" width="1200" height="896" loading="lazy" decoding="async" draggable="false"></figure>
+                </div>
+              </div>
+              <div class="gallery-progress" aria-hidden="true"><span></span></div>
+              <div class="gallery-deck">
+                <p class="gallery-status"><span class="gallery-status-icon" aria-hidden="true"><svg class="icon-3d" viewBox="0 0 24 24"><use href="#gallery-cube"/></svg><svg class="icon-photo" viewBox="0 0 24 24"><use href="#gallery-photo"/></svg></span><span class="gallery-status-label" data-gallery-label>نمای سه‌بعدی</span><span class="gallery-status-sep" aria-hidden="true"></span><span class="gallery-count"><b data-gallery-current>۰۱</b><span aria-hidden="true">/</span><span>۰۳</span></span></p>
+                <div class="gallery-dots" role="group" aria-label="انتخاب اسلاید">
+                  <button class="gallery-dot" type="button" aria-label="نمای سه‌بعدی" aria-current="true"></button>
+                  <button class="gallery-dot" type="button" aria-label="تصویر ۱" aria-current="false" tabindex="-1"></button>
+                  <button class="gallery-dot" type="button" aria-label="تصویر ۲" aria-current="false" tabindex="-1"></button>
+                </div>
+                <div class="gallery-nav"><button class="gallery-arrow" type="button" data-gallery-prev aria-label="اسلاید قبلی" aria-controls="gallery-sectional" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#gallery-prev"/></svg></button><button class="gallery-arrow" type="button" data-gallery-next aria-label="اسلاید بعدی" aria-controls="gallery-sectional"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#gallery-next"/></svg></button></div>
+              </div>
+              <p class="vh" role="status" aria-live="polite" data-gallery-live></p>
+            </div>
             <div class="svc-body"><h3 class="service-select">درب‌های سکشنال</h3><p>درب‌های سکشنال زیرسقفی با پنل‌های مقطعه‌ای؛ عایق و کم‌جا.</p></div>
             <a class="product-consult" href="#contact" data-consult="sectional">مشاورهٔ این محصول <svg class="arw" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 19 5M5 5h14v14"/></svg></a>
           </article>
