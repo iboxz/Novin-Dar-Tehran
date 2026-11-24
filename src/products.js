@@ -4,49 +4,42 @@ import { MODEL_FACTORIES, createProductStage } from "./models.js";
 export const PRODUCTS_CATALOG = [
   {
     key: "jack",
-    num: "۰۱",
     title: "جک‌های پارکینگی",
     summary: "مناسب درب‌های لولایی تک‌لنگه و دولنگهٔ حیاط و پارکینگ",
     href: "jack.html",
   },
   {
     key: "glass",
-    num: "۰۲",
     title: "درب‌های شیشه‌ای اتوماتیک",
     summary: "اسلایدینگ و تلسکوپی برای ورودی ساختمان و فروشگاه",
     href: "glass.html",
   },
   {
     key: "shutter",
-    num: "۰۳",
     title: "درب‌های کرکره‌ای",
     summary: "تیغه‌های امنیتی و موتور ساید یا توبولار برای مغازه و پارکینگ",
     href: "shutter.html",
   },
   {
     key: "barrier",
-    num: "۰۴",
     title: "راهبندهای اتوماتیک",
     summary: "کنترل تردد خودرو در ورودی مجتمع‌ها و پارکینگ‌های پرتردد",
     href: "barrier.html",
   },
   {
     key: "balcony",
-    num: "۰۵",
     title: "شیشهٔ بالکنی",
     summary: "پنل‌های تاشو و ریلی برای استفادهٔ چهارفصل از تراس و بالکن",
     href: "balcony.html",
   },
   {
     key: "folding",
-    num: "۰۶",
     title: "درب‌های فولدینگ",
     summary: "بازشوی جمع‌شونده برای پارکینگ‌های کم‌عمق و دهانه‌های محدود",
     href: "folding.html",
   },
   {
     key: "sectional",
-    num: "۰۷",
     title: "درب‌های سکشنال",
     summary: "پنل‌های عایق زیرسقفی بدون اشغال فضای جلوی ورودی",
     href: "sectional.html",
@@ -58,25 +51,141 @@ const PRODUCTS_BY_KEY = new Map(PRODUCTS_CATALOG.map((item) => [item.key, item])
 function initCatalogFilter() {
   const filterButtons = [...document.querySelectorAll("[data-filter]")];
   const cards = [...document.querySelectorAll("[data-category]")];
+  const toolbar = document.querySelector(".catalog-toolbar");
   if (!filterButtons.length || !cards.length) return;
 
-  const applyFilter = (category) => {
-    cards.forEach((card) => {
-      const categories = (card.dataset.category || "").split(/\s+/);
-      const match = category === "all" || categories.includes(category);
-      card.hidden = !match;
-    });
+  let liveRegion = toolbar?.querySelector("[data-filter-live]");
+  if (toolbar && !liveRegion) {
+    liveRegion = document.createElement("p");
+    liveRegion.className = "vh";
+    liveRegion.setAttribute("role", "status");
+    liveRegion.setAttribute("aria-live", "polite");
+    liveRegion.dataset.filterLive = "";
+    toolbar.append(liveRegion);
+  }
+
+  const applyFilter = (category, { animate = false } = {}) => {
+    const isReduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let activeBtn = null;
+
+    const updateCards = () => {
+      cards.forEach((card) => {
+        const categories = (card.dataset.category || "").split(/\s+/);
+        const match = category === "all" || categories.includes(category);
+        card.hidden = !match;
+      });
+    };
 
     filterButtons.forEach((btn) => {
-      btn.setAttribute("aria-pressed", String(btn.dataset.filter === category));
+      const isMatch = btn.dataset.filter === category;
+      btn.setAttribute("aria-pressed", String(isMatch));
+      if (isMatch) activeBtn = btn;
     });
+
+    if (animate && typeof document.startViewTransition === "function" && !isReduced) {
+      document.startViewTransition(updateCards);
+    } else {
+      updateCards();
+    }
+
+    if (animate && activeBtn) {
+      if (liveRegion) {
+        liveRegion.textContent = `فیلتر فعال: ${activeBtn.textContent.trim()}`;
+      }
+      if (matchMedia("(max-width: 63.99em)").matches) {
+        activeBtn.scrollIntoView({
+          behavior: isReduced ? "auto" : "smooth",
+          block: "nearest",
+          inline: "center",
+        });
+      }
+    }
   };
 
   filterButtons.forEach((btn) => {
-    btn.addEventListener("click", () => applyFilter(btn.dataset.filter || "all"));
+    btn.addEventListener("click", () =>
+      applyFilter(btn.dataset.filter || "all", { animate: true })
+    );
   });
 
-  applyFilter("all");
+  applyFilter("all", { animate: false });
+}
+
+function initCatalogMobileA11yAndReveal() {
+  const mediaLinks = [...document.querySelectorAll(".product-card-media")];
+  const cards = [...document.querySelectorAll(".catalog-grid .product-card")];
+  const detailBands = [
+    ...document.querySelectorAll(
+      "main[data-service] .detail-band, main[data-service] .final-cta-band, main[data-service] .related-band"
+    ),
+  ];
+  const revealTargets = [...cards, ...detailBands];
+  if (!mediaLinks.length && !revealTargets.length) return;
+
+  const mobileMq = matchMedia("(max-width: 63.99em)");
+  const syncMediaFocus = () => {
+    mediaLinks.forEach((link) => {
+      if (mobileMq.matches) {
+        link.setAttribute("tabindex", "-1");
+        link.setAttribute("aria-hidden", "true");
+      } else {
+        link.removeAttribute("tabindex");
+        link.removeAttribute("aria-hidden");
+      }
+    });
+  };
+  syncMediaFocus();
+  mobileMq.addEventListener("change", syncMediaFocus);
+
+  const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (
+    !mobileMq.matches ||
+    reduced ||
+    !revealTargets.length ||
+    typeof IntersectionObserver !== "function"
+  ) {
+    return;
+  }
+
+  const seen = new WeakSet();
+  const animateReveal = (el) => {
+    if (seen.has(el)) return;
+    seen.add(el);
+    if (typeof el.animate === "function") {
+      el.animate(
+        [
+          { opacity: 0, transform: "translateY(12px)" },
+          { opacity: 1, transform: "translateY(0)" },
+        ],
+        {
+          duration: 400,
+          easing: "cubic-bezier(0.16, 1, 0.3, 1)",
+        }
+      );
+    }
+  };
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const el = entry.target;
+        observer.unobserve(el);
+        animateReveal(el);
+      });
+    },
+    { threshold: 0.08 }
+  );
+
+  const vh = window.innerHeight || 800;
+  revealTargets.forEach((el) => {
+    const rect = el.getBoundingClientRect();
+    if (rect.top < vh * 1.05) {
+      animateReveal(el);
+    } else {
+      observer.observe(el);
+    }
+  });
 }
 
 function initRelatedProducts() {
@@ -103,10 +212,6 @@ function initRelatedProducts() {
     link.className = "related-card";
     link.href = `./${item.href}`;
 
-    const num = document.createElement("span");
-    num.className = "related-card-num";
-    num.textContent = item.num;
-
     const title = document.createElement("span");
     title.className = "related-card-title";
     title.textContent = item.title;
@@ -115,7 +220,7 @@ function initRelatedProducts() {
     note.className = "related-card-note";
     note.textContent = item.summary;
 
-    link.append(num, title, note);
+    link.append(title, note);
     fragment.append(link);
   });
 
@@ -179,5 +284,6 @@ function initProductDetailStage() {
 }
 
 initCatalogFilter();
+initCatalogMobileA11yAndReveal();
 initRelatedProducts();
 initProductDetailStage();

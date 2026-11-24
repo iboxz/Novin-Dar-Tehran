@@ -153,7 +153,7 @@
     color: var(--accent-deep);
   }
 
-  /* روند بررسی درخواست: ۳ مرحلهٔ یک‌خطی */
+  /* روند بررسی درخواست: ۳ مرحلهٔ یک‌خطی با نشانگر تزئینی غیرعددی */
   .process-list {
     display: grid;
     border-block-start: 1px solid var(--line);
@@ -161,20 +161,35 @@
 
   .process-item {
     display: grid;
-    grid-template-columns: 2.1rem minmax(0, 1fr);
-    gap: .75rem;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: .85rem;
     padding-block: .85rem;
     border-block-end: 1px solid var(--line);
-    align-items: baseline;
+    align-items: center;
     font-size: .92rem;
     font-weight: 600;
   }
 
-  .process-num {
-    font-size: .78rem;
-    font-weight: 800;
-    color: var(--accent-deep);
-    font-variant-numeric: tabular-nums;
+  .process-marker {
+    display: inline-flex;
+    align-items: center;
+    gap: .25rem;
+    flex: none;
+  }
+
+  .process-marker::before {
+    content: "";
+    inline-size: 14px;
+    block-size: 1.5px;
+    background: var(--line);
+  }
+
+  .process-marker::after {
+    content: "";
+    inline-size: 6px;
+    block-size: 6px;
+    border-radius: 50%;
+    background: var(--accent-deep);
   }
 
   /* بلوک تکی و جمع‌وجور ساعات کاری و محدودهٔ خدمات */
@@ -505,5 +520,103 @@
     color: var(--muted);
     font-size: .9rem;
     line-height: 1.9;
+  }
+
+  @media (max-width: 63.99em) {
+    .page-head,
+    .contact-main-band,
+    .faq-band {
+      padding-block: clamp(2.5rem, 9vw, 4rem);
+    }
+
+    .page-head {
+      padding-block-start: clamp(1.5rem, 6vw, 2.25rem);
+    }
+
+    .page-title {
+      font-size: clamp(2rem, 9vw, 2.75rem);
+      line-height: 1.3;
+      text-wrap: balance;
+    }
+
+    .section-heading,
+    .form-head h2 {
+      font-size: clamp(1.5rem, 6.5vw, 2rem);
+      line-height: 1.38;
+      text-wrap: balance;
+    }
+
+    .page-lead,
+    .process-item,
+    .service-hours-list,
+    .faq-body {
+      font-size: 1rem;
+      line-height: 1.8;
+    }
+
+    .contact-layout,
+    .faq-split,
+    .verified-channels {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 1.75rem;
+    }
+
+    .verified-channels {
+      gap: 1px;
+    }
+
+    .breadcrumb a,
+    .verified-channel-value,
+    .district-toggle summary {
+      display: flex;
+      align-items: center;
+      min-block-size: 48px;
+    }
+
+    .breadcrumb a {
+      display: inline-flex;
+      padding-inline: .25rem;
+    }
+
+    .form-in {
+      gap: 1rem;
+      padding: 1.25rem;
+    }
+
+    .input {
+      font-size: max(1rem, 16px);
+      min-block-size: 48px;
+    }
+
+    .hint-btn {
+      inline-size: 48px;
+      block-size: 48px;
+    }
+
+    .form .btn,
+    .result-actions {
+      inline-size: 100%;
+    }
+
+    .result-actions {
+      flex-direction: column;
+    }
+
+    .result-actions .btn {
+      inline-size: 100%;
+      min-block-size: 48px;
+    }
+
+    .btn::after {
+      display: none;
+    }
+
+    .btn:active,
+    .hint-btn:active,
+    .faq-item summary:active,
+    .district-toggle summary:active {
+      transform: scale(.98);
+      filter: brightness(.92);
+    }
   }
 }

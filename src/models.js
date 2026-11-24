@@ -635,7 +635,14 @@ export function createProductStage(host, models) {
   };
 
   host.addEventListener("pointerdown", (event) => {
-    if (!event.isPrimary || event.button !== 0 || event.target.closest("button,a")) return;
+    if (
+      !event.isPrimary ||
+      event.button !== 0 ||
+      event.target.closest("button,a") ||
+      (event.pointerType === "touch" && matchMedia("(max-width:63.99em)").matches)
+    ) {
+      return;
+    }
     dragStartX = event.clientX;
     startRotationY = activeModel?.root.rotation.y || 0;
     host.setPointerCapture(event.pointerId);

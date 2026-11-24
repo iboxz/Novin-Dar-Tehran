@@ -194,7 +194,7 @@
 
   /* ---- شبکهٔ کارت‌های کاتالوگ (products.html) ---- */
   .products-section {
-    padding-block: clamp(2rem, 4vw, 3.25rem);
+    padding-block: clamp(2rem, 4vw, 3.25rem) clamp(3rem, 5.5vw, 4.75rem);
   }
 
   .catalog-grid {
@@ -259,12 +259,7 @@
     align-items: center;
     gap: .45rem;
     font-size: .74rem;
-    color: var(--muted);
-    font-variant-numeric: tabular-nums;
-  }
-
-  .product-card-num {
-    font-weight: 800;
+    font-weight: 650;
     color: var(--accent-deep);
   }
 
@@ -321,129 +316,6 @@
     font-size: .82rem;
   }
 
-  /* ---- جدول مقایسه ۳ستونه (در موبایل کارت می‌شود، بدون اسکرول افقی) ---- */
-  .catalog-matrix-band {
-    background: var(--ink);
-    color: var(--on-ink);
-    padding-block: clamp(2.5rem, 4.5vw, 4rem);
-  }
-
-  .catalog-matrix-band .page-kicker {
-    color: var(--accent);
-  }
-
-  .catalog-matrix-band .page-kicker::before {
-    background: var(--accent);
-  }
-
-  .catalog-matrix-head {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: 1rem 1.5rem;
-    margin-block-end: 1.75rem;
-  }
-
-  .catalog-matrix-head h2 {
-    font-size: clamp(1.55rem, 2.8vw, 2.4rem);
-    font-weight: 850;
-    line-height: 1.35;
-  }
-
-  .catalog-matrix-head h2 em {
-    font-style: normal;
-    color: var(--accent);
-  }
-
-  .matrix-table {
-    inline-size: 100%;
-    border-collapse: collapse;
-    text-align: start;
-    font-size: .88rem;
-    border-block-start: 1px solid var(--line-on-ink);
-  }
-
-  .matrix-table th,
-  .matrix-table td {
-    padding: .9rem .85rem;
-    border-block-end: 1px solid var(--line-on-ink);
-    vertical-align: top;
-  }
-
-  .matrix-table th {
-    font-size: .76rem;
-    font-weight: 700;
-    color: var(--accent);
-  }
-
-  .matrix-table td {
-    color: var(--on-ink-muted);
-    font-variant-numeric: tabular-nums;
-    line-height: 1.8;
-  }
-
-  .matrix-table td.matrix-name a {
-    color: var(--on-ink);
-    font-weight: 750;
-    transition: color .2s ease;
-  }
-
-  .matrix-table td.matrix-name a:hover {
-    color: var(--accent);
-  }
-
-  @media (max-width: 47.99em) {
-    .matrix-table,
-    .matrix-table tbody,
-    .matrix-table tr,
-    .matrix-table td {
-      display: block;
-      inline-size: 100%;
-    }
-
-    .matrix-table thead {
-      position: absolute;
-      inline-size: 1px;
-      block-size: 1px;
-      overflow: hidden;
-      clip-path: inset(50%);
-      white-space: nowrap;
-    }
-
-    .matrix-table tbody {
-      display: grid;
-      gap: .75rem;
-    }
-
-    .matrix-table tr {
-      border: 1px solid var(--line-on-ink);
-      padding: .85rem 1rem;
-      background: color-mix(in oklch, var(--surface) 4%, transparent);
-    }
-
-    .matrix-table td {
-      padding: .3rem 0;
-      border: 0;
-    }
-
-    .matrix-table td[data-label]::before {
-      content: attr(data-label) ": ";
-      color: var(--accent);
-      font-weight: 700;
-      font-size: .78rem;
-    }
-
-    .matrix-table td.matrix-name {
-      padding-block-end: .45rem;
-      margin-block-end: .35rem;
-      border-block-end: 1px solid var(--line-on-ink);
-    }
-
-    .matrix-table td.matrix-name::before {
-      content: none;
-    }
-  }
 
   /* ============================================================
      صفحات اختصاصی هر محصول (products/*.html)
@@ -808,6 +680,10 @@
     }
   }
 
+  .detail-band-head {
+    margin-block-end: 2rem;
+  }
+
   .detail-heading {
     font-size: clamp(1.45rem, 2.5vw, 2.15rem);
     font-weight: 850;
@@ -842,13 +718,6 @@
     background: var(--surface);
   }
 
-  .audience-num {
-    font-size: .74rem;
-    font-weight: 750;
-    color: var(--accent-deep);
-    font-variant-numeric: tabular-nums;
-  }
-
   .audience-item h3 {
     font-size: 1.05rem;
     font-weight: 800;
@@ -881,13 +750,6 @@
     align-content: start;
     background: var(--surface);
     padding: clamp(1.25rem, 2.2vw, 1.95rem);
-  }
-
-  .scope-num {
-    font-size: .74rem;
-    font-weight: 700;
-    color: var(--accent-deep);
-    font-variant-numeric: tabular-nums;
   }
 
   .scope-card h3 {
@@ -1038,13 +900,6 @@
     background: var(--bg);
   }
 
-  .related-card-num {
-    font-size: .74rem;
-    font-weight: 700;
-    color: var(--accent-deep);
-    font-variant-numeric: tabular-nums;
-  }
-
   .related-card-title {
     font-size: 1.02rem;
     font-weight: 800;
@@ -1121,44 +976,982 @@
     font-variant-numeric: tabular-nums;
   }
 
-  @media (max-width: 44em) {
-    .product-stage {
-      aspect-ratio: 1.1;
+  @media (max-width: 63.99em) {
+    .breadcrumb a {
+      display: inline-flex;
+      align-items: center;
+      min-block-size: 48px;
+      padding-inline: .25rem;
+    }
+
+    /* ۱) سرصفحهٔ آرام صفحهٔ محصولات */
+    .page-head {
+      padding-block: 16px 40px;
+    }
+
+    .page-head .page-kicker {
+      display: none;
+    }
+
+    .page-head .breadcrumb {
+      font-size: .8125rem;
+      flex-wrap: nowrap;
+      white-space: nowrap;
+      overflow: hidden;
+      margin-block-end: 4px;
+    }
+
+    .page-head .page-title {
+      font-size: clamp(1.75rem, 8vw, 2.25rem);
+      font-weight: 900;
+      line-height: 1.3;
+      letter-spacing: 0;
+      text-wrap: balance;
+    }
+
+    .page-head .page-lead {
+      margin-block-start: 12px;
+      font-size: .9375rem;
+      font-weight: 450;
+      line-height: 1.85;
+      letter-spacing: 0;
+      color: var(--muted);
+    }
+
+    /* ۲) فیلتر: یک ردیف چیپ افقی ساده و کم‌صدا */
+    .catalog-toolbar {
+      margin-block-start: 20px;
+      margin-inline: calc(var(--gutter) * -1);
+      inline-size: calc(100% + var(--gutter) * 2);
+    }
+
+    .filter-bar {
+      display: flex;
+      flex-wrap: nowrap;
+      align-items: center;
+      gap: 8px;
+      inline-size: 100%;
+      padding: 4px var(--gutter);
+      padding-inline-end: calc(var(--gutter) + 16px);
+      background: transparent;
+      border: 0;
+      border-radius: 0;
+      overflow-x: auto;
+      overflow-y: hidden;
+      scroll-snap-type: x proximity;
+      scroll-padding-inline: var(--gutter);
+      overscroll-behavior-x: contain;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      -webkit-overflow-scrolling: touch;
+      -webkit-mask-image: linear-gradient(to left, #000 0%, #000 calc(100% - 2.25rem), transparent 100%);
+      mask-image: linear-gradient(to left, #000 0%, #000 calc(100% - 2.25rem), transparent 100%);
+    }
+
+    .filter-bar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .filter-btn {
+      flex: 0 0 auto;
+      scroll-snap-align: start;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      block-size: 44px;
+      min-block-size: 44px;
+      padding-block: 0;
+      padding-inline: 16px;
+      border: 1px solid var(--line);
+      border-radius: var(--r);
+      background: transparent;
+      color: var(--muted);
+      font-size: .9375rem;
+      font-weight: 450;
+      letter-spacing: 0;
+      white-space: nowrap;
+      text-align: center;
+      transition: background-color 200ms var(--ease), color 200ms var(--ease), border-color 200ms var(--ease);
+    }
+
+    .filter-btn[aria-pressed="true"] {
+      background: var(--ink);
+      border-color: var(--ink);
+      color: var(--on-ink);
+    }
+
+    .filter-btn:active {
+      transform: none;
+      filter: none;
+    }
+
+    /* ۳) راهنمای سریع: کارت‌های ساده و تخت */
+    .quick-guide {
+      padding-block: 40px;
+      background: var(--bg);
+    }
+
+    .quick-guide-head {
+      margin-block-end: 16px;
+      gap: 4px 16px;
+    }
+
+    .quick-guide-head h2 {
+      font-size: clamp(1.375rem, 6vw, 1.75rem);
+      font-weight: 900;
+      line-height: 1.3;
+      letter-spacing: 0;
+      text-wrap: balance;
+    }
+
+    .quick-guide-sub {
+      font-size: .875rem;
+      font-weight: 450;
+      line-height: 1.65;
+      letter-spacing: 0;
+    }
+
+    .quick-guide-grid {
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 12px;
+      background: transparent;
+      border: 0;
+      margin-inline: calc(var(--gutter) * -1);
+      padding-block: 4px;
+      padding-inline: var(--gutter);
+      overflow-x: auto;
+      overflow-y: hidden;
+      scroll-snap-type: x mandatory;
+      scroll-padding-inline: var(--gutter);
+      overscroll-behavior-x: contain;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .quick-guide-grid::-webkit-scrollbar {
+      display: none;
+    }
+
+    .quick-guide-item {
+      flex: 0 0 min(74vw, 20rem);
+      min-block-size: 96px;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: var(--r);
+      background: var(--surface);
+      box-shadow: none;
+      align-content: space-between;
+      gap: 8px;
+      scroll-snap-align: start;
+      transition: background-color 140ms var(--ease);
+    }
+
+    .quick-guide-need {
+      font-size: .8125rem;
+      font-weight: 450;
+      line-height: 1.6;
+      letter-spacing: 0;
+      color: var(--muted);
+    }
+
+    .quick-guide-pick {
+      font-size: .9375rem;
+      font-weight: 800;
+      letter-spacing: 0;
+      color: var(--ink);
+      text-decoration: underline;
+      text-decoration-thickness: 2px;
+      text-decoration-color: var(--accent);
+      text-underline-offset: 4px;
+      justify-content: flex-start;
+    }
+
+    .quick-guide-pick span {
+      display: none;
+    }
+
+    .quick-guide-item:active {
+      transform: none;
+      box-shadow: none;
+      background: rgba(23, 37, 29, .04);
+      background: color-mix(in oklch, var(--ink) 4%, var(--surface));
+      filter: none;
+    }
+
+    /* ۴) بلوک محصول: عمودی، تحریریه‌ای، بدون کارتبندی و سایه */
+    .products-section {
+      padding-block: 40px 56px;
+    }
+
+    .catalog-grid {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 48px;
+    }
+
+    .product-card {
+      position: static;
+      display: block;
+      background: transparent;
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
+      overflow: visible;
+      content-visibility: auto;
+      contain-intrinsic-size: auto 520px;
+    }
+
+    .product-card-media {
+      position: relative;
+      display: block;
+      inline-size: 100%;
+      block-size: auto;
       min-block-size: 0;
+      aspect-ratio: 4 / 3;
+      border: 0;
+      border-radius: var(--r);
+      overflow: hidden;
+      background: var(--tint);
+    }
+
+    .product-card-media::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      box-shadow: inset 0 0 0 1px rgba(23, 37, 29, .08);
+      box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--ink) 8%, transparent);
+      pointer-events: none;
+    }
+
+    .product-card-media img {
+      inline-size: 100%;
+      block-size: 100%;
+      object-fit: cover;
+      transition: none;
+    }
+
+    .product-card:hover .product-card-media img,
+    .product-card:active .product-card-media img {
+      transform: none;
+    }
+
+    .product-card-body {
+      display: block;
+      padding: 0;
+      margin-block-start: 16px;
+      min-inline-size: 0;
+    }
+
+    .product-card-meta {
+      position: static;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      color: var(--accent-deep);
+      font-size: .8125rem;
+      font-weight: 650;
+      line-height: 1.4;
+      letter-spacing: 0;
+    }
+
+    .product-card-meta::before {
+      content: "";
+      inline-size: 6px;
+      block-size: 6px;
+      background: var(--accent);
+      flex: none;
+    }
+
+    .product-card-title {
+      margin-block-start: 8px;
+      font-size: 1.5rem;
+      font-weight: 900;
+      line-height: 1.3;
+      letter-spacing: 0;
+      text-wrap: balance;
+    }
+
+    .product-card-title a {
+      display: inline;
+      min-block-size: 0;
+      color: inherit;
+    }
+
+    .product-card-title a:hover {
+      color: var(--ink);
+    }
+
+    .product-card-use {
+      margin-block-start: 12px;
+      font-size: .9375rem;
+      font-weight: 450;
+      line-height: 1.85;
+      letter-spacing: 0;
+      color: var(--muted);
+      display: block;
+      overflow: visible;
+    }
+
+    .product-card-features {
+      display: none;
+    }
+
+    .product-card-actions {
+      display: flex;
+      flex-direction: row;
+      align-items: stretch;
+      gap: 12px;
+      padding: 0;
+      margin-block-start: 20px;
+    }
+
+    .product-card-actions .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      block-size: 48px;
+      min-block-size: 48px;
+      padding-block: 0;
+      padding-inline: 16px;
+      border-radius: var(--r);
+      font-size: .9375rem;
+      font-weight: 700;
+      letter-spacing: 0;
+      text-decoration: none;
+      transition: background-color 140ms var(--ease);
+    }
+
+    .product-card-actions .btn::before,
+    .product-card-actions .btn::after {
+      display: none;
+    }
+
+    .product-card-actions .btn--primary {
+      flex: 1.4 1 0%;
+      border: 1px solid var(--ink);
+      background: var(--ink);
+      color: var(--on-ink);
+    }
+
+    .product-card-actions .btn--primary:active {
+      background: #223028;
+      background: color-mix(in oklch, var(--ink) 94%, #fff);
+      transform: none;
+      filter: none;
+    }
+
+    .product-card-actions .btn--secondary {
+      flex: 1 1 0%;
+      border: 1px solid var(--ink);
+      background: transparent;
+      color: var(--ink);
+    }
+
+    .product-card-actions .btn--secondary:active {
+      background: rgba(23, 37, 29, .06);
+      background: color-mix(in oklch, var(--ink) 6%, transparent);
+      transform: none;
+      filter: none;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .filter-btn,
+      .quick-guide-item,
+      .product-card-actions .btn {
+        transition: none !important;
+      }
+    }
+
+    /* ============================================================
+       ۵) صفحات اختصاصی محصول در موبایل (زیر 64em) — سبک تحریریه‌ای
+       ============================================================ */
+    .product-hero {
+      padding-block: 16px 40px;
+    }
+
+    .product-hero .breadcrumb {
+      display: flex;
+      flex-wrap: nowrap;
+      align-items: center;
+      gap: 6px;
+      font-size: .8125rem;
+      line-height: 1.4;
+      white-space: nowrap;
+      overflow: hidden;
+      margin-block-end: 16px;
+    }
+
+    .product-hero .breadcrumb > :nth-child(-n + 2) {
+      display: none;
+    }
+
+    .product-hero .breadcrumb a {
+      flex: none;
+      min-block-size: 44px;
+      padding-inline: 2px;
+    }
+
+    .product-hero .breadcrumb > [aria-current="page"] {
+      min-inline-size: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .product-hero-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .product-hero-copy {
+      display: contents;
+    }
+
+    .product-hero .page-kicker,
+    .detail-band .page-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: .8125rem;
+      font-weight: 650;
+      line-height: 1.4;
+      letter-spacing: 0;
+      color: var(--accent-deep);
+    }
+
+    .product-hero .page-kicker {
+      order: 1;
+      margin-block-end: 0;
+    }
+
+    .product-hero .page-kicker::before,
+    .detail-band .page-kicker::before {
+      inline-size: 6px;
+      block-size: 6px;
+      background: var(--accent);
+    }
+
+    .product-hero .page-title {
+      order: 2;
+      margin-block-start: 8px;
+      max-inline-size: none;
+      font-size: clamp(2rem, 9vw, 2.5rem);
+      font-weight: 900;
+      line-height: 1.25;
+      letter-spacing: 0;
+      text-wrap: balance;
+    }
+
+    .product-stage {
+      order: 3;
+      margin-block-start: 20px;
+      margin-inline: calc(var(--gutter) * -1);
+      inline-size: calc(100% + var(--gutter) * 2);
+      aspect-ratio: auto;
+      min-block-size: 0;
+      border: 0;
+      box-shadow: none;
+      background: transparent;
+      overflow: visible;
+    }
+
+    .gallery-viewport {
+      position: relative;
+      inset: auto;
+      inline-size: 100%;
+      aspect-ratio: 4 / 3;
+      background: #e3e5da;
+      overflow: hidden;
+      touch-action: pan-y;
+    }
+
+    .gallery-viewport:focus-visible {
+      outline: 2px solid var(--accent-deep);
+      outline-offset: -3px;
     }
 
     .gallery-slide--3d .render-host {
       pointer-events: none;
-      inset: 0 0 .25rem;
+      inset: 0;
+      touch-action: pan-y;
     }
 
     .gallery-slide--3d .render-host .model-toggle {
       pointer-events: auto;
     }
 
-    .gallery-open,
-    .gallery-progress {
+    .product-stage .model-toggle--overlay {
+      inline-size: 44px;
+      block-size: 44px;
+      min-inline-size: 44px;
+      min-block-size: 44px;
+      inset-block-start: 12px;
+      inset-inline-start: 12px;
+    }
+
+    .gallery-open {
+      display: inline-flex;
+      align-items: center;
+      min-block-size: 44px;
+      padding-inline: 14px;
+      inset-block-start: 12px;
+      inset-inline-end: 12px;
+    }
+
+    .gallery-progress,
+    .gallery-nav {
       display: none;
     }
 
     .gallery-deck {
-      inset-inline: .5rem;
-      inset-block-end: .4rem;
+      position: static;
+      inset: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      padding-block: 12px 0;
+      padding-inline: var(--gutter);
+      background: transparent;
+      border: 0;
+      pointer-events: auto;
     }
 
-    .gallery-dots,
-    .gallery-nav {
-      min-block-size: 0;
+    .gallery-dots {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      min-block-size: 28px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+      max-inline-size: 100%;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .gallery-dots::-webkit-scrollbar {
+      display: none;
     }
 
     .gallery-dot {
-      inline-size: 14px;
-      block-size: 28px;
+      flex: 0 0 auto;
+      inline-size: auto;
+      block-size: auto;
+      min-inline-size: 28px;
+      min-block-size: 28px;
+      padding: 10px 6px;
+      display: grid;
+      place-items: center;
+      border: 0;
+      background: transparent;
     }
 
-    .gallery-arrow {
-      inline-size: 32px;
-      min-block-size: 32px;
+    .gallery-dot::before {
+      content: "";
+      inline-size: 6px;
+      block-size: 6px;
+      border-radius: 0;
+      background: var(--line);
+      opacity: 1;
+      transition: inline-size 240ms var(--ease), block-size 240ms var(--ease), background-color 240ms var(--ease);
+    }
+
+    .gallery-dot[aria-current="true"]::before {
+      inline-size: 24px;
+      block-size: 4px;
+      background: var(--accent-deep);
+      opacity: 1;
+    }
+
+    .gallery-dot:active {
+      transform: none;
+      filter: none;
+    }
+
+    .product-hero .page-lead {
+      order: 4;
+      margin-block-start: 24px;
+      font-size: 1rem;
+      font-weight: 450;
+      line-height: 1.85;
+      letter-spacing: 0;
+      color: var(--muted);
+    }
+
+    .product-hero .open-slot {
+      order: 5;
+      margin-block-start: 16px;
+    }
+
+    .product-hero-actions {
+      order: 6;
+      margin-block-start: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      inline-size: 100%;
+    }
+
+    .product-hero-actions .btn {
+      inline-size: 100%;
+      block-size: 52px;
+      min-block-size: 52px;
+      font-size: .9375rem;
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+
+    /* بخش‌های محتوای صفحهٔ محصول */
+    .detail-band {
+      padding-block: clamp(3rem, 12vw, 3.5rem);
+      content-visibility: auto;
+      contain-intrinsic-size: auto 600px;
+    }
+
+    .detail-split {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 28px;
+    }
+
+    .detail-sticky {
+      position: static;
+      inset-block-start: auto;
+    }
+
+    .detail-band .page-kicker {
+      margin-block-end: 8px;
+    }
+
+    .detail-band-head {
+      margin-block-end: 28px;
+    }
+
+    .detail-heading {
+      font-size: clamp(1.5rem, 6.5vw, 1.875rem);
+      font-weight: 900;
+      line-height: 1.3;
+      letter-spacing: 0;
+      text-wrap: balance;
+    }
+
+    .audience-grid,
+    .service-scope-grid {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0;
+      background: transparent;
+      border: 0;
+    }
+
+    .audience-item,
+    .scope-card {
+      gap: 0;
+      padding-inline: 0;
+      padding-block: 20px;
+      background: transparent;
+      border: 0;
+      border-block-start: 1px solid var(--line);
+    }
+
+    .audience-item:last-child,
+    .scope-card:last-child {
+      border-block-end: 1px solid var(--line);
+    }
+
+    .audience-item h3,
+    .scope-card h3 {
+      font-size: 1.125rem;
+      font-weight: 800;
+      line-height: 1.4;
+      letter-spacing: 0;
+      margin-block-end: 8px;
+    }
+
+    .audience-item p,
+    .scope-card p {
+      font-size: .9375rem;
+      font-weight: 450;
+      line-height: 1.85;
+      letter-spacing: 0;
+      color: var(--muted);
+    }
+
+    .scope-card .open-slot--subtle {
+      padding: 0;
+      border: 0;
+      background: transparent;
+      max-inline-size: none;
+    }
+
+    .specs-list {
+      display: grid;
+      border-block-start: 1px solid var(--line);
+    }
+
+    .specs-row {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 6px;
+      padding-block: 16px;
+      border-block-end: 1px solid var(--line);
+    }
+
+    .specs-row dt {
+      font-size: .8125rem;
+      font-weight: 650;
+      line-height: 1.4;
+      letter-spacing: 0;
+      color: var(--accent-deep);
+    }
+
+    .specs-row dd {
+      font-size: 1rem;
+      font-weight: 450;
+      line-height: 1.8;
+      letter-spacing: 0;
+      color: var(--ink);
+      overflow-wrap: anywhere;
+    }
+
+    .prose-slot {
+      display: grid;
+      gap: 20px;
+      max-inline-size: 62ch;
+      font-size: 1rem;
+      line-height: 1.95;
+    }
+
+    .open-slot {
+      max-inline-size: 62ch;
+      font-size: 1rem;
+      line-height: 1.95;
+      overflow-wrap: anywhere;
+    }
+
+    /* سوالات متداول با آکاردئون هم‌نام و باز و بسته شدن نرم */
+    .faq-list {
+      border-block-start: 0;
+    }
+
+    .faq-item {
+      border-block-start: 1px solid var(--line);
+      border-block-end: 0;
+    }
+
+    .faq-item:last-child {
+      border-block-end: 1px solid var(--line);
+    }
+
+    .faq-item summary {
+      min-block-size: 56px;
+      padding-block: 12px;
+      gap: 16px;
+      font-size: 1rem;
+      font-weight: 700;
+      line-height: 1.5;
+      letter-spacing: 0;
+      text-wrap: balance;
+      color: var(--ink);
+    }
+
+    .faq-item summary:active {
+      transform: none;
+      filter: none;
+    }
+
+    .faq-item summary::after {
+      content: "＋";
+      display: inline-grid;
+      place-items: center;
+      min-inline-size: 24px;
+      min-block-size: 24px;
+      font-size: 1.25rem;
+      line-height: 1;
+      color: var(--accent-deep);
+      flex: none;
+    }
+
+    .faq-item[open] summary::after {
+      content: "－";
+    }
+
+    .faq-body {
+      padding-block-end: 16px;
+      font-size: .9375rem;
+      font-weight: 450;
+      line-height: 1.9;
+      letter-spacing: 0;
+      color: var(--muted);
+    }
+
+    @supports (interpolate-size: allow-keywords) {
+      .faq-item {
+        interpolate-size: allow-keywords;
+      }
+
+      .faq-item::details-content {
+        block-size: 0;
+        opacity: 0;
+        overflow: hidden;
+        transition: block-size 250ms var(--ease), opacity 250ms var(--ease), content-visibility 250ms allow-discrete;
+      }
+
+      .faq-item[open]::details-content {
+        block-size: auto;
+        opacity: 1;
+      }
+    }
+
+    /* CTA پایانی (jack.html) */
+    .final-cta-band {
+      padding-block: 3rem;
+    }
+
+    .final-cta-in {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 20px;
+    }
+
+    .final-cta-copy {
+      gap: 8px;
+    }
+
+    .final-cta-copy h2 {
+      font-size: clamp(1.5rem, 6.5vw, 1.875rem);
+      font-weight: 900;
+      line-height: 1.3;
+      letter-spacing: 0;
+      color: var(--on-ink);
+      text-wrap: balance;
+    }
+
+    .final-cta-copy p {
+      font-size: .9375rem;
+      font-weight: 450;
+      line-height: 1.85;
+      letter-spacing: 0;
+      color: var(--on-ink-muted);
+    }
+
+    .final-cta-band .btn {
+      inline-size: 100%;
+      block-size: 52px;
+      min-block-size: 52px;
+      font-size: .9375rem;
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+
+    /* محصولات مرتبط */
+    .related-band {
+      padding-block: 48px 56px;
+    }
+
+    .related-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 16px;
+      margin-block-end: 24px;
+    }
+
+    .related-head h2 {
+      font-size: 1.375rem;
+      font-weight: 900;
+      line-height: 1.3;
+      letter-spacing: 0;
+    }
+
+    .related-head .btn {
+      inline-size: 100%;
+      block-size: 48px;
+      min-block-size: 48px;
+      font-size: .9375rem;
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+
+    .related-grid {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0;
+      background: transparent;
+      border: 0;
+    }
+
+    .related-card {
+      gap: 4px;
+      min-block-size: 48px;
+      padding-inline: 0;
+      padding-block: 16px;
+      background: transparent;
+      border: 0;
+      border-block-start: 1px solid var(--line);
+      box-shadow: none;
+      transition: background-color 140ms var(--ease);
+    }
+
+    .related-card:last-child {
+      border-block-end: 1px solid var(--line);
+    }
+
+    .related-card:hover {
+      background: transparent;
+    }
+
+    .related-card:active {
+      background: rgba(23, 37, 29, .04);
+      background: color-mix(in oklch, var(--ink) 4%, transparent);
+      transform: none;
+      filter: none;
+    }
+
+    .related-card-title {
+      font-size: 1.125rem;
+      font-weight: 800;
+      line-height: 1.4;
+      letter-spacing: 0;
+      color: var(--ink);
+    }
+
+    .related-card-note {
+      font-size: .875rem;
+      font-weight: 450;
+      line-height: 1.75;
+      letter-spacing: 0;
+      color: var(--muted);
+    }
+
+    .btn::after {
+      display: none;
+    }
+
+    .btn:active,
+    .gallery-arrow:active,
+    .model-toggle:active {
+      transform: scale(.98);
+      filter: brightness(.94);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .gallery-dot::before,
+      .related-card,
+      .faq-item::details-content {
+        transition: none !important;
+      }
+      .btn:active,
+      .gallery-arrow:active,
+      .model-toggle:active {
+        transform: none !important;
+      }
     }
   }
 }

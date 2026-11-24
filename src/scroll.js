@@ -225,7 +225,8 @@ export function initScroll() {
         });
 
         let activeIndex = 0;
-        const pinnedContainer = !isReduced ? "#services" : undefined;
+        const isDesktop = context.conditions.desktop;
+        const pinnedContainer = isDesktop && !isReduced ? "#services" : undefined;
 
         serviceItems.forEach((item, idx) => {
           const trigger = ScrollTrigger.create({
@@ -246,8 +247,8 @@ export function initScroll() {
             activeIndex = idx;
           }
 
-          // آیتم اول (جک) در بازهٔ پین سکشن خدمات انیمیت می‌شود، نه با اسکرول عادی
-          if (!isReduced && idx !== 0) {
+          if (isDesktop && !isReduced && idx !== 0) {
+            // آیتم اول (جک) در بازهٔ پین سکشن خدمات انیمیت می‌شود، نه با اسکرول عادی
             gsap.fromTo(
               states[idx],
               { progress: 0 },
@@ -268,8 +269,8 @@ export function initScroll() {
             gsap.fromTo(
               item.querySelector(".product-stage"),
               {
-                y: context.conditions.desktop ? 65 : 24,
-                rotationX: context.conditions.desktop ? -6 : 0,
+                y: 65,
+                rotationX: -6,
                 opacity: 0.5,
               },
               {
@@ -286,6 +287,19 @@ export function initScroll() {
                 },
               }
             );
+          } else if (!isDesktop) {
+            states[idx].progress = 0.35;
+            const stageEl = item.querySelector(".product-stage");
+            if (!isReduced && stageEl) {
+              gsap.from(stageEl, {
+                y: 12,
+                opacity: 0,
+                duration: 0.4,
+                ease: "power2.out",
+                clearProps: "transform,opacity",
+                scrollTrigger: { trigger: item, start: "top 92%", once: true },
+              });
+            }
           }
 
           updateModelState(idx);
@@ -298,7 +312,7 @@ export function initScroll() {
             "#about .section-head, #contact .section-head, #credentials .section-head, .card, .stat"
           ).forEach((el) => {
             gsap.from(el, {
-              y: 15,
+              y: isDesktop ? 15 : 12,
               opacity: 0,
               duration: 0.4,
               scrollTrigger: { trigger: el, start: "top 94%", once: true },

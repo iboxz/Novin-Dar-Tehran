@@ -231,11 +231,12 @@ export function initHeroScroll(gsap, ST, reduced, opts = {}) {
   // مقدار اسکرول اضافه‌ای که سکشن خدمات پین می‌ماند تا انیمیشن اولین محصول (جک) پخش شود
   const extraPx = () => (opts.firstItemPinVh ?? 0.5) * innerHeight;
 
+  const isDesktop = opts.desktop ?? innerWidth >= 1024;
   if (!hero) {
     resetServices();
     return () => {};
   }
-  if (reduced) {
+  if (reduced || !isDesktop) {
     hero.classList.remove("is-pinned");
     resetServices();
     return () => {};

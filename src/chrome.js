@@ -16,6 +16,7 @@ const SITE_ROOT_URL = new URL("../", import.meta.url);
 const DEFAULT_LOGO_URL = new URL("assets/logo/NDT-logo-mark.svg", SITE_ROOT_URL).href;
 const RING_CIRCUMFERENCE = 2 * Math.PI * 20.5;
 const ARROW_PATH = '<path d="M5 19 19 5M5 5h14v14"/>';
+const SLIDING_DOOR_SVG = '<svg class="door-slide-icon" viewBox="0 0 20 16" aria-hidden="true"><line class="door-slide-gap" x1="10" y1="3.5" x2="10" y2="12.5"/><rect class="door-slide-leaf door-slide-leaf--left" x="5.75" y="2" width="4" height="12" rx="1"/><rect class="door-slide-leaf door-slide-leaf--right" x="10.25" y="2" width="4" height="12" rx="1"/></svg>';
 
 export const CHROME_CONFIG = {
   brand: {
@@ -32,9 +33,9 @@ export const CHROME_CONFIG = {
   },
 
   nav: [
-    { id: "home", num: "۰۱", title: "صفحه اصلی", href: "index.html" },
-    { id: "services", num: "۰۲", title: "محصولات و خدمات", href: "products.html" },
-    { id: "contact", num: "۰۳", title: "ارتباط با ما", href: "contact.html" },
+    { id: "home", title: "صفحه اصلی", href: "index.html" },
+    { id: "services", title: "محصولات و خدمات", href: "products.html" },
+    { id: "contact", title: "ارتباط با ما", href: "contact.html" },
   ],
 
   headerCta: {
@@ -196,6 +197,7 @@ function renderHeaderMarkup() {
 
   return `
 <header class="site-header">
+  <div class="header-drop-bg" aria-hidden="true"></div>
   <div class="header-shell">
     <div class="header-capsule" aria-hidden="true"></div>
     <a class="logo" href="${escapeHtml(homeHref)}" aria-label="${escapeHtml(brand.homeAriaLabel)}">
@@ -229,12 +231,17 @@ function renderDoorMenuMarkup() {
       const href = resolveHref(item.href);
       const isPageActive = isCurrentPageLink(item.href, item.id);
       const currentAttr = isPageActive ? ' aria-current="page"' : "";
+      const titleEsc = escapeHtml(item.title);
       return `
       <li class="door-menu-item">
         <a class="door-menu-link" href="${escapeHtml(href)}"${currentAttr}>
-          <span class="door-menu-num">${escapeHtml(item.num)}</span>
-          <span class="door-menu-label">${escapeHtml(item.title)}</span>
-          <svg class="door-menu-arw" viewBox="0 0 24 24" aria-hidden="true">${ARROW_PATH}</svg>
+          <span class="door-link-dot" aria-hidden="true"></span>
+          <span class="roll-mask">
+            <span class="roll-track">
+              <span class="roll-copy">${titleEsc}</span>
+              <span class="roll-copy roll-copy--clone" aria-hidden="true">${titleEsc}</span>
+            </span>
+          </span>
         </a>
       </li>`;
     })
@@ -242,59 +249,150 @@ function renderDoorMenuMarkup() {
 
   const activeSvc =
     footer.services.find((svc) => isCurrentPageLink(svc.href)) || footer.services[0];
+  const activeHref = resolveHref(activeSvc.href);
+  const desktopPreviewCapable =
+    typeof window !== "undefined" &&
+    window.matchMedia("(min-width: 64em) and (hover: hover) and (pointer: fine)").matches;
 
-  const productLinksHtml = footer.services
+  const productRowsHtml = footer.services
     .map((svc) => {
       const href = resolveHref(svc.href);
       const imgUrl = resolveAssetUrl(svc.img);
       const isCurrent = isCurrentPageLink(svc.href);
-      const isDefault = svc.id === activeSvc.id;
-      return `<a class="door-product-link${isDefault ? " is-previewed" : ""}" href="${escapeHtml(href)}" data-preview-img="${escapeHtml(imgUrl)}" data-preview-title="${escapeHtml(svc.title)}"${isCurrent ? ' aria-current="page"' : ""}><span>${escapeHtml(svc.title)}</span><span aria-hidden="true">←</span></a>`;
+      const isActive = svc.id === activeSvc.id;
+      return `
+      <div class="door-product-row">
+        <a class="door-product-link${isActive ? " is-active" : ""}" href="${escapeHtml(href)}" data-preview-img="${escapeHtml(imgUrl)}" data-preview-title="${escapeHtml(svc.title)}"${isCurrent ? ' aria-current="page"' : ""}>
+          <img class="door-product-thumb" src="${escapeHtml(imgUrl)}" alt="" width="40" height="40" loading="lazy" decoding="async">
+          <span class="door-product-name">${escapeHtml(svc.title)}</span>
+          <span class="door-product-current" aria-hidden="true"></span>
+          ${SLIDING_DOOR_SVG}
+        </a>
+      </div>`;
     })
     .join("");
 
-  const phoneBtnHtml = validPhone
-    ? `<a class="btn btn--secondary" href="${escapeHtml(validPhone.href)}" dir="ltr">${escapeHtml(validPhone.display)}</a>`
+  const mobileCardsHtml = footer.services
+    .map((svc) => {
+      const href = resolveHref(svc.href);
+      const imgUrl = resolveAssetUrl(svc.img);
+      const isCurrent = isCurrentPageLink(svc.href);
+      return `
+      <a class="door-mobile-card" href="${escapeHtml(href)}"${isCurrent ? ' aria-current="page"' : ""}>
+        <img class="door-mobile-card-img" src="${escapeHtml(imgUrl)}" alt="" width="480" height="360" loading="lazy" decoding="async">
+        <span class="door-mobile-card-name">${escapeHtml(svc.title)}</span>
+      </a>`;
+    })
+    .join("");
+
+  const phoneLinkHtml = validPhone
+    ? `<a class="door-contact-secondary" href="${escapeHtml(validPhone.href)}" dir="ltr">${escapeHtml(validPhone.display)}</a>`
     : "";
-  const messengerBtnHtml = messengerHref
-    ? `<a class="btn btn--secondary" href="${escapeHtml(messengerHref)}" rel="noopener noreferrer">پیام‌رسان</a>`
+  const messengerLinkHtml = messengerHref
+    ? `<a class="door-contact-secondary" href="${escapeHtml(messengerHref)}" rel="noopener noreferrer">پیام‌رسان</a>`
     : "";
+
+  const activeImgUrl = resolveAssetUrl(activeSvc.img);
+  const initialLayerAAttr = desktopPreviewCapable
+    ? `src="${escapeHtml(activeImgUrl)}"`
+    : `data-preview-src="${escapeHtml(activeImgUrl)}"`;
 
   return `
 <aside id="door-menu" class="door-menu" role="dialog" aria-modal="true" aria-label="منوی ناوبری سایت" hidden>
   <div class="door-backdrop" aria-hidden="true"></div>
   <div class="door-panel">
-    <div class="door-menu-in">
-      <div class="door-menu-grid">
+    <div class="door-panel-scroll">
+      <div class="door-panel-grid">
         <nav class="door-menu-nav" aria-label="ناوبری بخش‌ها">
           <ul class="door-menu-list">${itemsHtml}</ul>
         </nav>
 
-        <div class="door-products-panel">
+        <div class="door-products-col">
           <h2 class="door-products-title">محصولات و راهکارها</h2>
-          <div class="door-products-links">${productLinksHtml}</div>
-          <figure class="door-preview" aria-live="polite">
-            <img src="${escapeHtml(resolveAssetUrl(activeSvc.img))}" alt="${escapeHtml(activeSvc.title)}" loading="lazy" decoding="async">
-            <figcaption class="door-preview-cap">${escapeHtml(activeSvc.title)}</figcaption>
-          </figure>
+          <div class="door-products-links">
+            <span class="door-product-indicator" aria-hidden="true"></span>
+            ${productRowsHtml}
+          </div>
+          <div class="door-mobile-carousel" aria-label="محصولات و راهکارها">
+            ${mobileCardsHtml}
+          </div>
         </div>
-      </div>
 
-      <div class="door-menu-foot">
-        <div class="door-menu-meta">
-          <span><strong>پاسخ‌گویی:</strong> ${escapeHtml(contact.hoursShort)}</span>
-          <span class="door-menu-sep" aria-hidden="true">·</span>
-          <span><strong>محدوده:</strong> ${escapeHtml(contact.areaLabel)}</span>
+        <div class="door-contact-card">
+          <div class="door-contact-meta">
+            <span><strong>پاسخ‌گویی:</strong> ${escapeHtml(contact.hoursShort)}</span>
+            <span><strong>محدوده:</strong> ${escapeHtml(contact.areaLabel)}</span>
+          </div>
+          <div class="door-contact-actions">
+            <a class="btn btn--primary" href="${escapeHtml(ctaHref)}" data-phone-link>${escapeHtml(headerCta.label)}</a>
+            ${phoneLinkHtml}
+            ${messengerLinkHtml}
+          </div>
         </div>
-        <div class="door-menu-actions">
-          <a class="btn btn--primary" href="${escapeHtml(ctaHref)}" data-phone-link>${escapeHtml(headerCta.label)}</a>
-          ${phoneBtnHtml}
-          ${messengerBtnHtml}
+
+        <div class="door-preview-col" aria-hidden="true">
+          <a class="door-preview-frame" href="${escapeHtml(activeHref)}" tabindex="-1">
+            <div class="door-preview-media">
+              <div class="door-preview-layer" data-preview-layer="a">
+                <img class="door-preview-img" ${initialLayerAAttr} alt="" width="640" height="480" loading="lazy" decoding="async">
+              </div>
+              <div class="door-preview-layer" data-preview-layer="b" hidden>
+                <img class="door-preview-img" alt="" width="640" height="480" loading="lazy" decoding="async">
+              </div>
+              <div class="door-preview-scrim" aria-hidden="true"></div>
+              <div class="door-preview-edge" aria-hidden="true"></div>
+            </div>
+            <div class="door-preview-cap">
+              <span class="door-preview-name">${escapeHtml(activeSvc.title)}</span>
+              <span class="door-preview-action">
+                <span class="door-preview-hint">مشاهدهٔ محصول</span>
+                ${SLIDING_DOOR_SVG}
+              </span>
+            </div>
+          </a>
         </div>
       </div>
     </div>
+    <div class="door-panel-rail" aria-hidden="true"></div>
   </div>
 </aside>`;
+}
+
+function injectSpeculationRules() {
+  if (
+    typeof document === "undefined" ||
+    document.querySelector('script[type="speculationrules"][data-ndt-prefetch]')
+  ) {
+    return;
+  }
+  const urls = new Set();
+  CHROME_CONFIG.nav.forEach((item) => {
+    try {
+      urls.add(new URL(item.href, SITE_ROOT_URL).href);
+    } catch {
+      /* ignore invalid href */
+    }
+  });
+  CHROME_CONFIG.footer.services.forEach((svc) => {
+    try {
+      urls.add(new URL(svc.href, SITE_ROOT_URL).href);
+    } catch {
+      /* ignore invalid href */
+    }
+  });
+  const script = document.createElement("script");
+  script.type = "speculationrules";
+  script.dataset.ndtPrefetch = "true";
+  script.textContent = JSON.stringify({
+    prefetch: [
+      {
+        source: "list",
+        urls: [...urls],
+        eagerness: "moderate",
+      },
+    ],
+  });
+  document.head.append(script);
 }
 
 function renderFooterMarkup() {
@@ -324,6 +422,11 @@ function renderFooterMarkup() {
     ? `<a class="footer-verified-link" href="${escapeHtml(messengerHref)}" data-messenger-link rel="noopener noreferrer">ارتباط در پیام‌رسان</a>`
     : "";
 
+  const verifiedLinksHtml =
+    phoneLineHtml || messengerLineHtml
+      ? `<div class="footer-verified-links">${phoneLineHtml}${messengerLineHtml}</div>`
+      : "";
+
   return `
 <footer class="site-footer" id="contact-info">
   <div class="footer-doors" aria-hidden="true">
@@ -346,25 +449,26 @@ function renderFooterMarkup() {
         <div class="footer-info-stack">
           <div class="footer-top-cols">
             <nav aria-label="لینک‌های اصلی">
-              <h3 class="footer-heading"><bdi aria-hidden="true">۰۱</bdi>دسترسی سریع</h3>
+              <h3 class="footer-heading">دسترسی سریع</h3>
               <ul class="footer-main-links">${mainLinksHtml}</ul>
             </nav>
 
             <div>
-              <h3 class="footer-heading"><bdi aria-hidden="true">۰۳</bdi>ساعات و محدوده</h3>
+              <h3 class="footer-heading">ساعات و محدوده</h3>
               <div class="footer-hours-block">
-                <p><strong>پاسخ‌گویی:</strong> ${escapeHtml(contact.hoursShort)}</p>
-                <p><strong>محدودهٔ خدمات:</strong> ${escapeHtml(contact.areaLabel)}</p>
-                ${phoneLineHtml}
-                ${messengerLineHtml}
+                <div class="footer-hours-meta">
+                  <p><strong>پاسخ‌گویی:</strong> ${escapeHtml(contact.hoursShort)}</p>
+                  <p><strong>محدودهٔ خدمات:</strong> ${escapeHtml(contact.areaLabel)}</p>
+                </div>
+                ${verifiedLinksHtml}
               </div>
             </div>
           </div>
 
           <div>
-            <h3 class="footer-heading"><bdi aria-hidden="true">۰۲</bdi>${escapeHtml(footer.servicesHeading)}</h3>
-            <details class="footer-services-acc" open>
-              <summary>فهرست ۷ محصول و خدمت</summary>
+            <h3 class="footer-heading footer-services-heading">${escapeHtml(footer.servicesHeading)}</h3>
+            <details class="footer-services-acc">
+              <summary>محصولات</summary>
               <div class="footer-services-list">${servicesHtml}</div>
             </details>
           </div>
@@ -454,35 +558,454 @@ function mountHeaderMenuAndFooter() {
 
 function setupDoorMenuController() {
   const header = qs(".site-header");
+  const headerDropBg = qs(".header-drop-bg", header);
   const menu = qs("#door-menu");
   const menuBtn = qs(".menu-btn");
   if (!menu || !menuBtn || !header) return { isOpen: () => false };
 
   const backdrop = qs(".door-backdrop", menu);
   const panel = qs(".door-panel", menu);
-  const linkLabels = qsa(".door-menu-link", menu);
-  const foot = qs(".door-menu-foot", menu);
+  const panelScroll = qs(".door-panel-scroll", menu);
+  const panelRail = qs(".door-panel-rail", menu);
+  const navCol = qs(".door-menu-nav", menu);
+  const productsCol = qs(".door-products-col", menu);
+  const contactCol = qs(".door-contact-card", menu);
+  const previewCol = qs(".door-preview-col", menu);
+  const colEls = [navCol, productsCol, contactCol, previewCol].filter(Boolean);
+
+  const primaryLinks = qsa(".door-menu-link", menu);
+  const productsTitle = qs(".door-products-title", menu);
+  const productsWrap = qs(".door-products-links", menu);
   const productLinks = qsa(".door-product-link", menu);
-  const previewImg = qs(".door-preview img", menu);
-  const previewCap = qs(".door-preview-cap", menu);
+  const productIndicator = qs(".door-product-indicator", menu);
+  const mobileCarousel = qs(".door-mobile-carousel", menu);
+  const mobileCards = qsa(".door-mobile-card", menu);
+  const previewFrame = qs(".door-preview-frame", menu);
+  const previewMedia = qs(".door-preview-media", menu);
+  const previewLayerA = qs('[data-preview-layer="a"]', menu);
+  const previewLayerB = qs('[data-preview-layer="b"]', menu);
+  const previewImgA = previewLayerA ? qs("img", previewLayerA) : null;
+  const previewImgB = previewLayerB ? qs("img", previewLayerB) : null;
+  const previewScrim = qs(".door-preview-scrim", menu);
+  const previewEdge = qs(".door-preview-edge", menu);
+  const previewName = qs(".door-preview-name", menu);
+
+  const mqMobileSheet = window.matchMedia("(max-width: 63.99em)");
+  const mqDesktopPreview = window.matchMedia(
+    "(min-width: 64em) and (hover: hover) and (pointer: fine)"
+  );
+  const isMobileSheet = () => mqMobileSheet.matches;
+  const isDesktopPreviewMode = () => mqDesktopPreview.matches;
 
   let openState = false;
   let inertSiblings = [];
   let menuTl = null;
+  let builtForMobile = null;
+  let previewTl = null;
+  let captionTl = null;
+  let savedScrollY = 0;
+  let savedSmootherTop = null;
+  let previewToken = 0;
+  let hoverTimer = 0;
+  let imagesPredecoded = false;
+  let touchStartX = 0;
+  let touchStartY = 0;
+  let activeSlot = "a";
+  let currentPreviewSrc =
+    previewImgA?.getAttribute("src") || previewImgA?.dataset.previewSrc || "";
+  let inFlightTarget = null;
+  let pendingPreview = null;
+  let isDecodingPreview = false;
+  const decodePromises = new Map();
+  let cachedRowOffsets = [];
+  let cachedRowHeights = [];
+
+  const getActiveSlot = () =>
+    activeSlot === "a"
+      ? { layer: previewLayerA, img: previewImgA }
+      : { layer: previewLayerB, img: previewImgB };
+
+  const getStandbySlot = () =>
+    activeSlot === "a"
+      ? { layer: previewLayerB, img: previewImgB }
+      : { layer: previewLayerA, img: previewImgA };
+
+  const refreshRowOffsets = () => {
+    cachedRowOffsets = productLinks.map((link) => link.parentElement?.offsetTop ?? 0);
+    cachedRowHeights = productLinks.map((link) => link.offsetHeight || 52);
+  };
+
+  if (productsWrap && typeof ResizeObserver === "function") {
+    const ro = new ResizeObserver(() => {
+      if (openState && !isMobileSheet()) refreshRowOffsets();
+    });
+    ro.observe(productsWrap);
+  }
+
+  mqMobileSheet.addEventListener("change", () => {
+    if (!openState && menuTl) {
+      menuTl.kill();
+      menuTl = null;
+      builtForMobile = null;
+    }
+  });
+
+  const moveIndicator = (targetLink, { instant = false } = {}) => {
+    const idx = productLinks.indexOf(targetLink);
+    if (idx === -1) return;
+
+    productLinks.forEach((item) => item.classList.toggle("is-active", item === targetLink));
+    if (!productIndicator || isMobileSheet()) return;
+
+    if (!cachedRowOffsets.length) refreshRowOffsets();
+    const y = cachedRowOffsets[idx] ?? 0;
+    const baseH = productIndicator.offsetHeight || 52;
+    const scaleY = (cachedRowHeights[idx] || baseH) / baseH;
+
+    if (instant || isMotionReduced()) {
+      gsap.killTweensOf(productIndicator);
+      gsap.set(productIndicator, { y, scaleY, opacity: 1 });
+      return;
+    }
+
+    gsap.to(productIndicator, {
+      y,
+      scaleY,
+      opacity: 1,
+      duration: 0.26,
+      ease: MOTION_EASE.reveal,
+      overwrite: "auto",
+    });
+  };
+
+  const decodeImage = (src) => {
+    if (!src) return Promise.resolve();
+    if (decodePromises.has(src)) return decodePromises.get(src);
+    const img = new Image();
+    img.src = src;
+    const promise = img.decode
+      ? img.decode().catch(() => {})
+      : new Promise((resolve) => {
+          if (img.complete) {
+            resolve();
+          } else {
+            img.onload = resolve;
+            img.onerror = resolve;
+          }
+        });
+    decodePromises.set(src, promise);
+    return promise;
+  };
+
+  const decodeAllProductImages = () => {
+    if (imagesPredecoded || !isDesktopPreviewMode()) return;
+    imagesPredecoded = true;
+    productLinks.forEach((link) => {
+      decodeImage(link.dataset.previewImg);
+    });
+  };
+
+  const setPreviewWillChange = (active) => {
+    const valClip = active ? "clip-path, opacity" : "";
+    const valTransform = active ? "transform" : "";
+    const activeObj = getActiveSlot();
+    const standbyObj = getStandbySlot();
+    if (activeObj.layer) activeObj.layer.style.willChange = valTransform;
+    if (activeObj.img) activeObj.img.style.willChange = "";
+    if (standbyObj.layer) standbyObj.layer.style.willChange = valClip;
+    if (standbyObj.img) standbyObj.img.style.willChange = valTransform;
+    if (previewScrim) previewScrim.style.willChange = active ? "opacity" : "";
+    if (previewEdge) previewEdge.style.willChange = active ? "transform, opacity" : "";
+  };
+
+  const updatePreviewCaption = (nextTitle, nextHref, { instant = false } = {}) => {
+    if (previewFrame && nextHref) previewFrame.setAttribute("href", nextHref);
+    if (!previewName || !nextTitle || previewName.textContent === nextTitle) return;
+
+    captionTl?.kill();
+    captionTl = null;
+    previewName.textContent = nextTitle;
+
+    if (instant || isMotionReduced()) {
+      gsap.set(previewName, { clearProps: "opacity,transform" });
+      return;
+    }
+
+    captionTl = gsap.fromTo(
+      previewName,
+      { opacity: 0, y: 8 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.24,
+        ease: MOTION_EASE.reveal,
+        clearProps: "opacity,transform",
+      }
+    );
+  };
+
+  const resetPreviewElements = () => {
+    previewToken++;
+    previewTl?.kill();
+    previewTl = null;
+    captionTl?.kill();
+    captionTl = null;
+    inFlightTarget = null;
+    pendingPreview = null;
+    isDecodingPreview = false;
+
+    const activeObj = getActiveSlot();
+    const standbyObj = getStandbySlot();
+    [previewLayerA, previewLayerB, previewImgA, previewImgB, previewScrim, previewEdge].forEach(
+      (el) => {
+        if (el) el.style.willChange = "";
+      }
+    );
+    gsap.set(
+      [previewLayerA, previewLayerB, previewImgA, previewImgB, previewScrim, previewEdge, previewName].filter(Boolean),
+      { clearProps: "clipPath,transform,opacity" }
+    );
+    if (activeObj.layer) {
+      activeObj.layer.hidden = false;
+      activeObj.layer.style.zIndex = "1";
+    }
+    if (standbyObj.layer) {
+      standbyObj.layer.hidden = true;
+      standbyObj.layer.style.zIndex = "3";
+    }
+  };
+
+  const syncInitialPreview = (link) => {
+    if (!link) return;
+    resetPreviewElements();
+    if (!isDesktopPreviewMode()) return;
+    const src = link.dataset.previewImg || "";
+    const title = link.dataset.previewTitle || "";
+    const href = link.getAttribute("href") || "";
+    const activeObj = getActiveSlot();
+    if (activeObj.img && src) {
+      activeObj.img.setAttribute("src", src);
+      currentPreviewSrc = src;
+    }
+    updatePreviewCaption(title, href, { instant: true });
+  };
+
+  const finalizePreviewTransition = (target, token) => {
+    if (token !== previewToken) return;
+    activeSlot = activeSlot === "a" ? "b" : "a";
+    currentPreviewSrc = target.src;
+    inFlightTarget = null;
+    previewTl = null;
+
+    const newActive = getActiveSlot();
+    const newStandby = getStandbySlot();
+    [previewLayerA, previewLayerB, previewImgA, previewImgB, previewScrim, previewEdge].forEach(
+      (el) => {
+        if (el) el.style.willChange = "";
+      }
+    );
+    if (newActive.layer) {
+      newActive.layer.hidden = false;
+      newActive.layer.style.zIndex = "1";
+    }
+    if (newStandby.layer) {
+      newStandby.layer.hidden = true;
+      newStandby.layer.style.zIndex = "3";
+    }
+    gsap.set(
+      [previewLayerA, previewLayerB, previewImgA, previewImgB, previewScrim, previewEdge].filter(Boolean),
+      { clearProps: "clipPath,transform,opacity" }
+    );
+
+    const queued = pendingPreview;
+    pendingPreview = null;
+    if (queued && openState) {
+      if (queued.src !== currentPreviewSrc) {
+        startPreviewTransition(queued);
+      } else {
+        updatePreviewCaption(queued.title, queued.href);
+      }
+    }
+  };
+
+  const startPreviewTransition = async (target) => {
+    const token = ++previewToken;
+    inFlightTarget = target;
+    isDecodingPreview = true;
+
+    await decodeImage(target.src);
+
+    if (token !== previewToken || !openState) {
+      isDecodingPreview = false;
+      return;
+    }
+
+    const outgoing = getActiveSlot();
+    const incoming = getStandbySlot();
+    if (!outgoing.layer || !incoming.layer || !outgoing.img || !incoming.img) {
+      isDecodingPreview = false;
+      inFlightTarget = null;
+      return;
+    }
+
+    incoming.img.setAttribute("src", target.src);
+    if (incoming.img.decode) {
+      await incoming.img.decode().catch(() => {});
+    }
+    isDecodingPreview = false;
+
+    if (token !== previewToken || !openState) return;
+
+    if (pendingPreview) {
+      const latest = pendingPreview;
+      pendingPreview = null;
+      if (latest.src === currentPreviewSrc) {
+        inFlightTarget = null;
+        updatePreviewCaption(latest.title, latest.href);
+        return;
+      }
+      if (latest.src !== target.src) {
+        startPreviewTransition(latest);
+        return;
+      }
+    }
+
+    const reduced = isMotionReduced();
+    outgoing.layer.hidden = false;
+    outgoing.layer.style.zIndex = "1";
+    incoming.layer.hidden = false;
+    incoming.layer.style.zIndex = "3";
+
+    if (reduced) {
+      updatePreviewCaption(target.title, target.href, { instant: true });
+      incoming.layer.style.willChange = "opacity";
+      gsap.set(incoming.img, { clearProps: "transform" });
+      gsap.set(outgoing.layer, { clearProps: "transform" });
+      if (previewScrim) gsap.set(previewScrim, { opacity: 0 });
+      if (previewEdge) gsap.set(previewEdge, { opacity: 0 });
+
+      previewTl = gsap.timeline({
+        onComplete: () => finalizePreviewTransition(target, token),
+      });
+      previewTl.fromTo(
+        incoming.layer,
+        { opacity: 0 },
+        { opacity: 1, duration: 0.2, ease: "none" }
+      );
+      return;
+    }
+
+    updatePreviewCaption(target.title, target.href);
+    setPreviewWillChange(true);
+
+    const mediaH =
+      previewMedia?.clientHeight ||
+      Math.round((previewMedia?.clientWidth || 320) * 0.75);
+    const startEdgeY = Math.max(0, mediaH - 2);
+
+    previewTl = gsap.timeline({
+      onComplete: () => finalizePreviewTransition(target, token),
+    });
+
+    previewTl
+      .fromTo(
+        incoming.layer,
+        { clipPath: "inset(100% 0% 0% 0%)", opacity: 1 },
+        { clipPath: "inset(0% 0% 0% 0%)", opacity: 1, duration: 0.65, ease: MOTION_EASE.door },
+        0
+      )
+      .fromTo(
+        incoming.img,
+        { scale: 1.12, yPercent: 6 },
+        { scale: 1, yPercent: 0, duration: 0.65, ease: MOTION_EASE.door },
+        0
+      )
+      .fromTo(
+        outgoing.layer,
+        { yPercent: 0 },
+        { yPercent: -4, duration: 0.65, ease: MOTION_EASE.door },
+        0
+      );
+
+    if (previewScrim) {
+      previewTl.fromTo(
+        previewScrim,
+        { opacity: 0 },
+        { opacity: 0.55, duration: 0.65, ease: MOTION_EASE.door },
+        0
+      );
+    }
+
+    if (previewEdge) {
+      previewTl
+        .fromTo(
+          previewEdge,
+          { y: startEdgeY, opacity: 1 },
+          { y: 0, duration: 0.65, ease: MOTION_EASE.door },
+          0
+        )
+        .to(
+          previewEdge,
+          { opacity: 0, duration: 0.0975, ease: "none" },
+          0.5525
+        );
+    }
+  };
+
+  const revealSingleDoorPreview = (nextSrc, nextTitle, nextHref) => {
+    if (!nextSrc || !isDesktopPreviewMode()) return;
+
+    const previewHidden =
+      !previewCol || window.getComputedStyle(previewCol).display === "none";
+    if (previewHidden || !previewLayerA || !previewLayerB || !previewMedia) {
+      return;
+    }
+
+    const isAnimating = Boolean(previewTl && previewTl.isActive());
+    if (isAnimating || isDecodingPreview) {
+      if (nextSrc === inFlightTarget?.src) {
+        pendingPreview = null;
+        return;
+      }
+      pendingPreview = { src: nextSrc, title: nextTitle, href: nextHref };
+      if (isAnimating) previewTl.timeScale(2);
+      return;
+    }
+
+    if (nextSrc === currentPreviewSrc) {
+      pendingPreview = null;
+      updatePreviewCaption(nextTitle, nextHref);
+      return;
+    }
+
+    startPreviewTransition({ src: nextSrc, title: nextTitle, href: nextHref });
+  };
+
+  const activateProduct = (link, { instantIndicator = false } = {}) => {
+    if (!isDesktopPreviewMode()) return;
+    moveIndicator(link, { instant: instantIndicator });
+    revealSingleDoorPreview(
+      link.dataset.previewImg,
+      link.dataset.previewTitle || "",
+      link.getAttribute("href") || ""
+    );
+  };
 
   productLinks.forEach((link) => {
-    const activatePreview = () => {
-      const nextSrc = link.dataset.previewImg;
-      const nextTitle = link.dataset.previewTitle;
-      if (previewImg && nextSrc && previewImg.getAttribute("src") !== nextSrc) {
-        previewImg.setAttribute("src", nextSrc);
-        previewImg.alt = nextTitle || "";
-      }
-      if (previewCap && nextTitle) previewCap.textContent = nextTitle;
-      productLinks.forEach((item) => item.classList.toggle("is-previewed", item === link));
-    };
-    link.addEventListener("pointerenter", activatePreview);
-    link.addEventListener("focus", activatePreview);
+    link.addEventListener("pointerenter", () => {
+      if (!isDesktopPreviewMode()) return;
+      clearTimeout(hoverTimer);
+      hoverTimer = window.setTimeout(() => activateProduct(link), 80);
+    });
+    link.addEventListener("focus", () => {
+      if (!isDesktopPreviewMode()) return;
+      clearTimeout(hoverTimer);
+      activateProduct(link);
+    });
+  });
+
+  productsWrap?.addEventListener("pointerleave", () => {
+    clearTimeout(hoverTimer);
   });
 
   const setBackgroundInert = (shouldInert) => {
@@ -503,33 +1026,150 @@ function setupDoorMenuController() {
 
   const getFocusableInMenu = () => [
     menuBtn,
-    ...qsa("a[href], button:not([disabled])", menu),
+    ...qsa('a[href]:not([tabindex="-1"]), button:not([disabled]):not([tabindex="-1"])', menu),
   ];
 
-  const setPanelWillChange = (value) => {
-    if (panel) panel.style.willChange = value;
-    if (backdrop) backdrop.style.willChange = value ? "opacity" : "";
+  const mobileRevealItems = [
+    ...primaryLinks,
+    productsTitle,
+    ...mobileCards,
+    contactCol,
+  ].filter(Boolean);
+
+  const allAnimatedMenuNodes = [
+    backdrop,
+    headerDropBg,
+    panel,
+    panelRail,
+    ...colEls,
+    ...productLinks,
+    ...mobileRevealItems,
+  ].filter(Boolean);
+
+  const setLayersWillChange = (active) => {
+    const mobile = isMobileSheet();
+    if (backdrop) backdrop.style.willChange = active ? "opacity" : "";
+    if (headerDropBg) headerDropBg.style.willChange = active ? "opacity" : "";
+    if (panel) panel.style.willChange = active ? "clip-path, opacity" : "";
+    if (panelRail) panelRail.style.willChange = active ? "transform" : "";
+    if (mobile) {
+      colEls.forEach((el) => {
+        el.style.willChange = "";
+      });
+      productLinks.forEach((el) => {
+        el.style.willChange = "";
+      });
+      mobileRevealItems.forEach((el) => {
+        el.style.willChange = active ? "transform, opacity" : "";
+      });
+    } else {
+      mobileRevealItems.forEach((el) => {
+        el.style.willChange = "";
+      });
+      colEls.forEach((el) => {
+        el.style.willChange = active ? "transform, opacity" : "";
+      });
+      productLinks.forEach((el) => {
+        el.style.willChange = active ? "transform, opacity" : "";
+      });
+    }
+  };
+
+  const restoreScrollPosition = () => {
+    const smoother = ScrollSmoother.get();
+    if (smoother) {
+      if (
+        savedSmootherTop !== null &&
+        Math.abs(smoother.scrollTop() - savedSmootherTop) > 0.5
+      ) {
+        smoother.scrollTop(savedSmootherTop);
+      }
+      return;
+    }
+    if (Math.abs(window.scrollY - savedScrollY) > 0) {
+      window.scrollTo({ top: savedScrollY, behavior: "auto" });
+    }
   };
 
   const finishClose = () => {
-    setPanelWillChange("");
+    if (openState) return;
+    clearTimeout(hoverTimer);
+    resetPreviewElements();
+    setLayersWillChange(false);
     menu.hidden = true;
-    document.documentElement.classList.remove("menu-open");
+    document.documentElement.classList.remove("menu-open", "menu-dark-header");
     header.classList.remove("is-menu-active");
     setBackgroundInert(false);
-    document.documentElement.style.overflow = "";
-    ScrollSmoother.get()?.paused(false);
+    gsap.set(allAnimatedMenuNodes, {
+      clearProps: "opacity,clipPath,transform",
+    });
+
+    const smoother = ScrollSmoother.get();
+    smoother?.paused(false);
+    restoreScrollPosition();
   };
 
   const buildMenuTimeline = () => {
+    const mobile = isMobileSheet();
+    if (menuTl && builtForMobile === mobile) return menuTl;
+
     menuTl?.kill();
+    builtForMobile = mobile;
+
     menuTl = gsap.timeline({
       paused: true,
-      defaults: { ease: MOTION_EASE.door },
-      onStart: () => setPanelWillChange("transform"),
-      onComplete: () => setPanelWillChange(""),
+      onStart: () => setLayersWillChange(true),
+      onUpdate: () => {
+        if (!menuTl) return;
+        document.documentElement.classList.toggle(
+          "menu-dark-header",
+          menuTl.time() >= 0.08
+        );
+      },
+      onComplete: () => setLayersWillChange(false),
       onReverseComplete: finishClose,
     });
+
+    if (mobile) {
+      menuTl
+        .fromTo(
+          backdrop,
+          { opacity: 0 },
+          { opacity: 1, duration: 0.2, ease: "none" },
+          0
+        )
+        .fromTo(
+          headerDropBg,
+          { opacity: 0 },
+          { opacity: 1, duration: 0.14, ease: "none" },
+          0
+        )
+        .fromTo(
+          panel,
+          { clipPath: "inset(0 0 100% 0)", opacity: 1 },
+          { clipPath: "inset(0 0 0% 0)", opacity: 1, duration: 0.45, ease: MOTION_EASE.door },
+          0
+        )
+        .fromTo(
+          panelRail,
+          { scaleX: 0 },
+          { scaleX: 1, duration: 0.34, ease: MOTION_EASE.door },
+          0.08
+        )
+        .fromTo(
+          mobileRevealItems,
+          { y: 12, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.22,
+            stagger: 0.03,
+            ease: MOTION_EASE.reveal,
+          },
+          0.2
+        );
+      return menuTl;
+    }
 
     menuTl
       .fromTo(
@@ -539,28 +1179,46 @@ function setupDoorMenuController() {
         0
       )
       .fromTo(
-        panel,
-        { yPercent: -102 },
-        { yPercent: 0, duration: 0.56 },
-        0.02
+        headerDropBg,
+        { opacity: 0 },
+        { opacity: 1, duration: 0.16, ease: "none" },
+        0
       )
       .fromTo(
-        linkLabels,
-        { y: 18, opacity: 0 },
+        panel,
+        { clipPath: "inset(0 0 100% 0)", opacity: 1 },
+        { clipPath: "inset(0 0 0% 0)", opacity: 1, duration: 0.56, ease: MOTION_EASE.door },
+        0
+      )
+      .fromTo(
+        panelRail,
+        { scaleX: 0 },
+        { scaleX: 1, duration: 0.44, ease: MOTION_EASE.door },
+        0.12
+      )
+      .fromTo(
+        colEls,
+        { y: 16, opacity: 0 },
         {
           y: 0,
           opacity: 1,
           duration: 0.34,
-          stagger: 0.05,
+          stagger: 0.04,
           ease: MOTION_EASE.reveal,
         },
         0.18
       )
       .fromTo(
-        foot,
-        { y: 12, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.3, ease: MOTION_EASE.reveal },
-        0.26
+        productLinks,
+        { yPercent: 100, opacity: 0 },
+        {
+          yPercent: 0,
+          opacity: 1,
+          duration: 0.22,
+          stagger: 0.03,
+          ease: MOTION_EASE.reveal,
+        },
+        0.22
       );
 
     return menuTl;
@@ -569,48 +1227,139 @@ function setupDoorMenuController() {
   const openMenu = () => {
     if (openState) return;
     openState = true;
+
+    const smoother = ScrollSmoother.get();
+    savedScrollY = window.scrollY;
+    savedSmootherTop = smoother ? smoother.scrollTop() : null;
+
     menu.hidden = false;
     document.documentElement.classList.add("menu-open");
     header.classList.add("is-menu-active");
     menuBtn.setAttribute("aria-expanded", "true");
     menuBtn.setAttribute("aria-label", "بستن منو");
     setBackgroundInert(true);
-    document.documentElement.style.overflow = "hidden";
-    ScrollSmoother.get()?.paused(true);
+    smoother?.paused(true);
+    if (panelScroll) panelScroll.scrollTop = 0;
+    if (mobileCarousel) mobileCarousel.scrollLeft = 0;
+
+    if (isDesktopPreviewMode()) {
+      decodeAllProductImages();
+    }
+    if (!isMobileSheet()) {
+      refreshRowOffsets();
+      const initialProduct =
+        qs(".door-product-link[aria-current]", menu) ||
+        qs(".door-product-link.is-active", menu) ||
+        productLinks[0];
+      if (initialProduct) {
+        moveIndicator(initialProduct, { instant: true });
+        syncInitialPreview(initialProduct);
+      }
+    }
 
     if (isMotionReduced()) {
-      gsap.set(backdrop, { opacity: 1 });
-      gsap.set(panel, { yPercent: 0 });
-      gsap.set(linkLabels, { y: 0, opacity: 1 });
-      gsap.set(foot, { y: 0, opacity: 1 });
+      menuTl?.pause(0);
+      document.documentElement.classList.add("menu-dark-header");
+      gsap.set([backdrop, headerDropBg], { opacity: 1 });
+      gsap.set(panel, { clipPath: "none", opacity: 0 });
+      gsap.to(panel, { opacity: 1, duration: 0.15, ease: "none" });
+      gsap.set(panelRail, { scaleX: 1 });
+      gsap.set([...colEls, ...productLinks, ...mobileRevealItems].filter(Boolean), {
+        y: 0,
+        yPercent: 0,
+        opacity: 1,
+      });
     } else {
-      if (!menuTl) buildMenuTimeline();
-      menuTl.timeScale(1).play();
+      const tl = buildMenuTimeline();
+      tl.timeScale(1).play();
     }
 
     requestAnimationFrame(() => {
-      linkLabels[0]?.focus({ preventScroll: true });
+      if (!openState) return;
+      restoreScrollPosition();
+      primaryLinks[0]?.focus({ preventScroll: true });
+      restoreScrollPosition();
     });
   };
 
   const closeMenu = ({ restoreFocus = true, instant = false } = {}) => {
     if (!openState) return;
     openState = false;
+    clearTimeout(hoverTimer);
     menuBtn.setAttribute("aria-expanded", "false");
     menuBtn.setAttribute("aria-label", "باز کردن منو");
 
-    if (instant || isMotionReduced() || !menuTl) {
+    if (instant || isMotionReduced()) {
       menuTl?.pause(0);
+      gsap.killTweensOf(allAnimatedMenuNodes);
+      gsap.set([backdrop, headerDropBg], { opacity: 0 });
+      gsap.set(panel, { opacity: 0, clearProps: "clipPath" });
       finishClose();
+    } else if (menuTl) {
+      setLayersWillChange(true);
+      const targetCloseSec = isMobileSheet() ? 0.28 : 0.32;
+      const speed = Math.max(1, menuTl.duration() / targetCloseSec);
+      menuTl.timeScale(speed).reverse();
     } else {
-      setPanelWillChange("transform");
-      menuTl.timeScale(1.25).reverse();
+      finishClose();
     }
 
     if (restoreFocus) {
       menuBtn.focus({ preventScroll: true });
+      restoreScrollPosition();
     }
   };
+
+  // جلوگیری از رسیدن wheel/touch به صفحهٔ زیرین بدون ایجاد پرش اسکرول (بدون overflow:hidden روی html)
+  const canScrollVertically = (el, deltaY) => {
+    if (!el || el.scrollHeight <= el.clientHeight + 1) return false;
+    if (deltaY < 0) return el.scrollTop > 0;
+    if (deltaY > 0) return el.scrollTop + el.clientHeight < el.scrollHeight - 1;
+    return true;
+  };
+
+  menu.addEventListener(
+    "wheel",
+    (event) => {
+      if (!openState) return;
+      if (
+        mobileCarousel?.contains(event.target) &&
+        Math.abs(event.deltaX) > Math.abs(event.deltaY)
+      ) {
+        return;
+      }
+      if (!panel?.contains(event.target) || !canScrollVertically(panelScroll, event.deltaY)) {
+        event.preventDefault();
+      }
+    },
+    { passive: false }
+  );
+
+  menu.addEventListener(
+    "touchstart",
+    (event) => {
+      if (!openState || !event.touches[0]) return;
+      touchStartX = event.touches[0].clientX;
+      touchStartY = event.touches[0].clientY;
+    },
+    { passive: true }
+  );
+
+  menu.addEventListener(
+    "touchmove",
+    (event) => {
+      if (!openState || !event.touches[0]) return;
+      const dx = Math.abs(touchStartX - event.touches[0].clientX);
+      const dy = touchStartY - event.touches[0].clientY;
+      if (mobileCarousel?.contains(event.target) && dx >= Math.abs(dy)) {
+        return;
+      }
+      if (!panel?.contains(event.target) || !canScrollVertically(panelScroll, dy)) {
+        event.preventDefault();
+      }
+    },
+    { passive: false }
+  );
 
   menuBtn.addEventListener("click", () => {
     if (openState) {
@@ -620,7 +1369,11 @@ function setupDoorMenuController() {
     }
   });
 
-  backdrop?.addEventListener("click", () => closeMenu());
+  menu.addEventListener("click", (event) => {
+    if (event.target === backdrop) {
+      closeMenu();
+    }
+  });
 
   document.addEventListener("keydown", (event) => {
     if (!openState) return;
@@ -629,6 +1382,15 @@ function setupDoorMenuController() {
       closeMenu();
       return;
     }
+    if (
+      event.key === "PageUp" ||
+      event.key === "PageDown" ||
+      (event.key === " " && !event.target.closest?.("a, button"))
+    ) {
+      if (!canScrollVertically(panelScroll, event.key === "PageUp" ? -1 : 1)) {
+        event.preventDefault();
+      }
+    }
     if (event.key === "Tab") {
       const focusables = getFocusableInMenu();
       if (!focusables.length) return;
@@ -636,10 +1398,10 @@ function setupDoorMenuController() {
       const last = focusables[focusables.length - 1];
       if (event.shiftKey && document.activeElement === first) {
         event.preventDefault();
-        last.focus();
+        last.focus({ preventScroll: true });
       } else if (!event.shiftKey && document.activeElement === last) {
         event.preventDefault();
-        first.focus();
+        first.focus({ preventScroll: true });
       }
     }
   });
@@ -653,7 +1415,11 @@ function setupDoorMenuController() {
   window.__doorMenuControl = {
     open: openMenu,
     close: closeMenu,
-    getTimeline: () => menuTl || buildMenuTimeline(),
+    getTimeline: () => buildMenuTimeline(),
+    getScrollSnapshot: () => ({
+      scrollY: window.scrollY,
+      smootherTop: ScrollSmoother.get()?.scrollTop() ?? null,
+    }),
     setProgress: (p) => {
       if (!openState) {
         openState = true;
@@ -662,8 +1428,12 @@ function setupDoorMenuController() {
         header.classList.add("is-menu-active");
         menuBtn.setAttribute("aria-expanded", "true");
       }
-      const tl = menuTl || buildMenuTimeline();
+      const tl = buildMenuTimeline();
       tl.progress(p).pause();
+      document.documentElement.classList.toggle(
+        "menu-dark-header",
+        tl.time() >= 0.08
+      );
     },
   };
 
@@ -673,7 +1443,7 @@ function setupDoorMenuController() {
 function initFooterResponsiveServices() {
   const details = qs(".footer-services-acc");
   if (!details) return;
-  const mq = matchMedia("(min-width: 48em)");
+  const mq = matchMedia("(min-width: 64em)");
   const sync = () => {
     details.open = mq.matches;
   };
@@ -771,7 +1541,7 @@ function initChromeMotion(menuController) {
           applyHeaderState(window.scrollY);
         }
 
-        if (!reduced) {
+        if (isDesktop && !reduced) {
           navLinks.forEach((link) => cleanups.push(initTextRoll(link)));
           if (headerCta) cleanups.push(createMagnetic(headerCta, { strength: 0.2 }));
           footerCtaBtns.forEach((btn) =>
@@ -779,7 +1549,7 @@ function initChromeMotion(menuController) {
           );
         }
 
-        if (footer) {
+        if (footer && isDesktop) {
           const titleWords = footerTitle ? splitWords(footerTitle) : [];
 
           if (reduced) {
@@ -857,7 +1627,7 @@ function initChromeMotion(menuController) {
               );
             }
 
-            if (wordmarkSpan && isDesktop) {
+            if (wordmarkSpan) {
               gsap.fromTo(
                 wordmarkSpan,
                 { xPercent: 5 },
@@ -910,6 +1680,7 @@ export function initChrome() {
   document.documentElement.classList.add("chrome-js");
 
   mountHeaderMenuAndFooter();
+  injectSpeculationRules();
   applyContactLinks(document);
   initFooterResponsiveServices();
   initToTop();
