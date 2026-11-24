@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ارتباط با ما | مشاوره و ثبت درخواست | نوین درب تهران</title>
+<meta name="description" content="ثبت درخواست مشاوره، نصب، تعمیر و سرویس دوره‌ای درب‌های اتوماتیک و حفاظتی نوین درب تهران.">
+<meta name="theme-color" content="#eeede6">
+<meta name="color-scheme" content="only light">
+<meta name="format-detection" content="telephone=no">
+<link rel="stylesheet" href="./src/chrome.css">
+<link rel="stylesheet" href="./src/contact.css">
+</head>
+<body>
+<a class="skip" href="#main">رفتن به محتوای اصلی</a>
+<div class="progress" aria-hidden="true"></div>
+
+<main id="main">
+  <!-- بالای صفحه: عنوان + راه‌های تماس واقعی (فقط موارد تأییدشده) -->
+  <section class="page-head" aria-labelledby="contact-page-title">
+    <div class="wrap">
+      <nav class="breadcrumb" aria-label="مسیر صفحه">
+        <a href="./index.html">صفحه اصلی</a>
+        <span class="breadcrumb-sep" aria-hidden="true">/</span>
+        <span aria-current="page">ارتباط با ما</span>
+      </nav>
+
+      <span class="page-kicker">مشاوره و ثبت درخواست</span>
+      <h1 id="contact-page-title" class="page-title">ارتباط با <em>نوین درب تهران</em></h1>
+      <p class="page-lead">نیاز خود را در فرم زیر ثبت کنید تا متن مرتب درخواست برای ارسال یا هماهنگی بازدید فنی آماده شود.</p>
+
+      <div class="verified-channels" data-verified-channels hidden></div>
+    </div>
+  </section>
+
+  <!-- بخش اصلی: فرم ساده و اعتبارسنجی inline + روند ۳مرحله‌ای + ساعات کاری -->
+  <section id="contact" class="contact-main-band" aria-labelledby="contact-form-title">
+    <div class="wrap contact-layout">
+      <div class="contact-aside">
+        <h2 id="contact-form-title" class="section-heading">روند بررسی <em>درخواست</em></h2>
+
+        <ol class="process-list">
+          <li class="process-item"><span class="process-num">۰۱</span><span>ثبت مشخصات و نوع خدمت در فرم</span></li>
+          <li class="process-item"><span class="process-num">۰۲</span><span>بررسی فنی و هماهنگی بازدید در صورت نیاز</span></li>
+          <li class="process-item"><span class="process-num">۰۳</span><span>اعلام هزینهٔ شفاف و زمان‌بندی اجرا</span></li>
+        </ol>
+
+        <div class="service-hours-box">
+          <span class="service-hours-title">ساعات پاسخ‌گویی و محدودهٔ خدمات</span>
+          <div class="service-hours-list">
+            <p><strong>ساعات کاری:</strong> شنبه تا پنج‌شنبه، ۸ تا ۱۸ (به‌جز روزهای تعطیل)</p>
+            <p><strong>محدودهٔ خدمات:</strong> تهران</p>
+          </div>
+        </div>
+      </div>
+
+      <form id="quote-form" class="form" aria-labelledby="form-title" novalidate>
+        <div class="form-in">
+          <div class="form-head field--full">
+            <h2 id="form-title">فرم درخواست مشاوره</h2>
+            <p>فیلدهای ضروری را تکمیل کنید تا متن آمادهٔ ارسال برایتان ساخته شود.</p>
+          </div>
+
+          <div class="field">
+            <label for="full-name">نام و نام خانوادگی <span class="required-label">(الزامی)</span></label>
+            <input class="input" id="full-name" name="name" type="text" autocomplete="name" maxlength="80" required placeholder="نام شما" aria-describedby="name-error">
+            <p id="name-error" class="field-error" hidden></p>
+          </div>
+
+          <div class="field">
+            <label for="phone">شمارهٔ تماس <span class="required-label">(الزامی)</span></label>
+            <div class="input-row">
+              <input class="input" id="phone" name="phone" type="tel" inputmode="tel" dir="ltr" autocomplete="tel" minlength="10" maxlength="24" required placeholder="09123456789" aria-describedby="phone-format phone-error">
+              <button class="hint-btn" type="button" popovertarget="phone-tip" aria-label="راهنمای شمارهٔ تماس">؟</button>
+            </div>
+            <span id="phone-format" class="form-note">شمارهٔ ایران با ۰ یا ۹۸+ (ارقام فارسی یا انگلیسی).</span>
+            <p id="phone-error" class="field-error" hidden></p>
+          </div>
+
+          <div class="field">
+            <label for="service-type">نوع محصول <span class="required-label">(الزامی)</span></label>
+            <select id="service-type" name="service" class="input" required aria-describedby="service-error">
+              <option value="" selected disabled>انتخاب سیستم...</option>
+              <option value="jack">جک‌های پارکینگی</option>
+              <option value="glass">درب‌های شیشه‌ای اتوماتیک</option>
+              <option value="shutter">درب‌های کرکره‌ای</option>
+              <option value="barrier">راهبندهای اتوماتیک</option>
+              <option value="balcony">شیشهٔ بالکنی</option>
+              <option value="folding">درب‌های فولدینگ</option>
+              <option value="sectional">درب‌های سکشنال</option>
+              <option value="general">نیاز به راهنمایی برای انتخاب</option>
+            </select>
+            <p id="service-error" class="field-error" hidden></p>
+          </div>
+
+          <div class="field">
+            <label for="request-kind">نوع خدمت <span class="optional-label">(اختیاری)</span></label>
+            <select id="request-kind" name="kind" class="input">
+              <option value="">انتخاب کنید...</option>
+              <option value="install">نصب و راه‌اندازی</option>
+              <option value="repair">تعمیر و عیب‌یابی</option>
+              <option value="maintenance">سرویس دوره‌ای</option>
+              <option value="quote">استعلام قیمت و مشاوره</option>
+            </select>
+          </div>
+
+          <details class="district-toggle field--full">
+            <summary>افزودن محدوده یا محله در تهران (اختیاری)</summary>
+            <div class="field">
+              <label for="district">محدوده / محله</label>
+              <input class="input" id="district" name="district" type="text" autocomplete="address-level2" maxlength="80" placeholder="مثلاً: ونک، سعادت‌آباد، تهرانپارس">
+            </div>
+          </details>
+
+          <div class="field field--full">
+            <label for="description">توضیح <span class="optional-label">(اختیاری)</span></label>
+            <textarea class="input" id="description" name="description" rows="3" maxlength="600" placeholder="ابعاد تقریبی درب یا شرح کوتاهی از نیازتان بنویسید." aria-describedby="desc-hint"></textarea>
+            <span id="desc-hint" class="form-note">با ثبت فرم، متن مرتب درخواست برای کپی کردن و ارسال آماده می‌شود.</span>
+          </div>
+
+          <button class="btn btn--primary btn--block field--full" type="submit">آماده‌سازی متن درخواست <svg class="arw" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 19 5M5 5h14v14"/></svg></button>
+
+          <p id="form-status" class="field--full" role="status" aria-live="polite"></p>
+
+          <div id="request-result" class="field field--full" hidden>
+            <label for="request-text">متن آمادهٔ درخواست</label>
+            <textarea id="request-text" class="input" rows="6" readonly dir="rtl"></textarea>
+            <div class="result-actions">
+              <button id="copy-request" type="button" class="btn btn--primary">کپی متن</button>
+              <button id="reset-request" type="button" class="btn btn--secondary">پاک‌کردن</button>
+            </div>
+          </div>
+
+          <noscript>
+            <p class="form-note field--full">برای آماده‌سازی خودکار متن درخواست، جاوااسکریپت را فعال کنید.</p>
+          </noscript>
+        </div>
+      </form>
+    </div>
+
+    <div id="phone-tip" class="tip" popover>شمارهٔ موبایل یا تلفن ثابت ایران را کامل و با پیش‌شماره وارد کنید. ارقام فارسی و انگلیسی هر دو پذیرفته می‌شوند.</div>
+  </section>
+
+  <!-- سوالات متداول (حداکثر ۳ مورد، همگی با پاسخ واقعی) -->
+  <section class="faq-band" aria-labelledby="contact-faq-title">
+    <div class="wrap faq-split">
+      <div>
+        <span class="page-kicker">پیش از ثبت درخواست</span>
+        <h2 id="contact-faq-title" class="section-heading">سوالات متداول</h2>
+      </div>
+
+      <div class="faq-list">
+        <details class="faq-item">
+          <summary>پیش از تماس چه اطلاعاتی آماده داشته باشیم؟</summary>
+          <div class="faq-body">دانستن عرض و ارتفاع تقریبی دهانه، نوع کاربری ساختمان (مسکونی، تجاری یا اداری) و در صورت امکان یک عکس از محل نصب برای برآورد دقیق‌تر کافی است.</div>
+        </details>
+        <details class="faq-item">
+          <summary>آیا امکان بازدید فنی پیش از نصب وجود دارد؟</summary>
+          <div class="faq-body">بله؛ پس از گفت‌وگوی اولیه و مشخص شدن نوع سیستم، زمان بازدید کارشناس در تهران برای اندازه‌گیری دقیق و بررسی زیرساخت هماهنگ می‌شود.</div>
+        </details>
+        <details class="faq-item">
+          <summary>برای درخواست تعمیر چه جزئیاتی بنویسیم؟</summary>
+          <div class="faq-body">نوع درب (جک، کرکره، شیشه‌ای یا راهبند) و شرح کوتاهی از ایراد مانند باز نشدن کامل، کندی حرکت یا کار نکردن ریموت و چشمی را بنویسید.</div>
+        </details>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script type="module" src="./src/chrome.js"></script>
+<script type="module" src="./src/contact.js"></script>
+</body>
+</html>

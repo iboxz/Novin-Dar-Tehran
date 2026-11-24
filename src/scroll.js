@@ -11,7 +11,6 @@ export function initScroll() {
 
   const serviceItems = qsa(".svc-item");
   const catalogLinks = qsa(".catalog-nav a");
-  const motionToggle = qs(".motion-toggle");
 
   const states = serviceItems.map(() => ({
     progress: 0,
@@ -197,18 +196,8 @@ export function initScroll() {
         reduced: "(prefers-reduced-motion:reduce)",
       },
       (context) => {
-        isReduced = manualReduced || context.conditions.reduced;
+        isReduced = context.conditions.reduced;
         document.documentElement.classList.toggle("motion-paused", isReduced);
-
-        if (motionToggle) {
-          motionToggle.hidden = false;
-          motionToggle.disabled = context.conditions.reduced;
-          motionToggle.setAttribute("aria-pressed", String(isReduced));
-          motionToggle.setAttribute(
-            "aria-label",
-            isReduced ? "فعال کردن انیمیشن‌ها" : "توقف انیمیشن‌ها"
-          );
-        }
 
         if (context.conditions.desktop && !isReduced) {
           smoother = ScrollSmoother.create({
@@ -328,11 +317,6 @@ export function initScroll() {
 
     ScrollTrigger.refresh();
   };
-
-  motionToggle?.addEventListener("click", () => {
-    manualReduced = !manualReduced;
-    buildScrollTriggers();
-  });
 
   document.documentElement.classList.add("gsap-ready");
   buildScrollTriggers();

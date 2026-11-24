@@ -1,31 +1,75 @@
 import { initGalleries } from "./gallery.js";
 import { MODEL_FACTORIES, createProductStage } from "./models.js";
 
-const FA_DIGITS = "۰۱۲۳۴۵۶۷۸۹";
-const toFa = (n) => String(n).replace(/\d/g, (d) => FA_DIGITS[Number(d)]);
+export const PRODUCTS_CATALOG = [
+  {
+    key: "jack",
+    num: "۰۱",
+    title: "جک‌های پارکینگی",
+    summary: "مناسب درب‌های لولایی تک‌لنگه و دولنگهٔ حیاط و پارکینگ",
+    href: "jack.html",
+  },
+  {
+    key: "glass",
+    num: "۰۲",
+    title: "درب‌های شیشه‌ای اتوماتیک",
+    summary: "اسلایدینگ و تلسکوپی برای ورودی ساختمان و فروشگاه",
+    href: "glass.html",
+  },
+  {
+    key: "shutter",
+    num: "۰۳",
+    title: "درب‌های کرکره‌ای",
+    summary: "تیغه‌های امنیتی و موتور ساید یا توبولار برای مغازه و پارکینگ",
+    href: "shutter.html",
+  },
+  {
+    key: "barrier",
+    num: "۰۴",
+    title: "راهبندهای اتوماتیک",
+    summary: "کنترل تردد خودرو در ورودی مجتمع‌ها و پارکینگ‌های پرتردد",
+    href: "barrier.html",
+  },
+  {
+    key: "balcony",
+    num: "۰۵",
+    title: "شیشهٔ بالکنی",
+    summary: "پنل‌های تاشو و ریلی برای استفادهٔ چهارفصل از تراس و بالکن",
+    href: "balcony.html",
+  },
+  {
+    key: "folding",
+    num: "۰۶",
+    title: "درب‌های فولدینگ",
+    summary: "بازشوی جمع‌شونده برای پارکینگ‌های کم‌عمق و دهانه‌های محدود",
+    href: "folding.html",
+  },
+  {
+    key: "sectional",
+    num: "۰۷",
+    title: "درب‌های سکشنال",
+    summary: "پنل‌های عایق زیرسقفی بدون اشغال فضای جلوی ورودی",
+    href: "sectional.html",
+  },
+];
+
+const PRODUCTS_BY_KEY = new Map(PRODUCTS_CATALOG.map((item) => [item.key, item]));
 
 function initCatalogFilter() {
   const filterButtons = [...document.querySelectorAll("[data-filter]")];
-  const rows = [...document.querySelectorAll(".product-row[data-category]")];
-  const countEl = document.querySelector("[data-catalog-count]");
-  if (!filterButtons.length || !rows.length) return;
+  const cards = [...document.querySelectorAll("[data-category]")];
+  if (!filterButtons.length || !cards.length) return;
 
   const applyFilter = (category) => {
-    let visible = 0;
-    rows.forEach((row) => {
-      const categories = (row.dataset.category || "").split(/\s+/);
+    cards.forEach((card) => {
+      const categories = (card.dataset.category || "").split(/\s+/);
       const match = category === "all" || categories.includes(category);
-      row.hidden = !match;
-      if (match) visible += 1;
+      card.hidden = !match;
     });
 
     filterButtons.forEach((btn) => {
       btn.setAttribute("aria-pressed", String(btn.dataset.filter === category));
     });
-
-    if (countEl) {
-      countEl.textContent = `نمایش ${toFa(visible)} محصول از ${toFa(rows.length)}`;
-    }
   };
 
   filterButtons.forEach((btn) => {
@@ -33,6 +77,49 @@ function initCatalogFilter() {
   });
 
   applyFilter("all");
+}
+
+function initRelatedProducts() {
+  const container = document.querySelector("[data-related-products]");
+  if (!container) return;
+
+  const currentKey = container.dataset.relatedProducts || "";
+  const explicitList = (container.dataset.relatedList || "")
+    .split(",")
+    .map((k) => k.trim())
+    .filter(Boolean);
+
+  const items = (
+    explicitList.length
+      ? explicitList.map((key) => PRODUCTS_BY_KEY.get(key)).filter(Boolean)
+      : PRODUCTS_CATALOG.filter((item) => item.key !== currentKey).slice(0, 3)
+  ).slice(0, 3);
+
+  if (!items.length) return;
+
+  const fragment = document.createDocumentFragment();
+  items.forEach((item) => {
+    const link = document.createElement("a");
+    link.className = "related-card";
+    link.href = `./${item.href}`;
+
+    const num = document.createElement("span");
+    num.className = "related-card-num";
+    num.textContent = item.num;
+
+    const title = document.createElement("span");
+    title.className = "related-card-title";
+    title.textContent = item.title;
+
+    const note = document.createElement("span");
+    note.className = "related-card-note";
+    note.textContent = item.summary;
+
+    link.append(num, title, note);
+    fragment.append(link);
+  });
+
+  container.replaceChildren(fragment);
 }
 
 function initProductDetailStage() {
@@ -92,4 +179,5 @@ function initProductDetailStage() {
 }
 
 initCatalogFilter();
+initRelatedProducts();
 initProductDetailStage();
