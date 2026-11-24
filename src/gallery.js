@@ -4,7 +4,7 @@ const fa = (value) =>
 
 const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
 
-const GALLERY_IMAGES = {
+export const GALLERY_IMAGES = {
   jack: [
     { src: "parking-gate-openers.png", title: "درب پارکینگی با جک بازویی", alt: "درب پارکینگی دو لنگه با دو جک بازویی نصب‌شده روی پایه‌های سنگی" },
     { src: "gate-system-2.jpg", title: "درب حیاط با بازشوی بازویی", alt: "درب حیاط دو لنگه با روکش چوب و بازشوی بازویی" },
@@ -52,7 +52,7 @@ function createPhotoSlide(image, index, total) {
   slide.setAttribute("aria-label", `${fa(index + 1)} از ${fa(total)}: ${image.title}`);
 
   const img = document.createElement("img");
-  img.src = `./assets/projects-images/${image.src}`;
+  img.src = new URL(`../assets/projects-images/${image.src}`, import.meta.url).href;
   img.alt = image.alt;
   img.loading = "lazy";
   img.decoding = "async";
