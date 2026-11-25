@@ -174,10 +174,14 @@ export function initScroll() {
     });
   });
 
+  const catalogNav = qs(".catalog-nav");
   const setActiveCatalogItem = (activeIndex) => {
-    catalogLinks.forEach((link, idx) =>
-      link.setAttribute("aria-current", String(idx === activeIndex))
-    );
+    catalogNav?.style.setProperty("--i", String(activeIndex));
+    catalogNav?.style.setProperty("--n", String(catalogLinks.length));
+    catalogLinks.forEach((link, idx) => {
+      link.setAttribute("aria-current", String(idx === activeIndex));
+      link.toggleAttribute("data-passed", idx < activeIndex);
+    });
   };
 
   const mm = gsap.matchMedia();
@@ -226,7 +230,7 @@ export function initScroll() {
 
         let activeIndex = 0;
         const isDesktop = context.conditions.desktop;
-        const pinnedContainer = isDesktop && !isReduced ? "#services" : undefined;
+        const pinnedContainer = !isReduced ? "#services" : undefined;
 
         serviceItems.forEach((item, idx) => {
           const trigger = ScrollTrigger.create({
@@ -247,7 +251,7 @@ export function initScroll() {
             activeIndex = idx;
           }
 
-          if (isDesktop && !isReduced && idx !== 0) {
+          if (!isReduced && idx !== 0) {
             // آیتم اول (جک) در بازهٔ پین سکشن خدمات انیمیت می‌شود، نه با اسکرول عادی
             gsap.fromTo(
               states[idx],
@@ -258,8 +262,8 @@ export function initScroll() {
                 scrollTrigger: {
                   trigger: item,
                   pinnedContainer,
-                  start: "top 80%",
-                  end: "bottom 35%",
+                  start: isDesktop ? "top 80%" : "top 85%",
+                  end: isDesktop ? "bottom 35%" : "bottom 25%",
                   scrub: 0.65,
                 },
                 onUpdate: () => updateModelState(idx),
@@ -269,8 +273,8 @@ export function initScroll() {
             gsap.fromTo(
               item.querySelector(".product-stage"),
               {
-                y: 65,
-                rotationX: -6,
+                y: isDesktop ? 65 : 34,
+                rotationX: isDesktop ? -6 : -4,
                 opacity: 0.5,
               },
               {
@@ -282,24 +286,11 @@ export function initScroll() {
                   trigger: item,
                   pinnedContainer,
                   start: "top bottom",
-                  end: "top 38%",
+                  end: isDesktop ? "top 38%" : "top 45%",
                   scrub: 0.7,
                 },
               }
             );
-          } else if (!isDesktop) {
-            states[idx].progress = 0.35;
-            const stageEl = item.querySelector(".product-stage");
-            if (!isReduced && stageEl) {
-              gsap.from(stageEl, {
-                y: 12,
-                opacity: 0,
-                duration: 0.4,
-                ease: "power2.out",
-                clearProps: "transform,opacity",
-                scrollTrigger: { trigger: item, start: "top 92%", once: true },
-              });
-            }
           }
 
           updateModelState(idx);
@@ -336,8 +327,19 @@ export function initScroll() {
   buildScrollTriggers();
 
   document.fonts.ready.then(() => ScrollTrigger.refresh());
+  window.addEventListener("load", () => ScrollTrigger.refresh(), { once: true });
+  const catalogPages = qs(".catalog-pages");
+  const contactEl = qs("#contact");
   const quoteForm = qs("#quote-form");
-  if (quoteForm) {
-    new ResizeObserver(() => ScrollTrigger.refresh()).observe(quoteForm);
+  let refreshTimer = 0;
+  const scheduleRefresh = () => {
+    clearTimeout(refreshTimer);
+    refreshTimer = setTimeout(() => ScrollTrigger.refresh(), 80);
+  };
+  if (catalogPages || contactEl || quoteForm) {
+    const ro = new ResizeObserver(scheduleRefresh);
+    if (catalogPages) ro.observe(catalogPages);
+    if (contactEl) ro.observe(contactEl);
+    if (quoteForm) ro.observe(quoteForm);
   }
 }

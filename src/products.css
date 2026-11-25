@@ -653,6 +653,128 @@
     opacity: .28;
   }
 
+  /* ---- کنترل اسلایدر مینیمال باز و بسته شدن مدل سه‌بعدی (فقط در اسلاید 3D) ---- */
+  .model-scrubber {
+    --scrub: 25%;
+    flex: 1 1 11rem;
+    max-inline-size: 18rem;
+    min-inline-size: 0;
+    margin-inline: auto;
+    display: flex;
+    align-items: center;
+    min-block-size: 44px;
+    padding-inline: .35rem;
+    background: transparent;
+    border: 0;
+  }
+
+  .product-stage:not([data-slide-kind="3d"]) .model-scrubber {
+    display: none;
+  }
+
+  .model-scrubber-input {
+    -webkit-appearance: none;
+    appearance: none;
+    inline-size: 100%;
+    block-size: 44px;
+    margin: 0;
+    padding: 0;
+    background: transparent;
+    cursor: grab;
+    touch-action: pan-y;
+  }
+
+  .model-scrubber-input:active {
+    cursor: grabbing;
+  }
+
+  .model-scrubber-input:focus-visible {
+    outline: 2px solid var(--accent-deep);
+    outline-offset: -4px;
+    border-radius: var(--r);
+  }
+
+  .model-scrubber-input::-webkit-slider-runnable-track {
+    inline-size: 100%;
+    block-size: 3px;
+    border-radius: var(--r);
+    background: linear-gradient(
+      to left,
+      var(--accent-deep) 0%,
+      var(--accent-deep) var(--scrub),
+      rgba(23, 37, 29, .22) var(--scrub),
+      rgba(23, 37, 29, .22) 100%
+    );
+    background: linear-gradient(
+      to left,
+      var(--accent-deep) 0%,
+      var(--accent-deep) var(--scrub),
+      color-mix(in oklch, var(--ink) 22%, transparent) var(--scrub),
+      color-mix(in oklch, var(--ink) 22%, transparent) 100%
+    );
+  }
+
+  .model-scrubber-input::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    inline-size: 12px;
+    block-size: 12px;
+    margin-block-start: -4.5px;
+    border-radius: 1px;
+    background: var(--ink);
+    border: 2px solid var(--surface);
+    box-shadow: 0 0 0 1px var(--ink), 0 3px 8px -2px rgba(23, 37, 29, .32);
+    transform: rotate(45deg);
+    transition: transform 160ms var(--ease-reveal), background-color 160ms ease, box-shadow 160ms ease;
+  }
+
+  .model-scrubber-input:hover::-webkit-slider-thumb,
+  .model-scrubber-input:focus-visible::-webkit-slider-thumb {
+    background: var(--accent-deep);
+    box-shadow: 0 0 0 1px var(--accent-deep), 0 0 0 4px color-mix(in oklch, var(--accent) 32%, transparent);
+  }
+
+  .model-scrubber-input:active::-webkit-slider-thumb {
+    transform: rotate(45deg) scale(1.18);
+    background: var(--accent-deep);
+  }
+
+  .model-scrubber-input::-moz-range-track {
+    inline-size: 100%;
+    block-size: 3px;
+    border-radius: var(--r);
+    background: color-mix(in oklch, var(--ink) 22%, transparent);
+    border: 0;
+  }
+
+  .model-scrubber-input::-moz-range-progress {
+    block-size: 3px;
+    border-radius: var(--r);
+    background: var(--accent-deep);
+  }
+
+  .model-scrubber-input::-moz-range-thumb {
+    inline-size: 12px;
+    block-size: 12px;
+    border-radius: 1px;
+    background: var(--ink);
+    border: 2px solid var(--surface);
+    box-shadow: 0 0 0 1px var(--ink), 0 3px 8px -2px rgba(23, 37, 29, .32);
+    transform: rotate(45deg);
+    transition: transform 160ms var(--ease-reveal), background-color 160ms ease, box-shadow 160ms ease;
+  }
+
+  .model-scrubber-input:hover::-moz-range-thumb,
+  .model-scrubber-input:focus-visible::-moz-range-thumb {
+    background: var(--accent-deep);
+    box-shadow: 0 0 0 1px var(--accent-deep), 0 0 0 4px color-mix(in oklch, var(--accent) 32%, transparent);
+  }
+
+  .model-scrubber-input:active::-moz-range-thumb {
+    transform: rotate(45deg) scale(1.18);
+    background: var(--accent-deep);
+  }
+
   /* ---- سکشن‌های ساختاریافته صفحهٔ محصول ---- */
   .detail-band {
     padding-block: clamp(2.25rem, 4.5vw, 4rem);
@@ -1514,14 +1636,43 @@
       position: static;
       inset: auto;
       display: flex;
-      align-items: center;
+      flex-direction: column;
+      align-items: stretch;
       justify-content: center;
-      gap: 0;
+      gap: 10px;
       padding-block: 12px 0;
       padding-inline: var(--gutter);
       background: transparent;
       border: 0;
       pointer-events: auto;
+    }
+
+    .model-scrubber {
+      order: -1;
+      flex: 0 0 auto;
+      inline-size: 100%;
+      max-inline-size: 20rem;
+      margin-inline: auto;
+      min-block-size: 44px;
+      padding-inline: 0;
+      background: transparent;
+      border: 0;
+    }
+
+    .model-scrubber-input {
+      min-block-size: 44px;
+      block-size: 44px;
+    }
+
+    .model-scrubber-input::-webkit-slider-thumb {
+      inline-size: 15px;
+      block-size: 15px;
+      margin-block-start: -6px;
+    }
+
+    .model-scrubber-input::-moz-range-thumb {
+      inline-size: 15px;
+      block-size: 15px;
     }
 
     .gallery-dots {

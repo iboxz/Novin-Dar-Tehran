@@ -237,6 +237,8 @@ function initProductDetailStage() {
   const key = item?.dataset.service;
   const host = stage.querySelector(".render-host");
   const toggleBtn = stage.querySelector(".model-toggle");
+  const scrubber = stage.querySelector(".model-scrubber");
+  const sliderInput = stage.querySelector("[data-model-slider]");
   if (!key || !host || !MODEL_FACTORIES[key]) return;
 
   const models = { [key]: MODEL_FACTORIES[key]() };
@@ -245,14 +247,29 @@ function initProductDetailStage() {
 
   modelStage.select(key);
   const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const percentFmt = new Intl.NumberFormat("fa-IR");
   let progress = reduced ? 0.35 : 0.25;
   let target = progress;
   let rafId = 0;
 
-  const syncButton = () => {
-    if (!toggleBtn) return;
-    toggleBtn.hidden = false;
-    toggleBtn.setAttribute("aria-pressed", String(target > 0.5));
+  const syncControls = (value = progress) => {
+    const clamped = Math.min(1, Math.max(0, value));
+    const pct = Math.round(clamped * 100);
+
+    if (toggleBtn) {
+      toggleBtn.hidden = false;
+      toggleBtn.setAttribute("aria-pressed", String(target > 0.5));
+    }
+
+    if (scrubber) {
+      scrubber.hidden = false;
+      scrubber.style.setProperty("--scrub", `${(clamped * 100).toFixed(2)}%`);
+    }
+
+    if (sliderInput) {
+      sliderInput.value = String((clamped * 100).toFixed(1));
+      sliderInput.setAttribute("aria-valuetext", `${percentFmt.format(pct)}٪`);
+    }
   };
 
   const animate = () => {
@@ -260,21 +277,44 @@ function initProductDetailStage() {
     if (Math.abs(diff) < 0.005 || reduced) {
       progress = target;
       modelStage.update(progress);
+      syncControls(progress);
       rafId = 0;
       return;
     }
     progress += diff * 0.14;
     modelStage.update(progress);
+    syncControls(progress);
     rafId = requestAnimationFrame(animate);
   };
 
   modelStage.update(progress);
-  syncButton();
+  syncControls(progress);
 
   toggleBtn?.addEventListener("click", () => {
     target = target > 0.5 ? 0 : 1;
-    syncButton();
+    syncControls(progress);
     if (!rafId) rafId = requestAnimationFrame(animate);
+  });
+
+  if (scrubber) {
+    ["pointerdown", "touchstart"].forEach((evt) => {
+      scrubber.addEventListener(evt, (event) => event.stopPropagation(), {
+        passive: true,
+      });
+    });
+  }
+
+  sliderInput?.addEventListener("input", () => {
+    if (rafId) {
+      cancelAnimationFrame(rafId);
+      rafId = 0;
+    }
+    const next = Math.min(1, Math.max(0, Number(sliderInput.value) / 100));
+    if (!Number.isFinite(next)) return;
+    progress = next;
+    target = next;
+    modelStage.update(progress);
+    syncControls(progress);
   });
 
   host.addEventListener("gallery:activate", () => {

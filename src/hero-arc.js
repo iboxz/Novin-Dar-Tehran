@@ -69,21 +69,30 @@ function createReelArc(el) {
   let raf = 0;
   let last = performance.now();
   let lastY = window.scrollY;
+  let isVisible = true;
+
+  const ensureTick = () => {
+    if (!raf && isVisible && !document.hidden && prog > 0.001) {
+      last = performance.now();
+      lastY = window.scrollY;
+      raf = requestAnimationFrame(tick);
+    }
+  };
 
   const layout = () => {
     const W = el.clientWidth || innerWidth;
     const mobile = W < 768;
-    const cw = mobile ? clampN(W * 0.38, 118, 180) : clampN(W * 0.21, 176, 400);
-    R = mobile ? W * 1.0 : W * 0.98;
-    const cx = mobile ? W * 0.5 : W * 0.85;
+    const cw = mobile ? clampN(W * 0.36, 118, 170) : clampN(W * 0.165, 160, 280);
+    R = mobile ? W * 1.0 : W * 0.78;
+    const cx = mobile ? W * 0.5 : W * 0.74;
     el.style.setProperty("--cw", cw.toFixed(1) + "px");
     el.style.setProperty("--R", R.toFixed(1) + "px");
     el.style.setProperty("--cx", cx.toFixed(1) + "px");
-    el.style.setProperty("--crest", mobile ? ".62" : ".3");
+    el.style.setProperty("--crest", mobile ? ".62" : "-.42");
 
     const half = (cw / 2 / R) * RAD * 1.7; // نیم‌عرض کارت به درجه (با حاشیه)
     spawn = -(Math.asin(Math.min(0.98, cx / R)) * RAD + half);
-    rightLim = Math.asin(Math.min(0.98, (W - cx) / R)) * RAD + half;
+    rightLim = mobile ? Math.asin(Math.min(0.98, (W - cx) / R)) * RAD + half : half * 0.5;
 
     // فاصلهٔ زاویه‌ای کارت‌ها فقط از هندسه (عرض کارت و شعاع) می‌آید، نه از تعداد تصاویر
     const base = Math.max(12, Math.ceil((2 * Math.PI * R) / (cw * 1.3)));
@@ -136,6 +145,14 @@ function createReelArc(el) {
   };
 
   const tick = (now) => {
+    raf = 0;
+    if (!isVisible || document.hidden || prog <= 0.001) {
+      if (prog <= 0.001) {
+        tTime = 0;
+        place();
+      }
+      return;
+    }
     const dt = Math.min(0.05, Math.max(0.001, (now - last) / 1000));
     last = now;
     const y = window.scrollY;
@@ -148,11 +165,7 @@ function createReelArc(el) {
     const move = Math.min(queue * Math.min(1, dt * SMOOTH), MAX_BOOST_PX * dt);
     queue -= move;
 
-    if (prog <= 0.001) {
-      tTime = 0;
-    } else {
-      tTime += ((BASE_PX_PER_SEC * dt + move) / R) * RAD * Math.min(1, prog * 2);
-    }
+    tTime += ((BASE_PX_PER_SEC * dt + move) / R) * RAD * Math.min(1, prog * 2);
     place();
     raf = requestAnimationFrame(tick);
   };
@@ -161,15 +174,31 @@ function createReelArc(el) {
   let rt;
   const ro = new ResizeObserver(() => { clearTimeout(rt); rt = setTimeout(layout, 120); });
   ro.observe(el);
-  raf = requestAnimationFrame(tick);
+  const io = new IntersectionObserver((entries) => {
+    isVisible = entries[0]?.isIntersecting ?? true;
+    ensureTick();
+  }, { rootMargin: "100px" });
+  io.observe(el.closest(".hero-stage") || el);
+  document.addEventListener("visibilitychange", ensureTick);
 
   return {
-    setProgress(p) { prog = clampN(p, 0, 1); },
+    setProgress(p) {
+      prog = clampN(p, 0, 1);
+      if (prog <= 0.001) {
+        tTime = 0;
+        place();
+      } else {
+        ensureTick();
+      }
+    },
     setDrive(u) { drive = Math.max(0, u); },
     stop() {
       cancelAnimationFrame(raf);
+      raf = 0;
       clearTimeout(rt);
       ro.disconnect();
+      io.disconnect();
+      document.removeEventListener("visibilitychange", ensureTick);
       ring.replaceChildren();
       cards = [];
     },
@@ -236,7 +265,7 @@ export function initHeroScroll(gsap, ST, reduced, opts = {}) {
     resetServices();
     return () => {};
   }
-  if (reduced || !isDesktop) {
+  if (reduced) {
     hero.classList.remove("is-pinned");
     resetServices();
     return () => {};
@@ -297,7 +326,7 @@ export function initHeroScroll(gsap, ST, reduced, opts = {}) {
   // 2) statement is revealed word by word
   tl.to(words, { opacity: 1, filter: "blur(0px)", duration: 0.3, stagger: 0.045 }, 0.9);
   tl.to(actions, { autoAlpha: 1, y: 0, duration: 0.3 }, 1.8);
-  tl.to(stmt, { opacity: 0, filter: "blur(16px)", y: -30, duration: 0.5, ease: "power1.in" }, 2.6);
+  tl.to(stmt, { autoAlpha: 0, filter: "blur(16px)", y: -30, duration: 0.5, ease: "power1.in" }, 2.6);
   // 3) reel: "خدمات ما:"
   tl.fromTo(reel, { autoAlpha: 0, filter: "blur(12px)" }, { autoAlpha: 1, filter: "blur(0px)", duration: 0.45 }, 3.0);
   // کارت‌های قوس با شروع اسکرول این سکشن از چپ صفحه وارد می‌شوند

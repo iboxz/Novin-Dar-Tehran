@@ -35,6 +35,7 @@ export const CHROME_CONFIG = {
   nav: [
     { id: "home", title: "صفحه اصلی", href: "index.html" },
     { id: "services", title: "محصولات و خدمات", href: "products.html" },
+    { id: "articles", title: "مقالات", href: "articles.html" },
     { id: "contact", title: "ارتباط با ما", href: "contact.html" },
   ],
 
@@ -151,6 +152,9 @@ function isCurrentPageLink(rawHref, itemId) {
   if (itemId === "services" && window.location.pathname.includes("/products/")) {
     return true;
   }
+  if (itemId === "articles" && window.location.pathname.includes("/articles/")) {
+    return true;
+  }
   if (!rawHref || isExternalOrSpecialHref(rawHref)) return false;
   try {
     const target = new URL(rawHref.replace(/^\/+/, ""), SITE_ROOT_URL);
@@ -263,7 +267,7 @@ function renderDoorMenuMarkup() {
       return `
       <div class="door-product-row">
         <a class="door-product-link${isActive ? " is-active" : ""}" href="${escapeHtml(href)}" data-preview-img="${escapeHtml(imgUrl)}" data-preview-title="${escapeHtml(svc.title)}"${isCurrent ? ' aria-current="page"' : ""}>
-          <img class="door-product-thumb" src="${escapeHtml(imgUrl)}" alt="" width="40" height="40" loading="lazy" decoding="async">
+          <img class="door-product-thumb" src="${escapeHtml(imgUrl)}" alt="" width="40" height="40" decoding="async">
           <span class="door-product-name">${escapeHtml(svc.title)}</span>
           <span class="door-product-current" aria-hidden="true"></span>
           ${SLIDING_DOOR_SVG}
@@ -334,7 +338,7 @@ function renderDoorMenuMarkup() {
           <a class="door-preview-frame" href="${escapeHtml(activeHref)}" tabindex="-1">
             <div class="door-preview-media">
               <div class="door-preview-layer" data-preview-layer="a">
-                <img class="door-preview-img" ${initialLayerAAttr} alt="" width="640" height="480" loading="lazy" decoding="async">
+                <img class="door-preview-img" ${initialLayerAAttr} alt="" width="640" height="480" decoding="async">
               </div>
               <div class="door-preview-layer" data-preview-layer="b" hidden>
                 <img class="door-preview-img" alt="" width="640" height="480" loading="lazy" decoding="async">
@@ -1031,7 +1035,6 @@ function setupDoorMenuController() {
 
   const mobileRevealItems = [
     ...primaryLinks,
-    productsTitle,
     ...mobileCards,
     contactCol,
   ].filter(Boolean);
@@ -1042,7 +1045,6 @@ function setupDoorMenuController() {
     panel,
     panelRail,
     ...colEls,
-    ...productLinks,
     ...mobileRevealItems,
   ].filter(Boolean);
 
@@ -1050,13 +1052,10 @@ function setupDoorMenuController() {
     const mobile = isMobileSheet();
     if (backdrop) backdrop.style.willChange = active ? "opacity" : "";
     if (headerDropBg) headerDropBg.style.willChange = active ? "opacity" : "";
-    if (panel) panel.style.willChange = active ? "clip-path, opacity" : "";
+    if (panel) panel.style.willChange = active ? "clip-path, transform, opacity" : "";
     if (panelRail) panelRail.style.willChange = active ? "transform" : "";
     if (mobile) {
       colEls.forEach((el) => {
-        el.style.willChange = "";
-      });
-      productLinks.forEach((el) => {
         el.style.willChange = "";
       });
       mobileRevealItems.forEach((el) => {
@@ -1069,9 +1068,26 @@ function setupDoorMenuController() {
       colEls.forEach((el) => {
         el.style.willChange = active ? "transform, opacity" : "";
       });
-      productLinks.forEach((el) => {
-        el.style.willChange = active ? "transform, opacity" : "";
-      });
+    }
+    productLinks.forEach((el) => {
+      el.style.willChange = "";
+    });
+  };
+
+  const applyMenuClosedVisualState = () => {
+    const mobile = isMobileSheet();
+    gsap.set(backdrop, { opacity: 0 });
+    gsap.set(headerDropBg, { opacity: 0 });
+    gsap.set(panel, { clipPath: "inset(0 0 100% 0)", y: mobile ? -10 : 0, opacity: 1 });
+    gsap.set(panelRail, { scaleX: 0 });
+    if (mobile) {
+      gsap.set(colEls, { clearProps: "opacity,transform" });
+      gsap.set(primaryLinks, { y: 14, opacity: 0 });
+      gsap.set(mobileCards, { x: -14, y: 14, scale: 0.96, opacity: 0 });
+      if (contactCol) gsap.set(contactCol, { y: 16, opacity: 0 });
+    } else {
+      gsap.set(mobileRevealItems, { clearProps: "opacity,transform,scale" });
+      gsap.set(colEls, { y: 12, opacity: 0 });
     }
   };
 
@@ -1095,13 +1111,16 @@ function setupDoorMenuController() {
     if (openState) return;
     clearTimeout(hoverTimer);
     resetPreviewElements();
+    if (mobileCarousel) {
+      mobileCarousel.classList.remove("is-grabbing", "is-gliding");
+    }
     setLayersWillChange(false);
     menu.hidden = true;
     document.documentElement.classList.remove("menu-open", "menu-dark-header");
     header.classList.remove("is-menu-active");
     setBackgroundInert(false);
     gsap.set(allAnimatedMenuNodes, {
-      clearProps: "opacity,clipPath,transform",
+      clearProps: "opacity,clipPath,transform,scale",
     });
 
     const smoother = ScrollSmoother.get();
@@ -1123,10 +1142,9 @@ function setupDoorMenuController() {
         if (!menuTl) return;
         document.documentElement.classList.toggle(
           "menu-dark-header",
-          menuTl.time() >= 0.08
+          menuTl.time() >= 0.03
         );
       },
-      onComplete: () => setLayersWillChange(false),
       onReverseComplete: finishClose,
     });
 
@@ -1135,39 +1153,61 @@ function setupDoorMenuController() {
         .fromTo(
           backdrop,
           { opacity: 0 },
-          { opacity: 1, duration: 0.2, ease: "none" },
+          { opacity: 1, duration: 0.24, ease: "none" },
           0
         )
         .fromTo(
           headerDropBg,
           { opacity: 0 },
-          { opacity: 1, duration: 0.14, ease: "none" },
+          { opacity: 1, duration: 0.16, ease: "none" },
           0
         )
         .fromTo(
           panel,
-          { clipPath: "inset(0 0 100% 0)", opacity: 1 },
-          { clipPath: "inset(0 0 0% 0)", opacity: 1, duration: 0.45, ease: MOTION_EASE.door },
+          { clipPath: "inset(0 0 100% 0)", y: -10, opacity: 1 },
+          { clipPath: "inset(0 0 0% 0)", y: 0, opacity: 1, duration: 0.44, ease: MOTION_EASE.door },
           0
         )
         .fromTo(
           panelRail,
           { scaleX: 0 },
-          { scaleX: 1, duration: 0.34, ease: MOTION_EASE.door },
-          0.08
+          { scaleX: 1, duration: 0.4, ease: MOTION_EASE.door },
+          0.06
         )
         .fromTo(
-          mobileRevealItems,
-          { y: 12, opacity: 0 },
+          primaryLinks,
+          { y: 14, opacity: 0 },
           {
             y: 0,
             opacity: 1,
-            duration: 0.22,
-            stagger: 0.03,
+            duration: 0.32,
+            stagger: 0.04,
             ease: MOTION_EASE.reveal,
           },
+          0.06
+        )
+        .fromTo(
+          mobileCards,
+          { x: -14, y: 14, scale: 0.96, opacity: 0 },
+          {
+            x: 0,
+            y: 0,
+            scale: 1,
+            opacity: 1,
+            duration: 0.38,
+            stagger: 0.04,
+            ease: MOTION_EASE.reveal,
+          },
+          0.13
+        );
+      if (contactCol) {
+        menuTl.fromTo(
+          contactCol,
+          { y: 16, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.32, ease: MOTION_EASE.reveal },
           0.2
         );
+      }
       return menuTl;
     }
 
@@ -1187,38 +1227,26 @@ function setupDoorMenuController() {
       .fromTo(
         panel,
         { clipPath: "inset(0 0 100% 0)", opacity: 1 },
-        { clipPath: "inset(0 0 0% 0)", opacity: 1, duration: 0.56, ease: MOTION_EASE.door },
+        { clipPath: "inset(0 0 0% 0)", opacity: 1, duration: 0.48, ease: MOTION_EASE.door },
         0
       )
       .fromTo(
         panelRail,
         { scaleX: 0 },
-        { scaleX: 1, duration: 0.44, ease: MOTION_EASE.door },
-        0.12
+        { scaleX: 1, duration: 0.4, ease: MOTION_EASE.door },
+        0.08
       )
       .fromTo(
         colEls,
-        { y: 16, opacity: 0 },
+        { y: 12, opacity: 0 },
         {
           y: 0,
           opacity: 1,
-          duration: 0.34,
-          stagger: 0.04,
+          duration: 0.32,
+          stagger: 0.025,
           ease: MOTION_EASE.reveal,
         },
-        0.18
-      )
-      .fromTo(
-        productLinks,
-        { yPercent: 100, opacity: 0 },
-        {
-          yPercent: 0,
-          opacity: 1,
-          duration: 0.22,
-          stagger: 0.03,
-          ease: MOTION_EASE.reveal,
-        },
-        0.22
+        0.08
       );
 
     return menuTl;
@@ -1232,6 +1260,15 @@ function setupDoorMenuController() {
     savedScrollY = window.scrollY;
     savedSmootherTop = smoother ? smoother.scrollTop() : null;
 
+    if (!isMotionReduced()) {
+      const tl = buildMenuTimeline();
+      if (tl.progress() === 0) {
+        applyMenuClosedVisualState();
+        tl.invalidate();
+      }
+      setLayersWillChange(true);
+    }
+
     menu.hidden = false;
     document.documentElement.classList.add("menu-open");
     header.classList.add("is-menu-active");
@@ -1240,7 +1277,10 @@ function setupDoorMenuController() {
     setBackgroundInert(true);
     smoother?.paused(true);
     if (panelScroll) panelScroll.scrollTop = 0;
-    if (mobileCarousel) mobileCarousel.scrollLeft = 0;
+    if (mobileCarousel) {
+      mobileCarousel.classList.remove("is-grabbing", "is-gliding");
+      mobileCarousel.scrollLeft = 0;
+    }
 
     if (isDesktopPreviewMode()) {
       decodeAllProductImages();
@@ -1265,8 +1305,10 @@ function setupDoorMenuController() {
       gsap.to(panel, { opacity: 1, duration: 0.15, ease: "none" });
       gsap.set(panelRail, { scaleX: 1 });
       gsap.set([...colEls, ...productLinks, ...mobileRevealItems].filter(Boolean), {
+        x: 0,
         y: 0,
         yPercent: 0,
+        scale: 1,
         opacity: 1,
       });
     } else {
@@ -1360,6 +1402,139 @@ function setupDoorMenuController() {
     },
     { passive: false }
   );
+
+  if (mobileCarousel) {
+    let grab = null;
+    let suppressClick = false;
+    let glideTween = null;
+
+    const getSnapTarget = (projectedScroll) => {
+      const current = mobileCarousel.scrollLeft;
+      const rect = mobileCarousel.getBoundingClientRect();
+      const cs = getComputedStyle(mobileCarousel);
+      const isRtl = cs.direction === "rtl";
+      const padStart = parseFloat(isRtl ? cs.paddingRight : cs.paddingLeft) || 0;
+      const padEnd = parseFloat(isRtl ? cs.paddingLeft : cs.paddingRight) || 0;
+      const startEdge = isRtl ? rect.right - padStart : rect.left + padStart;
+      const cards = mobileCards;
+      if (!cards.length) return projectedScroll;
+
+      const lastRect = cards[cards.length - 1].getBoundingClientRect();
+      const startBound = current + ((isRtl ? cards[0].getBoundingClientRect().right : cards[0].getBoundingClientRect().left) - startEdge);
+      const endBound = isRtl
+        ? current + (lastRect.left - (rect.left + padEnd))
+        : current + (lastRect.right - (rect.right - padEnd));
+      const minBound = Math.min(startBound, endBound);
+      const maxBound = Math.max(startBound, endBound);
+
+      let best = Math.min(maxBound, Math.max(minBound, projectedScroll));
+      let bestDist = Infinity;
+      for (const card of cards) {
+        const cr = card.getBoundingClientRect();
+        const raw = current + ((isRtl ? cr.right : cr.left) - startEdge);
+        const clamped = Math.min(maxBound, Math.max(minBound, raw));
+        const d = Math.abs(clamped - projectedScroll);
+        if (d < bestDist) {
+          bestDist = d;
+          best = clamped;
+        }
+      }
+      const endDist = Math.abs(endBound - projectedScroll);
+      if (endDist < bestDist) best = endBound;
+      return best;
+    };
+
+    mobileCarousel.addEventListener("dragstart", (e) => e.preventDefault());
+    mobileCarousel.addEventListener("pointerdown", (e) => {
+      if (e.pointerType === "touch" || (e.pointerType === "mouse" && e.button !== 0)) return;
+      glideTween?.kill();
+      glideTween = null;
+      mobileCarousel.classList.remove("is-gliding");
+      const now = performance.now();
+      grab = {
+        id: e.pointerId,
+        startX: e.clientX,
+        lastX: e.clientX,
+        lastT: now,
+        vx: 0,
+        startScroll: mobileCarousel.scrollLeft,
+        moved: false,
+      };
+    });
+    mobileCarousel.addEventListener("pointermove", (e) => {
+      if (!grab || e.pointerId !== grab.id) return;
+      const now = performance.now();
+      const dx = e.clientX - grab.startX;
+      const dt = Math.max(1, now - grab.lastT);
+      const instVx = (e.clientX - grab.lastX) / dt;
+      grab.vx = grab.vx * 0.65 + instVx * 0.35;
+      grab.lastX = e.clientX;
+      grab.lastT = now;
+
+      if (!grab.moved && Math.abs(dx) > 5) {
+        grab.moved = true;
+        mobileCarousel.classList.add("is-grabbing");
+        try { mobileCarousel.setPointerCapture(e.pointerId); } catch {}
+      }
+      if (grab.moved) {
+        e.preventDefault();
+        mobileCarousel.scrollLeft = grab.startScroll - dx;
+      }
+    });
+    const endGrab = (e) => {
+      if (!grab || (e.pointerId !== undefined && e.pointerId !== grab.id)) return;
+      const wasMoved = grab.moved;
+      const stale = performance.now() - grab.lastT > 90;
+      const vx = stale ? 0 : grab.vx;
+      grab = null;
+      mobileCarousel.classList.remove("is-grabbing");
+      try { if (mobileCarousel.hasPointerCapture?.(e.pointerId)) mobileCarousel.releasePointerCapture(e.pointerId); } catch {}
+
+      if (wasMoved) {
+        suppressClick = true;
+        requestAnimationFrame(() => { suppressClick = false; });
+
+        const currentScroll = mobileCarousel.scrollLeft;
+        const throwMs = isMotionReduced() ? 0 : 240;
+        const projected = currentScroll - vx * throwMs;
+        const targetScroll = getSnapTarget(projected);
+        const dist = Math.abs(targetScroll - currentScroll);
+
+        if (dist > 0.5 && !isMotionReduced()) {
+          mobileCarousel.classList.add("is-gliding");
+          const duration = Math.min(0.72, Math.max(0.36, 0.32 + dist / 850));
+          const state = { scroll: currentScroll };
+          glideTween = gsap.to(state, {
+            scroll: targetScroll,
+            duration,
+            ease: "power3.out",
+            onUpdate: () => {
+              mobileCarousel.scrollLeft = state.scroll;
+            },
+            onComplete: () => {
+              glideTween = null;
+              mobileCarousel.classList.remove("is-gliding");
+            },
+            onInterrupt: () => {
+              glideTween = null;
+              mobileCarousel.classList.remove("is-gliding");
+            },
+          });
+        } else {
+          mobileCarousel.scrollLeft = targetScroll;
+          mobileCarousel.classList.remove("is-gliding");
+        }
+      }
+    };
+    mobileCarousel.addEventListener("pointerup", endGrab);
+    mobileCarousel.addEventListener("pointercancel", endGrab);
+    mobileCarousel.addEventListener("click", (e) => {
+      if (suppressClick) { e.preventDefault(); e.stopPropagation(); }
+    }, true);
+  }
+
+  menuBtn.addEventListener("pointerenter", decodeAllProductImages, { passive: true });
+  menuBtn.addEventListener("focus", decodeAllProductImages, { passive: true });
 
   menuBtn.addEventListener("click", () => {
     if (openState) {
@@ -1549,20 +1724,20 @@ function initChromeMotion(menuController) {
           );
         }
 
-        if (footer && isDesktop) {
+        if (footer) {
           const titleWords = footerTitle ? splitWords(footerTitle) : [];
 
           if (reduced) {
             if (footerCurtain) gsap.set(footerCurtain, { yPercent: 0 });
-            if (footerDoorLeft) gsap.set(footerDoorLeft, { xPercent: -94 });
-            if (footerDoorRight) gsap.set(footerDoorRight, { xPercent: 94 });
+            if (isDesktop && footerDoorLeft) gsap.set(footerDoorLeft, { xPercent: -94 });
+            if (isDesktop && footerDoorRight) gsap.set(footerDoorRight, { xPercent: 94 });
             if (titleWords.length) gsap.set(titleWords, { yPercent: 0, opacity: 1 });
-            if (wordmarkSpan) gsap.set(wordmarkSpan, { xPercent: 0 });
+            if (isDesktop && wordmarkSpan) gsap.set(wordmarkSpan, { xPercent: 0 });
           } else {
             if (footerCurtain) {
               gsap.fromTo(
                 footerCurtain,
-                { yPercent: -16 },
+                { yPercent: isDesktop ? -16 : -8 },
                 {
                   yPercent: 0,
                   ease: "none",
@@ -1576,7 +1751,7 @@ function initChromeMotion(menuController) {
               );
             }
 
-            if (footerDoorLeft && footerDoorRight) {
+            if (isDesktop && footerDoorLeft && footerDoorRight) {
               gsap.fromTo(
                 footerDoorLeft,
                 { xPercent: -24 },
@@ -1620,14 +1795,14 @@ function initChromeMotion(menuController) {
                   clearProps: "transform,opacity",
                   scrollTrigger: {
                     trigger: footerTitle,
-                    start: "top 90%",
+                    start: "top 92%",
                     once: true,
                   },
                 }
               );
             }
 
-            if (wordmarkSpan) {
+            if (isDesktop && wordmarkSpan) {
               gsap.fromTo(
                 wordmarkSpan,
                 { xPercent: 5 },
@@ -1674,6 +1849,64 @@ function initToTop() {
   btn.addEventListener("click", () => scrollToTop());
 }
 
+function initMobileBar() {
+  const bar = qs(".callbar");
+  if (!bar) return;
+  const mq = matchMedia("(max-width: 47.99em)");
+  const form = qs("#contact, #quote-form");
+  let lastY = scrollY, scrollHide = false, contactVis = false, kbdHide = false;
+  const sync = () => {
+    const focused = /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName || "");
+    const hide = !mq.matches || scrollHide || contactVis || kbdHide || focused || document.documentElement.classList.contains("menu-open");
+    bar.classList.toggle("is-hidden", hide);
+    document.documentElement.style.setProperty("--bar-h", !mq.matches || hide ? "0px" : `${bar.offsetHeight}px`);
+  };
+  addEventListener("scroll", () => {
+    const y = scrollY;
+    if (y > lastY + 8 && y > 60) scrollHide = true;
+    else if (y < lastY - 6 || y <= 40) scrollHide = false;
+    lastY = y; sync();
+  }, { passive: true });
+  addEventListener("focusin", sync);
+  addEventListener("focusout", () => setTimeout(sync, 60));
+  mq.addEventListener("change", sync);
+  visualViewport?.addEventListener("resize", () => { kbdHide = visualViewport.height < innerHeight * 0.78; sync(); });
+  new MutationObserver(sync).observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+  if (form) new IntersectionObserver((e) => { contactVis = e[0].isIntersecting; sync(); }, { threshold: 0.05 }).observe(form);
+  sync();
+}
+
+function initMobileContactCollapse() {
+  const sec = qs("#contact");
+  const head = sec && qs(".section-head", sec);
+  const grid = sec && qs(".contact-grid", sec);
+  if (!sec || !head || !grid) return;
+
+  const box = document.createElement("div");
+  box.className = "contact-mobile-trigger";
+  box.innerHTML = `<p class="contact-mobile-hours">شنبه تا پنج‌شنبه، ۸ تا ۱۸ — محدودهٔ خدمات: تهران</p><button class="btn btn--primary contact-toggle-btn" type="button" aria-expanded="false" aria-controls="quote-form">ثبت درخواست مشاوره و بازدید</button>`;
+  head.after(box);
+
+  const btn = qs(".contact-toggle-btn", box);
+  const setOpen = (open) => {
+    sec.classList.toggle("is-collapsed", !open);
+    btn.setAttribute("aria-expanded", String(open));
+    btn.classList.toggle("btn--primary", !open);
+    btn.classList.toggle("btn--secondary", open);
+    btn.textContent = open ? "بستن فرم درخواست" : "ثبت درخواست مشاوره و بازدید";
+  };
+
+  setOpen(location.hash === "#contact");
+  btn.addEventListener("click", () => setOpen(sec.classList.contains("is-collapsed")));
+  document.addEventListener(
+    "click",
+    (e) => {
+      if (e.target.closest('a[href="#contact"], [data-consult]')) setOpen(true);
+    },
+    true
+  );
+}
+
 export function initChrome() {
   if (document.documentElement.dataset.chromeInit === "true") return;
   document.documentElement.dataset.chromeInit = "true";
@@ -1684,6 +1917,8 @@ export function initChrome() {
   applyContactLinks(document);
   initFooterResponsiveServices();
   initToTop();
+  initMobileBar();
+  initMobileContactCollapse();
 
   const menuController = setupDoorMenuController();
   initChromeMotion(menuController);

@@ -9,6 +9,7 @@
 <meta name="color-scheme" content="only light">
 <link rel="stylesheet" href="../src/chrome.css">
 <link rel="stylesheet" href="../src/products.css">
+<link rel="stylesheet" href="../src/mobile.css" media="(max-width: 63.99em)">
 </head>
 <body>
 <a class="skip" href="#main">رفتن به محتوای اصلی</a>
@@ -66,6 +67,9 @@
           <div class="gallery-progress" aria-hidden="true"><span></span></div>
           <div class="gallery-deck">
             <div class="gallery-dots" role="group" aria-label="انتخاب اسلاید"></div>
+            <div class="model-scrubber" hidden>
+              <input class="model-scrubber-input" type="range" min="0" max="100" step="0.5" value="25" data-model-slider aria-label="کنترل میزان باز و بسته شدن راهبند اتوماتیک" aria-valuetext="۲۵٪">
+            </div>
             <div class="gallery-nav">
               <button class="gallery-arrow" type="button" data-gallery-prev aria-label="اسلاید قبلی" aria-controls="gallery-barrier" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#gallery-prev"/></svg></button>
               <button class="gallery-arrow" type="button" data-gallery-next aria-label="اسلاید بعدی" aria-controls="gallery-barrier"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#gallery-next"/></svg></button>
