@@ -1,0 +1,280 @@
+html.sp-hold {
+  background: #17251d;
+  overflow: hidden;
+}
+
+html.sp-hold::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: #17251d;
+  z-index: 2147483647;
+}
+
+html.is-loading,
+html.is-loading body,
+html.is-leaving,
+html.is-leaving body {
+  overflow: hidden !important;
+}
+
+html.is-leaving {
+  pointer-events: none;
+}
+
+html.is-loading .site-header {
+  opacity: 0;
+  transform: translateY(-100%);
+}
+
+html.is-loading #hero-arc {
+  opacity: 0;
+  transform: translateY(12%);
+}
+
+html.sp-hide-hero-title #hero-title {
+  visibility: hidden;
+}
+
+html.sp-hide-header-logo .site-header .logo {
+  visibility: hidden;
+}
+
+#ndt-splash {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  direction: rtl;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+  pointer-events: auto;
+  background: transparent;
+}
+
+#ndt-splash.is-opening {
+  pointer-events: none;
+}
+
+#ndt-splash.is-closing {
+  pointer-events: auto;
+}
+
+.ndt-splash-defs {
+  position: fixed;
+  inline-size: 0;
+  block-size: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.ndt-splash-stage {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: var(--ink, #17251d);
+  color: var(--on-ink, #f5f5ed);
+}
+
+.ndt-stream-svg,
+.ndt-live-svg,
+.ndt-leaf-svg {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  display: block;
+  pointer-events: none;
+}
+
+.ndt-live-comp {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+.ndt-wordmark-group {
+  opacity: 0;
+}
+
+.ndt-wordmark-group.is-revealed {
+  opacity: 1;
+}
+
+.ndt-wordmark-text {
+  font-family: Ayandeh, Vazirmatn, system-ui, sans-serif;
+  font-weight: 900;
+  font-size: clamp(2.75rem, 8.5vw, 9.5rem);
+  letter-spacing: 0;
+}
+
+.ndt-trace-rect {
+  will-change: transform;
+}
+
+.ndt-wordmark-outline {
+  will-change: stroke-dashoffset, opacity;
+}
+
+/* برند بالای صفحه (هماهنگ دقیق با .header-shell > .logo در chrome.css و mobile.css) */
+.ndt-splash-brand-bar {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 0;
+  z-index: 4;
+  inline-size: 100%;
+  max-inline-size: 112rem;
+  margin-inline: auto;
+  padding-inline: var(--gutter, clamp(1.125rem, 3.1vw, 4rem));
+  min-block-size: var(--header-h, 5rem);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+.ndt-splash-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: .65rem;
+  min-block-size: 44px;
+  flex: none;
+  color: var(--on-ink, #f5f5ed);
+  pointer-events: none;
+}
+
+.ndt-brand-mark {
+  inline-size: 2.65rem;
+  block-size: 2rem;
+  display: grid;
+  place-items: center;
+  flex: none;
+}
+
+.ndt-brand-mark img {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: contain;
+  filter: invert(1) hue-rotate(180deg) brightness(1.12);
+}
+
+.ndt-brand-type {
+  display: block;
+  font-family: Ayandeh, Vazirmatn, system-ui, sans-serif;
+  font-size: .98rem;
+  line-height: 1.35;
+  font-weight: 850;
+  white-space: nowrap;
+  letter-spacing: 0;
+}
+
+@media (max-width: 63.99em) {
+  .ndt-splash-brand {
+    gap: .5rem;
+    min-block-size: 48px;
+  }
+  .ndt-brand-mark {
+    inline-size: 2.15rem;
+    block-size: 1.65rem;
+  }
+  .ndt-brand-type {
+    font-size: .9rem;
+  }
+}
+
+.ndt-splash-hud {
+  position: absolute;
+  inset-inline: var(--gutter, clamp(1.125rem, 3.1vw, 4rem));
+  inset-block-end: max(clamp(1.125rem, 3vw, 2.25rem), env(safe-area-inset-bottom, 0px));
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  pointer-events: none;
+}
+
+.ndt-splash-counter {
+  font-family: Ayandeh, Vazirmatn, system-ui, sans-serif;
+  font-size: clamp(1.15rem, 1.8vw, 1.4rem);
+  font-weight: 750;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: var(--on-ink, #f5f5ed);
+  letter-spacing: 0;
+}
+
+.ndt-splash-label {
+  font-family: Ayandeh, Vazirmatn, system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--on-ink-muted, #cfd6cc);
+  opacity: 0.72;
+}
+
+/* درهای دو‌لنگه با شتاب سخت‌افزاری (GPU transform فقط) */
+.ndt-splash-doors {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.ndt-door {
+  position: absolute;
+  inset-block: 0;
+  inline-size: 50%;
+  overflow: hidden;
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+}
+
+.ndt-door--left {
+  left: 0;
+}
+
+.ndt-door--right {
+  left: 50%;
+}
+
+.ndt-door-inner {
+  position: absolute;
+  inset-block: 0;
+  inline-size: 100vw;
+  background: var(--ink, #17251d);
+  color: var(--on-ink, #f5f5ed);
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+}
+
+.ndt-door--left .ndt-door-inner {
+  left: 0;
+}
+
+.ndt-door--right .ndt-door-inner {
+  left: -50vw;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.is-loading .site-header,
+  html.is-loading #hero-arc {
+    opacity: 1;
+    transform: none;
+  }
+
+  html.sp-hide-hero-title #hero-title,
+  html.sp-hide-header-logo .site-header .logo {
+    visibility: visible;
+  }
+
+  .ndt-stream-svg,
+  .ndt-wordmark-outline {
+    display: none !important;
+  }
+}

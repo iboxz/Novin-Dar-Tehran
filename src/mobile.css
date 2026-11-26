@@ -24,7 +24,7 @@
   --gutter: var(--m-gutter);
   --section: var(--m-section);
   --gap: var(--m-gap);
-  --header-h: 3.35rem;
+  --header-h: 3.5rem;
   --hero-bar-h: calc(3.25rem + env(safe-area-inset-bottom, 0px));
   --bar-h: var(--hero-bar-h);
 }
@@ -138,8 +138,8 @@ summary {
 }
 
 .header-capsule {
-  inset-block: .32rem;
-  inset-inline: .6rem;
+  inset-block: 2px;
+  inset-inline: calc(var(--gutter) - 4px);
 }
 
 .logo {
@@ -347,28 +347,24 @@ summary {
   opacity: .82;
 }
 
-/* ۳. بخش هیرو: بدون هم‌پوشانی با هدر/کال‌بار + بهینه برای عمودی و افقی */
+/* ۳. بخش هیرو: هم‌تراز دقیق با اسپلش + بدون هم‌پوشانی با هدر/کال‌بار */
 .hero.is-pinned .hero-stage {
   block-size: 100svh;
 }
 
-.hero .hero-title {
-  font-size: clamp(2.1rem, 9.2vw, 3.1rem);
-  line-height: 1.24;
-}
-
-.hero .hero-title::before {
-  inline-size: 64%;
-}
-
 .hero-arc {
-  --cw: clamp(5.75rem, 25vw, 8.75rem);
+  --cw: clamp(5.75rem, 24vw, 8.75rem);
   --ch: calc(var(--cw) * .72);
-  block-size: clamp(9.25rem, 34vw, 13.25rem);
+  block-size: clamp(8.5rem, 23svh, 13rem);
 }
 
 .hero.is-pinned .hero-intro {
-  padding-block: calc(var(--header-h) + .5rem) calc(var(--hero-bar-h) + .5rem);
+  padding: 0;
+}
+
+.hero.is-pinned .hero-intro .hero-arc {
+  inset-block-end: var(--hero-bar-h, 0px);
+  block-size: clamp(8.5rem, 23svh, 13rem);
 }
 
 .hero.is-pinned .hero-statement {
@@ -412,16 +408,13 @@ summary {
 
 @media (max-height: 32em) and (orientation: landscape) {
   .hero.is-pinned .hero-intro {
-    padding-block: calc(var(--header-h) + .25rem) .5rem;
+    padding: 0;
   }
 
-  .hero-arc {
-    --cw: clamp(5rem, 15vw, 6.75rem);
-    block-size: clamp(6.25rem, 26svh, 8.25rem);
-  }
-
-  .hero .hero-title {
-    font-size: clamp(1.85rem, 6vw, 2.5rem);
+  .hero.is-pinned .hero-intro .hero-arc {
+    inset-block-end: 0;
+    --cw: clamp(4.75rem, 14vw, 6.25rem);
+    block-size: clamp(5rem, 21svh, 7rem);
   }
 
   .hero.is-pinned .hero-statement {

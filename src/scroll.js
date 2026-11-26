@@ -154,6 +154,7 @@ export function initScroll() {
 
       if (link.hash === "#services" && typeof window.__servicesRevealY === "function") {
         event.preventDefault();
+        ensureModelStage(0);
         scrollToY(() => window.__servicesRevealY() + 1);
         return;
       }
@@ -216,11 +217,13 @@ export function initScroll() {
 
         const heroCleanup = initHeroScroll(gsap, ScrollTrigger, isReduced, {
           desktop: context.conditions.desktop,
-          firstItemPinVh: 0.5, // طول پین سکشن برای پخش انیمیشن جک (۰.۵ = نیم صفحه)
+          firstItemPinVh: context.conditions.desktop ? 0.5 : 1.15, // طول پین سکشن برای پخش انیمیشن جک
+          onApproachServices: () => ensureModelStage(0),
           onFirstItemProgress: (p) => {
+            ensureModelStage(0);
             gsap.to(states[0], {
               progress: p,
-              duration: 0.35,
+              duration: context.conditions.desktop ? 0.35 : 0.12,
               ease: "power1.out",
               overwrite: "auto",
               onUpdate: () => updateModelState(0),

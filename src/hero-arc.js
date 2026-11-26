@@ -253,6 +253,7 @@ export function initHeroScroll(gsap, ST, reduced, opts = {}) {
   const resetServices = () => {
     if (!services) return;
     services.classList.remove("is-under-hero");
+    services.style.removeProperty("--services-pull");
     services.style.marginBlockStart = "";
     window.__servicesRevealY = null;
     window.__servicesUnpinY = null;
@@ -307,6 +308,7 @@ export function initHeroScroll(gsap, ST, reduced, opts = {}) {
   };
   render();
 
+  let approachedServices = false;
   const tl = gsap.timeline({
     defaults: { ease: "none" },
     scrollTrigger: {
@@ -318,6 +320,12 @@ export function initHeroScroll(gsap, ST, reduced, opts = {}) {
       anticipatePin: 1,
       invalidateOnRefresh: true,
       onRefresh: render,
+      onUpdate(self) {
+        if (!approachedServices && self.progress >= 0.25) {
+          approachedServices = true;
+          opts.onApproachServices?.();
+        }
+      },
     },
   });
 
@@ -382,7 +390,7 @@ export function initHeroScroll(gsap, ST, reduced, opts = {}) {
     const tailPx = () => innerHeight * 5.2 * (FADE / tl.duration());
     onRefreshInit = () => {
       const stageH = q(".hero-stage").offsetHeight || innerHeight;
-      services.style.marginBlockStart = -(stageH + tailPx()) + "px";
+      services.style.setProperty("--services-pull", -(stageH + tailPx()) + "px");
     };
     ST.addEventListener("refreshInit", onRefreshInit);
     onRefreshInit();
@@ -393,6 +401,7 @@ export function initHeroScroll(gsap, ST, reduced, opts = {}) {
       end: () => "+=" + (tailPx() + extraPx()),
       pin: true,
       pinSpacing: true,
+      anticipatePin: 1,
       invalidateOnRefresh: true,
       onUpdate(self) {
         // پیشرفت ۰..۱ فقط در بازهٔ پین اضافه (بعد از محو شدن استیج هیرو)

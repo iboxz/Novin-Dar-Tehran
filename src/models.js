@@ -22,6 +22,11 @@ const {
 const clamp = MathUtils.clamp;
 const lerp = MathUtils.lerp;
 
+const STAGE_CAMERA_POS = [7, 6.75, 10];
+const STAGE_LOOK_AT = [0, 1.6, 0];
+const STAGE_BASE_HEIGHT = 8.0;
+const STAGE_BASE_WIDTH = 10.6;
+
 const smoothstep = (value) => {
   const t = clamp(value, 0, 1);
   return t * t * (3 - 2 * t);
@@ -355,36 +360,35 @@ export function createShutterModel() {
 export function createBarrierModel() {
   const root = new Group();
   addPlinth(root, 7.5, 4.4);
-  addBox(root, 0.6, 0.025, 0, 5.2, 0.035, 4.18, MATERIALS.road);
+  addBox(root, 0.72, 0.025, 0, 4.8, 0.035, 4.18, MATERIALS.road);
   [-1.05, 0.4, 1.85].forEach((z) =>
-    addBox(root, 0.8, 0.047, z, 0.065, 0.012, 0.7, MATERIALS.chalk)
+    addBox(root, 0.72, 0.047, z, 0.065, 0.012, 0.7, MATERIALS.chalk)
   );
 
-  const postX = -2.68;
-  addBox(root, postX, 0.89, 0, 0.64, 1.78, 0.77, MATERIALS.ink);
-  addBox(root, postX, 1.81, 0, 0.7, 0.1, 0.83, MATERIALS.green);
-  addBox(root, postX, 0.81, 0.395, 0.46, 1.23, 0.033, MATERIALS.edge);
-  addBox(root, postX + 0.13, 1.15, 0.42, 0.07, 0.1, 0.035, MATERIALS.ink);
-  addBox(root, postX, 1.53, 0.41, 0.22, 0.11, 0.035, MATERIALS.dark);
+  const postX = -2.22;
+  addBox(root, postX, 0.76, 0, 0.6, 1.52, 0.74, MATERIALS.ink);
+  addBox(root, postX, 1.56, 0, 0.66, 0.1, 0.8, MATERIALS.green);
+  addBox(root, postX, 0.7, 0.38, 0.44, 1.05, 0.033, MATERIALS.edge);
+  addBox(root, postX + 0.12, 0.98, 0.405, 0.07, 0.1, 0.035, MATERIALS.ink);
+  addBox(root, postX, 1.32, 0.395, 0.22, 0.11, 0.035, MATERIALS.dark);
 
-  const boomPivot = addGroup(root, postX, 1.65, 0.08);
-  const hub = addCylinder(boomPivot, 0, 0, 0, 0.18, 0.22, MATERIALS.steel);
+  const boomPivot = addGroup(root, postX, 1.48, 0.08);
+  const hub = addCylinder(boomPivot, 0, 0, 0, 0.17, 0.22, MATERIALS.steel);
   hub.rotation.x = Math.PI / 2;
 
-  addBox(boomPivot, 2.37, 0.025, 0.17, 4.84, 0.15, 0.16, MATERIALS.chalk);
-  for (let i = 0; i < 6; i++) {
-    addBox(boomPivot, 0.5 + i * 0.74, 0.025, 0.262, 0.23, 0.152, 0.024, MATERIALS.ink);
+  addBox(boomPivot, 1.94, 0.025, 0.17, 3.96, 0.145, 0.15, MATERIALS.chalk);
+  for (let i = 0; i < 5; i++) {
+    addBox(boomPivot, 0.48 + i * 0.74, 0.025, 0.258, 0.22, 0.147, 0.024, MATERIALS.ink);
   }
-  addBox(boomPivot, 4.71, 0.025, 0.264, 0.13, 0.154, 0.026, MATERIALS.green);
+  addBox(boomPivot, 3.85, 0.025, 0.26, 0.13, 0.149, 0.026, MATERIALS.green);
 
-  addBox(root, 2.15, 0.75, 0.22, 0.16, 1.5, 0.16, MATERIALS.ink);
-  addBox(root, 2.15, 1.5, 0.22, 0.31, 0.08, 0.26, MATERIALS.steel);
+  addBox(root, 1.68, 0.68, 0.22, 0.16, 1.36, 0.16, MATERIALS.ink);
+  addBox(root, 1.68, 1.36, 0.22, 0.3, 0.08, 0.26, MATERIALS.steel);
 
   return {
     root,
-    tall: true,
     update(progress) {
-      boomPivot.rotation.z = smoothstep(progress) * Math.PI * 0.47;
+      boomPivot.rotation.z = smoothstep(progress) * Math.PI * 0.39;
     },
   };
 }
@@ -509,7 +513,6 @@ function createOverheadDoorModel(sectional = false) {
 
   return {
     root,
-    wide: true,
     update(progress) {
       const lift = smoothstep((progress - 0.25) / 0.75) * 3.2;
       const curveRadius = 0.52;
@@ -579,8 +582,8 @@ export function createProductStage(host, models) {
 
   const scene = new Scene();
   const camera = new OrthographicCamera(-5, 5, 4, -4, 0.1, 60);
-  camera.position.set(7, 6.4, 10);
-  camera.lookAt(0, 1.25, 0);
+  camera.position.set(...STAGE_CAMERA_POS);
+  camera.lookAt(...STAGE_LOOK_AT);
 
   scene.add(new HemisphereLight(16777215, 9476998, 2.55));
 
@@ -676,16 +679,13 @@ export function createProductStage(host, models) {
     if (!width || !height) return;
 
     const aspect = width / height;
-    const frustumHeight = Math.max(
-      activeModel?.tall ? 8.6 : 5.9,
-      (activeModel?.wide ? 10.6 : 9.4) / aspect
-    );
+    const frustumHeight = Math.max(STAGE_BASE_HEIGHT, STAGE_BASE_WIDTH / aspect);
     camera.left = (-frustumHeight * aspect) / 2;
     camera.right = (frustumHeight * aspect) / 2;
     camera.top = frustumHeight / 2;
     camera.bottom = -frustumHeight / 2;
-    camera.position.set(7, activeModel?.tall ? 7.9 : 6.4, 10);
-    camera.lookAt(0, activeModel?.tall ? 2.3 : 1.25, 0);
+    camera.position.set(...STAGE_CAMERA_POS);
+    camera.lookAt(...STAGE_LOOK_AT);
     camera.updateProjectionMatrix();
     renderer.setSize(width, height, false);
     scheduleRender();

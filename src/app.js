@@ -1,3 +1,4 @@
+import "./splash.js";
 import { initChrome } from "./chrome.js";
 import { initUI } from "./ui.js";
 import { initGalleries } from "./gallery.js";

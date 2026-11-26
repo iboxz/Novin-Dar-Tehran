@@ -72,7 +72,7 @@
 }
 
 @layer base {
-  html{scroll-padding-block-start:calc(var(--header-h) + 1rem);scroll-padding-block-end:calc(var(--bar-h) + 1rem);accent-color:var(--accent-deep);scrollbar-gutter:stable}
+  html{scroll-padding-block-start:calc(var(--header-h) + 1rem);scroll-padding-block-end:calc(var(--bar-h) + 1rem);accent-color:var(--accent-deep)}
   body{font-family:Ayandeh,Vazirmatn,system-ui,sans-serif;color:var(--ink);background:var(--bg);font-size:1rem;line-height:1.85;letter-spacing:0;min-block-size:100dvh;-webkit-font-smoothing:antialiased;font-weight:400}
   :focus-visible{outline:2px solid var(--accent-deep);outline-offset:4px;border-radius:2px}
   bdi,[dir=ltr]{unicode-bidi:isolate}
