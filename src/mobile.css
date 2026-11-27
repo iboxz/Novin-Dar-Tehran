@@ -24,22 +24,22 @@
   --gutter: var(--m-gutter);
   --section: var(--m-section);
   --gap: var(--m-gap);
-  --header-h: 3.5rem;
-  --hero-bar-h: calc(3.25rem + env(safe-area-inset-bottom, 0px));
-  --bar-h: var(--hero-bar-h);
+  --header-h: calc(60px + env(safe-area-inset-top, 0px));
+  --dock-h: 56px;
+  --dock-inset: 12px;
+  --bar-h: calc(var(--dock-h) + var(--dock-inset) + env(safe-area-inset-bottom, 0px));
+  --hero-bar-h: var(--bar-h);
+}
+
+html[data-no-dock="true"] {
+  --bar-h: 0px;
+  --hero-bar-h: 0px;
 }
 
 @media (max-width: 22.5em) {
   :root {
     --m-section: var(--m-section-sm);
     --section: var(--m-section-sm);
-  }
-}
-
-@media (min-width: 48em) {
-  :root {
-    --hero-bar-h: 0px;
-    --bar-h: 0px;
   }
 }
 
@@ -131,19 +131,52 @@ summary {
   display: none;
 }
 
-/* ۲. نوارهای ثابت کم‌حجم (هدر 3.35rem + کال‌بار هوشمند) */
-.site-header,
-.header-shell {
-  min-block-size: var(--header-h);
+/* ۲. نوار بالای هوشمند (60px + safe-area) و داک شناور پایین صفحه */
+.header-capsule,
+.header-drop-bg,
+.header-cta,
+.menu-ring {
+  display: none !important;
 }
 
-.header-capsule {
-  inset-block: 2px;
-  inset-inline: calc(var(--gutter) - 4px);
+.site-header {
+  min-block-size: var(--header-h);
+  padding-block-start: env(safe-area-inset-top, 0px);
+  background: transparent;
+  border-block-end: 1px solid transparent;
+  transform: translate3d(0, 0, 0);
+  transition: background-color 220ms var(--ease), border-color 220ms var(--ease);
+}
+
+html:not(.is-loading) .site-header {
+  transition: transform 320ms var(--ease-door), background-color 220ms var(--ease), border-color 220ms var(--ease);
+}
+
+.site-header.is-scrolled:not(.is-menu-active) {
+  background: var(--bg);
+  border-block-end-color: var(--line);
+}
+
+.site-header.is-hidden:not(.is-menu-active):not(:focus-within) {
+  transform: translate3d(0, calc(-100% - 2px), 0);
+}
+
+html.menu-open .site-header,
+.site-header.is-menu-active {
+  background: transparent;
+  border-block-end-color: transparent;
+  transform: translate3d(0, 0, 0);
+}
+
+.header-shell {
+  min-block-size: 60px;
+  block-size: 60px;
+  padding-inline: max(var(--gutter), env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px));
 }
 
 .logo {
   gap: .5rem;
+  min-block-size: 48px;
 }
 
 .logo-mark {
@@ -152,82 +185,200 @@ summary {
 }
 
 .logo-type {
-  font-size: .9rem;
+  font-size: .92rem;
 }
 
+.header-actions {
+  gap: .5rem;
+}
+
+.header-phone-btn,
 .menu-btn {
-  inline-size: 44px;
-  block-size: 44px;
-}
-
-.header-cta {
-  min-block-size: 40px;
-  block-size: 40px;
-  padding-inline: .95rem;
-  font-size: .82rem;
-}
-
-.callbar {
-  align-items: center;
-  gap: var(--m-s1);
-  padding: .35rem var(--gutter) calc(.35rem + env(safe-area-inset-bottom, 0px));
+  inline-size: 48px;
+  block-size: 48px;
+  min-inline-size: 48px;
+  min-block-size: 48px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  padding: 0;
+  border: 1px solid var(--line);
   background: var(--surface);
-  border-block-start: 1px solid var(--line);
-  transform: translateY(0);
-  transition: transform 280ms var(--ease), opacity 200ms var(--ease);
+  color: var(--ink);
+  transition: transform 160ms var(--ease-reveal), background-color 180ms var(--ease), border-color 180ms var(--ease), color 180ms var(--ease), opacity 180ms var(--ease);
 }
 
-.callbar.is-hidden {
-  transform: translateY(calc(100% + 4px));
+.header-phone-btn svg {
+  inline-size: 19px;
+  block-size: 19px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.header-phone-btn:active,
+.menu-btn:active {
+  transform: scale(.96);
+  background: var(--tint);
+}
+
+html.menu-open .header-phone-btn {
+  opacity: 0;
+  transform: scale(.86);
+  pointer-events: none;
+}
+
+html.menu-open .menu-btn {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--ink);
+}
+
+/* داک شناور پایین صفحه */
+.mobile-dock {
+  position: fixed;
+  inset-block-end: calc(var(--dock-inset) + env(safe-area-inset-bottom, 0px));
+  inset-inline: max(var(--dock-inset), env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px));
+  max-inline-size: 30rem;
+  margin-inline: auto;
+  block-size: var(--dock-h);
+  min-block-size: var(--dock-h);
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  z-index: 45;
+  background: var(--ink);
+  color: var(--on-ink);
+  border: 1px solid var(--line-on-ink);
+  border-radius: 999px;
+  box-shadow: 0 14px 32px -12px rgba(23, 37, 29, 0.45);
+  transform: translate3d(0, 0, 0);
+  transition: transform 300ms var(--ease-door), opacity 200ms var(--ease);
+}
+
+.mobile-dock.is-hidden {
+  transform: translate3d(0, calc(100% + var(--dock-inset) + env(safe-area-inset-bottom, 0px) + 12px), 0);
   opacity: 0;
   pointer-events: none;
 }
 
-.callbar .btn--primary {
+.mobile-dock-cta {
   flex: 1 1 auto;
-  min-block-size: 44px;
-  block-size: 44px;
-  padding-inline: 1rem;
-  font-size: .875rem;
-}
-
-.callbar .btn--secondary {
-  flex: 0 0 auto;
-  min-block-size: 44px;
-  block-size: 44px;
-  padding-inline: .9rem;
-  font-size: .84rem;
-  border-color: var(--line);
-  background: transparent;
+  min-inline-size: 0;
+  min-block-size: 48px;
+  block-size: 48px;
+  padding-inline: 1.15rem;
+  border-radius: 999px;
+  background: var(--accent);
   color: var(--ink);
+  font-size: .92rem;
+  font-weight: 750;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+  transition: transform 140ms var(--ease-reveal), filter 140ms ease;
 }
 
-/* ۲ب. منوی تمام‌صفحه، متوازن، با تصاویر بزرگ در پایین پنل و درگ اسموف در موبایل */
-.header-drop-bg {
-  max-inline-size: none;
-  block-size: var(--header-h);
-  border-radius: 0;
+.mobile-dock-cta::before,
+.mobile-dock-cta::after {
+  display: none;
 }
 
+.mobile-dock-cta:active {
+  transform: scale(.98);
+  filter: brightness(.92);
+}
+
+.mobile-dock-products {
+  flex: 0 0 auto;
+  min-inline-size: 48px;
+  min-block-size: 48px;
+  block-size: 48px;
+  padding-inline: .95rem;
+  border-radius: 999px;
+  background: rgba(245, 245, 237, 0.1);
+  border: 1px solid rgba(245, 245, 237, 0.14);
+  color: var(--on-ink);
+  font-size: .85rem;
+  font-weight: 650;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .45rem;
+  transition: transform 140ms var(--ease-reveal), background-color 140ms ease;
+}
+
+.mobile-dock-products svg {
+  inline-size: 17px;
+  block-size: 17px;
+  flex: none;
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.75;
+}
+
+.mobile-dock-products:active {
+  transform: scale(.98);
+  background: rgba(245, 245, 237, 0.2);
+}
+
+.mobile-dock :focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ۲ب. منوی تمام‌صفحه ۳بخشی در موبایل (100dvh، بدون فاصلهٔ مرده، اسکرول فقط بخش میانی) */
 .door-panel {
-  inset-block: var(--header-h) 0;
-  inset-inline: 0;
-  block-size: calc(100dvh - var(--header-h));
-  max-block-size: none;
+  inset: 0;
+  inline-size: 100%;
+  max-inline-size: none;
+  block-size: 100dvh;
+  max-block-size: 100dvh;
+  margin: 0;
   border: 0;
-  border-block-start: 1px solid var(--line-on-ink);
   border-radius: 0;
   box-shadow: none;
-}
-
-.door-panel-rail {
-  order: -1;
-}
-
-.door-panel-scroll {
+  background: var(--ink);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
   display: flex;
   flex-direction: column;
-  padding: 0;
+  overflow: hidden;
+  --sheet-gutter: max(var(--gutter), env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px));
+}
+
+.door-panel-rail,
+.door-products-links,
+.door-preview-col,
+.door-contact-card,
+.door-products-title-desktop {
+  display: none !important;
+}
+
+/* ناحیه ۱: نوار هم‌تراز با هدر */
+.door-sheet-top {
+  display: block;
+  flex: none;
+  block-size: var(--header-h);
+  border-block-end: 1px solid rgba(245, 245, 237, 0.12);
+}
+
+/* ناحیه ۲: اسکرول میانی */
+.door-panel-scroll {
+  flex: 1 1 auto;
+  min-block-size: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: clamp(8px, 1.5dvh, 16px) 0;
 }
 
 .door-panel-grid {
@@ -235,25 +386,28 @@ summary {
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  justify-content: flex-start;
-  gap: 0;
+  gap: clamp(12px, 1.8dvh, 20px);
   min-block-size: 100%;
-  padding-block: .25rem 0;
 }
 
 .door-menu-nav {
-  order: 0;
+  flex: 1 1 auto;
+  display: flex;
+  align-items: stretch;
   inline-size: 100%;
   padding-inline: var(--sheet-gutter);
 }
 
 .door-menu-list {
+  inline-size: 100%;
   display: grid;
+  grid-auto-rows: minmax(60px, 1fr);
   gap: 0;
 }
 
 .door-menu-item {
-  border-block-end: 1px solid var(--line-on-ink);
+  display: flex;
+  border-block-end: 1px solid rgba(245, 245, 237, 0.12);
 }
 
 .door-menu-item:last-child {
@@ -264,35 +418,123 @@ summary {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: .6rem;
+  gap: .75rem;
   inline-size: 100%;
-  min-block-size: 48px;
-  padding-block: .2rem;
-  font-size: clamp(1.18rem, 5vw, 1.45rem);
-  font-weight: 750;
-  transition: color var(--dur-fast) ease, background var(--dur-fast) ease;
+  min-block-size: 60px;
+  padding-block: clamp(6px, 1.1dvh, 12px);
+  padding-inline: .15rem;
+  font-size: clamp(1.9rem, 6.2vw, 2.4rem);
+  font-weight: 800;
+  line-height: 1.25;
+  color: var(--on-ink);
+  border-radius: var(--r);
+  transition: transform 140ms var(--ease-reveal), background-color 140ms ease, color 140ms ease;
 }
 
-.door-products-col {
-  order: 1;
-  inline-size: 100%;
-  margin-block-start: auto;
-  padding-block-start: .75rem;
+.door-menu-link:active {
+  transform: scale(.98);
+  background: rgba(245, 245, 237, 0.08);
 }
 
-.door-products-title {
+.door-link-index {
+  display: inline-block;
+  flex: none;
+  min-inline-size: 1.5rem;
+  font-size: .78rem;
+  font-weight: 600;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: var(--on-ink-muted);
+  opacity: .72;
+}
+
+.door-menu-link[aria-current] .door-link-index {
+  color: var(--accent);
+  opacity: 1;
+}
+
+.door-menu-link .roll-mask {
+  display: block;
+  overflow: hidden;
+  block-size: auto;
+  line-height: 1.28;
+  min-inline-size: 0;
+}
+
+.door-menu-link .roll-track {
+  display: block;
+}
+
+.door-menu-link .roll-copy {
+  block-size: auto;
+  line-height: 1.28;
+}
+
+.door-menu-link .roll-copy--clone {
   display: none;
 }
 
+.door-link-arrow {
+  display: block;
+  inline-size: 18px;
+  block-size: 18px;
+  flex: none;
+  margin-inline-start: auto;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: .52;
+  transform: scaleX(-1);
+}
+
+.door-menu-link[aria-current] .door-link-arrow {
+  color: var(--accent);
+  opacity: 1;
+}
+
+.door-products-col {
+  flex: none;
+  inline-size: 100%;
+  padding: 0;
+  border: 0;
+}
+
+.door-products-title {
+  display: block;
+  padding-inline: var(--sheet-gutter);
+  margin-block-end: 8px;
+  font-size: .8rem;
+  font-weight: 700;
+  color: var(--on-ink-muted);
+}
+
+.door-products-title-mobile {
+  display: inline;
+}
+
 .door-mobile-carousel {
-  gap: .65rem;
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--sheet-gutter);
   padding-block: 0;
   padding-inline: var(--sheet-gutter);
-  scroll-padding-inline: var(--sheet-gutter);
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-overflow-scrolling: touch;
   cursor: grab;
   user-select: none;
   -webkit-user-select: none;
   touch-action: pan-x;
+}
+
+.door-mobile-carousel::-webkit-scrollbar {
+  display: none;
 }
 
 .door-mobile-carousel.is-grabbing {
@@ -305,46 +547,157 @@ summary {
 }
 
 .door-mobile-card {
-  flex: 0 0 clamp(15rem, 74vw, 22rem);
+  position: relative;
+  flex: 0 0 clamp(172px, 58vw, 240px);
   aspect-ratio: 4 / 3;
-  border-block-end: 0;
-  border-radius: var(--r) var(--r) 0 0;
+  border-radius: calc(var(--r) * 3);
+  overflow: hidden;
+  border: 1px solid rgba(245, 245, 237, 0.14);
+  background: var(--ink-raised);
+  scroll-snap-align: start;
   user-select: none;
   -webkit-user-drag: none;
-  transition: border-color var(--dur-fast) ease, filter 140ms ease;
+  transition: transform 140ms var(--ease-reveal), border-color 160ms ease, filter 140ms ease;
+}
+
+.door-mobile-card[aria-current] {
+  border-color: var(--accent);
+}
+
+.door-mobile-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(23, 37, 29, 0.92) 0%, rgba(23, 37, 29, 0.36) 52%, transparent 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.door-mobile-card:active {
+  transform: scale(.98);
+  filter: brightness(.9);
 }
 
 .door-mobile-card-img {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  display: block;
   pointer-events: none;
   -webkit-user-drag: none;
 }
 
 .door-mobile-card-name {
-  font-size: .95rem;
-  font-weight: 750;
+  position: absolute;
   inset-inline: .75rem;
-  inset-block-end: .6rem;
+  inset-block-end: .55rem;
+  z-index: 2;
+  font-size: .92rem;
+  font-weight: 750;
+  line-height: 1.35;
+  color: var(--on-ink);
+  text-wrap: balance;
 }
 
-.door-contact-card {
-  order: 2;
-  inline-size: 100%;
-  margin-block-start: 0;
+/* ناحیه ۳: پایین ثابت شیت */
+.door-sheet-bottom {
+  display: grid;
+  gap: 10px;
+  flex: none;
   padding-inline: var(--sheet-gutter);
-  padding-block: .75rem calc(.75rem + env(safe-area-inset-bottom, 0px));
+  padding-block: 12px max(16px, env(safe-area-inset-bottom, 0px));
+  border-block-start: 1px solid rgba(245, 245, 237, 0.12);
+  background: var(--ink);
+}
+
+.door-sheet-cta {
+  inline-size: 100%;
+  min-block-size: 56px;
+  block-size: 56px;
+  border-radius: calc(var(--r) * 2);
+  background: var(--accent);
+  color: var(--ink);
+  font-size: 1rem;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   gap: .5rem;
+  transition: transform 140ms var(--ease-reveal), filter 140ms ease;
 }
 
-.door-contact-actions .btn--primary {
-  min-block-size: 46px;
-  block-size: 46px;
-  font-size: .9rem;
+.door-sheet-cta::before,
+.door-sheet-cta::after {
+  display: none;
 }
 
-.door-contact-meta {
-  gap: .2rem .85rem;
+.door-sheet-cta:active {
+  transform: scale(.98);
+  filter: brightness(.92);
+}
+
+.door-sheet-meta {
+  display: grid;
+  gap: 2px;
+  text-align: center;
   font-size: .76rem;
-  opacity: .82;
+  line-height: 1.5;
+  color: var(--on-ink-muted);
+  opacity: .8;
+}
+
+.door-sheet-phone {
+  color: var(--on-ink);
+  font-weight: 650;
+  unicode-bidi: isolate;
+}
+
+@media (max-height: 42em) and (min-height: 30.01em) {
+  .door-panel-scroll {
+    padding: 6px 0;
+  }
+
+  .door-panel-grid {
+    gap: 8px;
+  }
+
+  .door-products-title {
+    margin-block-end: 6px;
+  }
+
+  .door-sheet-bottom {
+    padding-block: 10px max(16px, env(safe-area-inset-bottom, 0px));
+    gap: 8px;
+  }
+}
+
+@media (max-height: 30em) and (orientation: landscape) {
+  .door-panel-scroll {
+    padding: 8px 0;
+  }
+
+  .door-panel-grid {
+    gap: 10px;
+    min-block-size: auto;
+  }
+
+  .door-menu-list {
+    grid-auto-rows: minmax(60px, auto);
+  }
+
+  .door-mobile-card {
+    flex-basis: clamp(160px, 32vw, 220px);
+  }
+
+  .door-sheet-bottom {
+    padding-block: 8px max(10px, env(safe-area-inset-bottom, 0px));
+    gap: 6px;
+  }
+
+  .door-sheet-cta {
+    min-block-size: 48px;
+    block-size: 48px;
+  }
 }
 
 /* ۳. بخش هیرو: هم‌تراز دقیق با اسپلش + بدون هم‌پوشانی با هدر/کال‌بار */
@@ -1198,7 +1551,7 @@ textarea.input {
   padding-block: var(--section);
 }
 
-/* ۹. فوتر جمع‌وجور موبایل */
+/* ۹. فوتر جمع‌وجور موبایل و فضای امن داک پایین */
 .footer-curtain {
   padding-block: 1.75rem 0;
 }
@@ -1208,8 +1561,12 @@ textarea.input {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .callbar,
-  .callbar * {
+  .site-header,
+  .site-header *,
+  .mobile-dock,
+  .mobile-dock *,
+  .door-panel,
+  .door-panel * {
     transition: none !important;
   }
 }
